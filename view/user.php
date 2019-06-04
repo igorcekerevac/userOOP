@@ -28,7 +28,8 @@
 
 	<h1>ALL USERS</h1><br>
 
-	<button onclick="location.href = 'create.php'">add new user</button><br><br>
+	<button onclick="location.href = '/user/create'">add new user</button>
+	<button onclick="location.href = '/'">home</button><br><br>
 
 	<?php
 
@@ -37,13 +38,14 @@
 			echo '<strong id="font">'.$user['name'].'</strong>' .
 
 			"<a id='left' href='delete.php?id=".$user['user_id']."'>delete</a>". 
-			"<a id='update' href='update.php?id=".$user['user_id']."'>update</a>". 
+			"<a id='update' href='/user/update/?id=".$user['user_id']."'>update</a>". 
 
-			"<a href='profile.php?id=".$user['user_id']."'>profile</a><br>";
+			"<a href='/user/profile/?id=".$user['user_id']."'>profile</a><br>";
 		}
 
 	?>	
 	<br>
+
 
 </body>
 </html>

@@ -6,7 +6,7 @@
 	
 	$user = new User($db);
 
-	$find_id = $_GET["id"];
+	$find_id = htmlspecialchars($_GET["id"]);
 	
 	$user->getUser($find_id);
 

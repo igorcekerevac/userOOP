@@ -52,7 +52,7 @@ class User {
     }
 
 
-    function getAllUsersKKKKKKKKKK()
+    function get_AllUsers()
     {
         $sql = "SELECT * FROM user";
 
@@ -62,6 +62,16 @@ class User {
         return $prep_state->fetchAll(PDO::FETCH_ASSOC);
     }
 
+
+    function get_users_mail()
+    {
+        $sql = "SELECT email FROM user";
+
+        $prep_state = $this->db_conn->prepare($sql);
+        $prep_state->execute();
+
+        return $prep_state->fetchAll(PDO::FETCH_ASSOC);
+    }
     
     function getUser($id)
     {

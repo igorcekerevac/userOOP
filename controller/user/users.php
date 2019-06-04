@@ -28,7 +28,7 @@
 	include $_SERVER['DOCUMENT_ROOT'].'/view/user.php';
 
 	for ($page=1; $page<=$number_of_pages ; $page++) { 
-    	echo '<a id="page" href="users.php?page=' .$page. '">page ' . $page . '</a>';
+    	echo '<a id="page" href="/users/page/?page=' .$page. '">page ' . $page . '</a>';
     }
 
 	
