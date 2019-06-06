@@ -37,7 +37,8 @@
 				$status = 'Please enter valid data!';
 			}else{
 				$user->create();
-				header("Location: /users");
+				$status = "User added!";
+				header("Loaction:/user/added");
 			}
 	}	
 

@@ -1,14 +1,11 @@
 <?php
 
-class User {
+class Client {
 
 	public $db_conn;
-	public $table_name = "user";
+	public $table_name = "client";
 
 	public $name;
-	public $age;
-	public $email;
-    public $user_id;
  
 
 	function __construct($db) {
@@ -18,13 +15,11 @@ class User {
 
     function create()
     {
-        $sql = "INSERT INTO " . $this->table_name . " SET name = ?, age = ?, email = ?";
+        $sql = "INSERT INTO " . $this->table_name . " SET name = ?";
 
         $prep_state = $this->db_conn->prepare($sql);
 
         $prep_state->bindParam(1, $this->name);
-        $prep_state->bindParam(2, $this->age);
-        $prep_state->bindParam(3, $this->email);
 
         $prep_state->execute();
     }
@@ -32,14 +27,12 @@ class User {
 
     function update($id)
     {
-        $sql = "UPDATE " . $this->table_name . " SET name = :name, age = :age, email = :email WHERE user_id = $id";
+        $sql = "UPDATE " . $this->table_name . " SET name = :name WHERE client_id = $id";
        
         $prep_state = $this->db_conn->prepare($sql);
 
 
         $prep_state->bindParam(':name', $this->name);
-        $prep_state->bindParam(':age', $this->age);
-        $prep_state->bindParam(':email', $this->email);
         $prep_state->execute();
     }
 
@@ -53,9 +46,9 @@ class User {
     }
 
 
-    function get_AllUsers()
+    function get_all_clients()
     {
-        $sql = "SELECT * FROM user";
+        $sql = "SELECT * FROM client";
 
         $prep_state = $this->db_conn->prepare($sql);
         $prep_state->execute();
@@ -63,35 +56,24 @@ class User {
         return $prep_state->fetchAll(PDO::FETCH_ASSOC);
     }
 
-
-    function get_users_mail()
-    {
-        $sql = "SELECT email FROM user";
-
-        $prep_state = $this->db_conn->prepare($sql);
-        $prep_state->execute();
-
-        return $prep_state->fetchAll(PDO::FETCH_ASSOC);
-    }
     
-    function getUser($id)
+    function get_client($id)
     {
-        $sql = "SELECT name, age, email FROM " . $this->table_name . " WHERE user_id = $id";
+        $sql = "SELECT name FROM " . $this->table_name . " WHERE client_id = $id";
 
         $prep_state = $this->db_conn->prepare($sql);
         $prep_state->execute();
 
-        $user = $prep_state->fetch(PDO::FETCH_ASSOC);
+        $client = $prep_state->fetch(PDO::FETCH_ASSOC);
 
-        $this->name = $user['name'];
-        $this->age = $user['age'];
-        $this->email = $user['email'];
-    }   
+        $this->name = $client['name'];
+
+    }    
 
     //num of rows, pagination
     public function countAll()
     {
-        $sql = "SELECT user_id FROM " . $this->table_name . "";
+        $sql = "SELECT client_id FROM " . $this->table_name . "";
 
         $prep_state = $this->db_conn->prepare($sql);
         $prep_state->execute();
@@ -100,7 +82,7 @@ class User {
         return $num;
     }
 
-    function getAllUsers($from_record_num, $records_per_page)
+    function getAllClients($from_record_num, $records_per_page)
     {
         $sql = "SELECT * FROM " . $this->table_name . " LIMIT " . $from_record_num . ',' .$records_per_page;
 
@@ -109,6 +91,17 @@ class User {
         $prep_state->execute();
 
         return $prep_state;
+    }
+
+
+    function get_client_name()
+    {
+        $sql = "SELECT name FROM client";
+
+        $prep_state = $this->db_conn->prepare($sql);
+        $prep_state->execute();
+
+        return $prep_state->fetchAll(PDO::FETCH_ASSOC);
     }
 
 }

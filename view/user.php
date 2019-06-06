@@ -28,8 +28,7 @@
 
 	<h1>ALL USERS</h1><br>
 
-	<button onclick="location.href = '/user/create'">add new user</button>
-	<button onclick="location.href = '/'">home</button><br><br>
+	<button onclick="location.href = '/admin'">home</button><br><br>
 
 	<?php
 
