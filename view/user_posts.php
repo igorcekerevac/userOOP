@@ -17,8 +17,10 @@
 	</style>
 </head>
 <body>
+
 	<button id="logout" onclick="location.href = '/employee/logout'">logout</button>
 	<h1>User <?php  echo $_SESSION['name'] ?>!</h1><br>
+	<button onclick='location.href = "/employee?id=<?php echo $_SESSION['user_id']; ?>"'>back to tasks</button>
 	<h3>Task name: <?php  echo $task_name ?></h3>
 	<h3>Project name: <?php  echo $project_name ?></h3><br>
 

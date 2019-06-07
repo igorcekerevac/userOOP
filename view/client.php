@@ -39,7 +39,7 @@
 			echo '<strong id="font">'.$client['name'].'</strong>' .
 
 			"<a id='left' href='/client/project/add/?id=".$client['client_id']."'>add project</a>" .
-			"<a href='/client/?id=".$client['client_id']."'>client page</a><br>" ;
+			"<a href='/client/?id=".$client['client_id']."'>projects</a><br>" ;
 		}
 
 	?>	

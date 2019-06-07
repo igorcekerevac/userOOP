@@ -44,6 +44,23 @@ class Project {
         return $prep_state->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    function get_all_projects_join()
+    {
+        $sql = "SELECT client.name AS client_name,project.project_id, project.name AS project_name,task.name AS task_name ,user.name AS user_name, task.task_id FROM
+            client
+                 RIGHT JOIN
+            project ON client.client_id=project.client_id
+                 RIGHT JOIN
+            task ON project.project_id = task.project_id
+                LEFT JOIN
+            user ON task.user_id = user.user_id";
+
+        $prep_state = $this->db_conn->prepare($sql);
+        $prep_state->execute();
+
+        return $prep_state->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     
     function get_project($id)
     {

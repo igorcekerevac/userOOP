@@ -26,6 +26,9 @@
 	    case '/user/create' :
 	        require __DIR__ . '/controller/user/create.php';
 	        break;
+        case '/user/add' :
+            require __DIR__ . '/controller/user/create.php';
+            break;
         case '/user/profile/?'.$query_string :
             require __DIR__ . '/controller/user/profile.php';
             break;
@@ -61,7 +64,7 @@
         case '/employee/logout' :
             require __DIR__ . '/controller/user/logout.php';
             break;
-        case '/employee/tasks' :
+        case '/employee?'.$query_string :
             require __DIR__ . '/controller/user/tasks.php';
             break;   
 
@@ -72,12 +75,18 @@
         case '/employee/post/submit' :
             require __DIR__ . '/controller/user/posts.php';
             break; 
+        case '/employee/post/sub' :
+            require __DIR__ . '/controller/task/profile.php';
+            break; 
         case '/user/added' :
             require __DIR__ . '/controller/user/create.php';
             break; 
 
         case '/admin' :
             require __DIR__ . '/view/home.php';
+            break; 
+        case '/projects' :
+            require __DIR__ . '/controller/project/projects.php';
             break; 
 	    default:
 	        require __DIR__ . '/view/error.php';

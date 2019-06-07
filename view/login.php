@@ -15,18 +15,18 @@
 
 	<form action="" method="post">
 
-		Email: <input type="text" name="email" value=""><br>
+		Email: <input type="text" name="email" value=""><br><br>
 
 		<input type="submit" name="submit" value="login">
 
-	</form><br>
+	</form>
 
 
 	<?php if (isset($status)) :?>
 			<p><?php echo $status?></p>
 	<?php endif; ?>
 
-	<button onclick="location.href = '/'">home</button><br><br>
+	<button onclick="location.href = '/'">sign up</button>
 
 </body>
 </html>

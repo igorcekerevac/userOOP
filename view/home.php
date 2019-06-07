@@ -5,8 +5,6 @@
 	if (!isset($_SESSION['admin_name'])) {
 		header("Location: /employee/login");
 	}
-
-
 ?>
 
 <!DOCTYPE html>
@@ -26,6 +24,7 @@
 	<button id="logout" onclick="location.href = '/employee/logout'">logout</button>
 	<button onclick="location.href = '/users'">users</button>
 	<button onclick="location.href = '/clients'">clients</button>
+	<button onclick="location.href = '/projects'">all projects</button>
 	
 </body>
 </html>

@@ -52,9 +52,6 @@
 
 	$all_posts = $post->get_all_posts($task_id);
 
-	if(!empty($_POST)){
-	unset($_POST);}
-
 	include $_SERVER['DOCUMENT_ROOT'].'/view/user_posts.php';
 
 ?>

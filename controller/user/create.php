@@ -37,14 +37,11 @@
 				$status = 'Please enter valid data!';
 			}else{
 				$user->create();
-				$status = "User added!";
-				header("Loaction:/user/added");
+				header("Location:/");
 			}
+		}	
 	}	
-
-		
-
-	}	
+	
 	include $_SERVER['DOCUMENT_ROOT'].'/view/add_user.php';
 
 	
