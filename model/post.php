@@ -1,6 +1,7 @@
 <?php
 
-class Post {
+class Post 
+{
 
 	public $db_conn;
 	public $table_name = "post";
@@ -12,12 +13,13 @@ class Post {
     public $user_id;
  
 
-	function __construct($db) {
+	function __construct($db) 
+    {
 		$this->db_conn = $db;
 	}
  
 
-    function create_post()
+    public function create_post()
     {
         $sql = "INSERT INTO " . $this->table_name . " SET title = ?, body = ?, date = ? , task_id = ?, user_id = ?";
 
@@ -32,7 +34,8 @@ class Post {
         $prep_state->execute();
     }
 
-    function get_all_posts($task_id)
+
+    public function get_all_posts($task_id)
     {
         $sql = "SELECT * FROM post where task_id = $task_id";
 
@@ -42,7 +45,8 @@ class Post {
         return $prep_state->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    function get_task($post_id)
+
+    public function get_task($post_id)
     {
         $sql = "SELECT * FROM " . $this->table_name . " WHERE post_id = $post_id";
 
@@ -54,9 +58,7 @@ class Post {
         $this->title = $post['title'];
         $this->body = $post['body'];
         $this->date = $post['date'];
-
     }   
 
 }
 
-?>

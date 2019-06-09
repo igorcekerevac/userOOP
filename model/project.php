@@ -1,6 +1,7 @@
 <?php
 
-class Project {
+class Project 
+{
 
 	public $db_conn;
 	public $table_name = "project";
@@ -13,7 +14,7 @@ class Project {
 	}
  
 
-    function create($client_id)
+    public function create($client_id)
     {
         $sql = "INSERT INTO " . $this->table_name . " SET name = ?, client_id = $client_id";
 
@@ -25,7 +26,7 @@ class Project {
     }
 
 
-    function delete($id)
+    public function delete($id)
     {
         $sql = "DELETE FROM " . $this->table_name . " WHERE project_id = $id ";
 
@@ -34,7 +35,7 @@ class Project {
     }
 
 
-    function get_all_projects()
+    public function get_all_projects()
     {
         $sql = "SELECT * FROM project";
 
@@ -44,7 +45,8 @@ class Project {
         return $prep_state->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    function get_all_projects_join()
+
+    public function get_all_projects_join()
     {
         $sql = "SELECT client.name AS client_name,project.project_id, project.name AS project_name,task.name AS task_name ,user.name AS user_name, task.task_id FROM
             client
@@ -61,8 +63,8 @@ class Project {
         return $prep_state->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    
-    function get_project($id)
+
+    public function get_project($id)
     {
         $sql = "SELECT name FROM " . $this->table_name . " WHERE project_id = $id";
 
@@ -74,7 +76,8 @@ class Project {
         $this->name = $project['name'];
     }    
 
-    function get_project_client($client_id)
+
+    public function get_project_client($client_id)
     {
         $sql = "SELECT * FROM " . $this->table_name . " WHERE client_id = $client_id";
 
@@ -86,7 +89,8 @@ class Project {
         return $project;
     }   
 
-    function get_project_name()
+
+    public function get_project_name()
     {
         $sql = "SELECT name FROM project";
 
@@ -95,8 +99,6 @@ class Project {
 
         return $prep_state->fetchAll(PDO::FETCH_ASSOC);
     }
-
-    
+   
 }
 
-?>

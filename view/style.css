@@ -1,0 +1,220 @@
+
+#logout {
+	float: right;
+}
+
+#status {
+	color: red;
+	font-style: italic;
+	margin-top: 40px;
+	margin-left: 10px;
+}
+
+#font {
+	font-size: 20px;
+	font-family: verdana;
+}
+
+#page {
+	margin-right: -30px;
+	margin-left: 50px;
+	text-decoration: none;
+	color: white;
+	font-style: italic;
+	font-family: verdana;
+	font-size: 12px;
+}
+
+#page:hover  {
+	color: red;
+}
+
+#left {
+	margin-right: 10px;
+	margin-left: 20px;
+}
+
+#task{
+	margin-left: 25px;
+}
+
+#form{
+	width: 300px;
+	float: left;
+	margin-left: 50px;
+}
+
+#posts{
+	float: left;
+}
+
+#update{
+	margin-right: 10px;
+}
+
+#error {
+	color: red;
+	font-style: bold;
+			
+}
+
+#nav {
+	background-color: black;
+	height: 28px;
+	padding: 8px 0px 0px 15px;
+}
+
+body {
+	margin: 0px;
+	background-color: orange;
+}
+
+.nav_link, #user_welcome {
+	color: white;
+	margin-right: 15px;
+	text-decoration: none;
+	font-size: 14px;
+	font-family: verdana;
+}
+
+.nav_link:hover {
+	color: orange;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-family: verdana;
+}
+
+#login {
+	float: right;
+	text-decoration: none;
+	color: white;
+	font-family: verdana;
+	font-style: italic;
+	margin-top: 28px;
+	margin-right: 30px;
+}
+
+#login:hover {
+	color: orange;
+}
+
+#add_btn, #sub_post {
+	margin-top: 10px;
+	margin-right: 1px;
+	float: right;
+	color: white;
+	background-color: black;
+	border: none;
+	width: 80px;
+	height: 25px;
+	font-family: verdana;
+}
+
+#client_btn {
+	color: white;
+	background-color: black;
+	border: none;
+	width: 120px;
+	height: 25px;
+	font-family: verdana;
+}
+
+#client_btn:hover {
+	color: orange;s
+}
+
+#sub_post {
+	float: none;
+	width: 204px;
+}
+
+#add_btn:hover, #sub_post:hover {
+	color: orange;
+}
+
+td {
+	font-family: verdana;
+	font-size: 20px;
+	height: 25px;
+	padding: 0px;
+	margin: 0px;
+	padding-left: 10px;
+	vertical-align: middle;
+}
+
+#log_header {
+	background-color: black;
+	height: 80px;
+}
+
+#sign_h1 {
+	color: white;
+	margin-left: 80px;
+}
+
+#sign_form {
+	margin: -83px auto 0 auto;
+	width: 370px;
+}
+
+#update_form {
+	margin-left: 50px;
+	margin-top: -80px;
+}
+
+#user_welcome {
+	margin-top: -19px;
+	font-style: italic;
+	width: 150px;
+	color: grey;
+}
+
+#user_tasks {
+	margin-left: 200px;
+}
+
+#user_update {
+	margin-left: 20px;
+}
+
+#update_h1{
+	margin-top: 110px;
+	font-family: verdana;
+	margin-left: 10px;
+}
+
+#header_h1 {
+	margin-top: 30px;
+	font-family: verdana;
+}
+
+#task_div, #profile_div, #content {
+	margin-left: 50px;
+	margin-top: 30px;
+}
+
+#task_names {
+	color: black;
+	font-family: verdana;
+}
+
+#task_names:hover {
+	color: white;
+}
+
+#task_info {
+	margin-left: 50px;
+	margin-top: 30px;
+}
+
+h5 {
+	display: inline;
+}
+
+#comment {
+	background-color: white;
+	border-radius: 15px;
+	width: 300px;
+	padding: 10px;
+}

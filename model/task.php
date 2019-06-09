@@ -1,6 +1,7 @@
 <?php
 
-class Task {
+class Task 
+{
 
 	public $db_conn;
 	public $table_name = "task";
@@ -15,7 +16,7 @@ class Task {
 	}
  
 
-    function create_task()
+    public function create_task()
     {
         $sql = "INSERT INTO " . $this->table_name . " SET name = ?, project_id = ?, user_id = ?";
 
@@ -28,7 +29,8 @@ class Task {
         $prep_state->execute();
     }
 
-    function get_all_tasks($project_id)
+
+    public function get_all_tasks($project_id)
     {
         $sql = "SELECT * FROM task where project_id = $project_id";
 
@@ -38,7 +40,8 @@ class Task {
         return $prep_state->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    function get_task($task_id)
+
+    public function get_task($task_id)
     {
         $sql = "SELECT * FROM " . $this->table_name . " WHERE task_id = $task_id";
 
@@ -51,7 +54,8 @@ class Task {
         $this->project_id = $task['project_id'];
     }   
 
-    function get_user_tasks($user_id)
+
+    public function get_user_tasks($user_id)
     {
         $sql = "SELECT * FROM " . $this->table_name . " WHERE user_id = $user_id";
 
@@ -59,9 +63,7 @@ class Task {
         $prep_state->execute();
 
         return $prep_state->fetchAll(PDO::FETCH_ASSOC);
-
     }     
 
 }
 
-?>

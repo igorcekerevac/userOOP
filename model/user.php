@@ -1,6 +1,7 @@
 <?php
 
-class User {
+class User 
+{
 
 	public $db_conn;
 	public $table_name = "user";
@@ -16,7 +17,7 @@ class User {
 	}
  
 
-    function create()
+    public function create()
     {
         $sql = "INSERT INTO " . $this->table_name . " SET name = ?, age = ?, email = ?";
 
@@ -30,7 +31,7 @@ class User {
     }
 
 
-    function update($id)
+    public function update($id)
     {
         $sql = "UPDATE " . $this->table_name . " SET name = :name, age = :age, email = :email WHERE user_id = $id";
        
@@ -44,7 +45,7 @@ class User {
     }
 
 
-    function delete($id)
+    public function delete($id)
     {
         $sql = "DELETE FROM " . $this->table_name . " WHERE user_id = $id ";
 
@@ -53,7 +54,7 @@ class User {
     }
 
 
-    function get_AllUsers()
+    public function getUsers()
     {
         $sql = "SELECT * FROM user";
 
@@ -64,7 +65,7 @@ class User {
     }
 
 
-    function get_users_mail()
+    public function getUserMail()
     {
         $sql = "SELECT email FROM user";
 
@@ -74,7 +75,7 @@ class User {
         return $prep_state->fetchAll(PDO::FETCH_ASSOC);
     }
     
-    function getUser($id)
+    public function getUser($id)
     {
         $sql = "SELECT name, age, email FROM " . $this->table_name . " WHERE user_id = $id";
 
@@ -100,7 +101,8 @@ class User {
         return $num;
     }
 
-    function getAllUsers($from_record_num, $records_per_page)
+
+    public function getAllUsers($from_record_num, $records_per_page)
     {
         $sql = "SELECT * FROM " . $this->table_name . " LIMIT " . $from_record_num . ',' .$records_per_page;
 
@@ -113,4 +115,3 @@ class User {
 
 }
 
-?>

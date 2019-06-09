@@ -1,6 +1,7 @@
 <?php
 
-class Client {
+class Client 
+{
 
 	public $db_conn;
 	public $table_name = "client";
@@ -8,12 +9,13 @@ class Client {
 	public $name;
  
 
-	function __construct($db) {
+	function __construct($db) 
+    {
 		$this->db_conn = $db;
 	}
  
 
-    function create()
+    public function create()
     {
         $sql = "INSERT INTO " . $this->table_name . " SET name = ?";
 
@@ -25,7 +27,7 @@ class Client {
     }
 
 
-    function update($id)
+    public function update($id)
     {
         $sql = "UPDATE " . $this->table_name . " SET name = :name WHERE client_id = $id";
        
@@ -37,7 +39,7 @@ class Client {
     }
 
 
-    function delete($id)
+    public function delete($id)
     {
         $sql = "DELETE FROM " . $this->table_name . " WHERE user_id = $id ";
 
@@ -46,7 +48,7 @@ class Client {
     }
 
 
-    function get_all_clients()
+    public function get_all_clients()
     {
         $sql = "SELECT * FROM client";
 
@@ -57,7 +59,7 @@ class Client {
     }
 
     
-    function get_client($id)
+    public function get_client($id)
     {
         $sql = "SELECT name FROM " . $this->table_name . " WHERE client_id = $id";
 
@@ -67,7 +69,6 @@ class Client {
         $client = $prep_state->fetch(PDO::FETCH_ASSOC);
 
         $this->name = $client['name'];
-
     }    
 
     //num of rows, pagination
@@ -82,7 +83,8 @@ class Client {
         return $num;
     }
 
-    function getAllClients($from_record_num, $records_per_page)
+
+    public function getAllClients($from_record_num, $records_per_page)
     {
         $sql = "SELECT * FROM " . $this->table_name . " LIMIT " . $from_record_num . ',' .$records_per_page;
 
@@ -94,7 +96,7 @@ class Client {
     }
 
 
-    function get_client_name()
+    public function get_client_name()
     {
         $sql = "SELECT name FROM client";
 
@@ -103,7 +105,6 @@ class Client {
 
         return $prep_state->fetchAll(PDO::FETCH_ASSOC);
     }
-
+    
 }
 
-?>

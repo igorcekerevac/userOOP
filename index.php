@@ -1,93 +1,140 @@
 <?php
+    
+    include_once('controller/ClientController.php');
+    include_once('controller/ProjectController.php');
+    include_once('controller/TaskController.php');
+    include_once('controller/UserController.php');
+
+    $user = new UserController();
+    $project = new ProjectController();
+    $client = new ClientController();
+    $task = new TaskController();
 
 	$request = $_SERVER['REQUEST_URI'];
-
     $query_string = $_SERVER['QUERY_STRING'];
 
-	switch ($request) {
+	
+    switch ($request) {
+
+        // user controller  
+
+
+        case '/admin' :
+            $user->adminHome();
+            break; 
+
 	    case '/' :
-	        require __DIR__ . '/controller/user/create.php';
+	        $user->createUser();
 	        break;
+
 	    case '' :
-	        require __DIR__ . '/controller/user/create.php';
+	        $user->createUser();
 	        break; 
-        case '/delete.php?'.$query_string :
-            require __DIR__ . '/controller/user/delete.php';
-            break; 
-        case '/user/update/?'.$query_string :
-            require __DIR__ . '/controller/user/update.php';
-            break; 
-        case '/users/page/delete.php?'.$query_string :
-            require __DIR__ . '/controller/user/delete.php';
-            break; 
-        case '/users/page/?'.$query_string :
-            require __DIR__ . '/controller/user/users.php';
-            break; 
-	    case '/user/create' :
-	        require __DIR__ . '/controller/user/create.php';
-	        break;
-        case '/user/add' :
-            require __DIR__ . '/controller/user/create.php';
-            break;
-        case '/user/profile/?'.$query_string :
-            require __DIR__ . '/controller/user/profile.php';
-            break;
-        case '/users' :
-            require __DIR__ . '/controller/user/users.php';
+
+        case '/employee/login' :
+            $user->loginUser();
             break;
 
-        case '/clients' :
-            require __DIR__ . '/controller/client/clients.php';
-            break;
-        case '/client/create' :
-            require __DIR__ . '/controller/client/create.php';
-            break;
-        case '/clients/page/?'.$query_string :
-            require __DIR__ . '/controller/client/clients.php';
-            break; 
-        case '/client/project/add/?'.$query_string :
-            require __DIR__ . '/controller/project/create.php';
-            break;
-         case '/client/project/task?'.$query_string :
-            require __DIR__ . '/controller/task/create.php';
-            break;
-       
-        case '/client/project/task/?'.$query_string :
-            require __DIR__ . '/controller/task/profile.php';
-            break;
-        case '/client/?'.$query_string :
-            require __DIR__ . '/controller/client/profile.php';
-            break;
-        case '/employee/login' :
-            require __DIR__ . '/controller/user/login.php';
-            break;
-        case '/employee/logout' :
-            require __DIR__ . '/controller/user/logout.php';
-            break;
         case '/employee?'.$query_string :
-            require __DIR__ . '/controller/user/tasks.php';
+            $user->userTasks();
             break;   
 
         case '/employee/task?'.$query_string :
-            require __DIR__ . '/controller/user/posts.php';
+            $user->userTaskPosts();
+            break;
+
+        case '/users' :
+            $user->allUsers();
+            break;
+
+        case '/delete.php?'.$query_string :
+            $user->deleteUser();
+            break; 
+
+        case '/user/update/?'.$query_string :
+            $user->updateUser();
+            break; 
+
+        case '/user/profile/?'.$query_string :
+            $user->userProfile();
+            break;
+
+        case '/employee/logout' :
+            $user->logoutUser();
+            break;
+
+        case '/user/added' :
+            $user->createUser();
+            break; 
+
+        case '/users/page/delete.php?'.$query_string :
+            $user->deleteUser();
+            break; 
+
+        case '/users/page/?'.$query_string :
+            $user->allUsers();
+            break; 
+
+	    case '/user/create' :
+	        $user->createUser();
+	        break;
+
+        case '/user/add' :
+            $user->createUser();
             break;
 
         case '/employee/post/submit' :
-            require __DIR__ . '/controller/user/posts.php';
-            break; 
-        case '/employee/post/sub' :
-            require __DIR__ . '/controller/task/profile.php';
-            break; 
-        case '/user/added' :
-            require __DIR__ . '/controller/user/create.php';
+            $user->userTaskPosts();
             break; 
 
-        case '/admin' :
-            require __DIR__ . '/view/home.php';
+
+        // client controller    
+
+        case '/clients' :
+            $client->allClients();
+            break;
+
+        case '/client/create' :
+            $client->createClient();
+            break;
+
+        case '/client/?'.$query_string :
+            $client->clientProfile();
+            break;
+
+        case '/clients/page/?'.$query_string :
+            $client->allClients();
             break; 
+
+        
+        // project controller 
+
+        case '/client/project/add/?'.$query_string :
+            $project->createProject();
+            break; 
+
         case '/projects' :
-            require __DIR__ . '/controller/project/projects.php';
+            $project->allProjects();
             break; 
+
+           
+        // task controller 
+    
+         case '/client/project/task?'.$query_string :
+            $task->createTask();
+            break;
+
+        case '/client/project/task/?'.$query_string :
+            $task->viewTask();
+            break;
+
+        case '/employee/post/sub' :
+            $task->viewTask();
+            break; 
+
+
+        //  default action on error url
+        
 	    default:
 	        require __DIR__ . '/view/error.php';
 	        break;
