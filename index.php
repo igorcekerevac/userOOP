@@ -1,45 +1,47 @@
 <?php
-    
-    include_once('controller/ClientController.php');
-    include_once('controller/ProjectController.php');
-    include_once('controller/TaskController.php');
-    include_once('controller/UserController.php');
 
-    $user = new UserController();
-    $project = new ProjectController();
-    $client = new ClientController();
-    $task = new TaskController();
 
-	$request = $_SERVER['REQUEST_URI'];
+    spl_autoload_register(function ($class)
+    {
+        include $_SERVER['DOCUMENT_ROOT'] . '/' . str_replace('\\', '/', $class) . '.php';
+    });
+
+
+    $user = new controller\UserController();
+    $project = new controller\ProjectController();
+    $client = new controller\ClientController();
+    $task = new controller\TaskController();
+
+    $request = $_SERVER['REQUEST_URI'];
     $query_string = $_SERVER['QUERY_STRING'];
 
-	
+
     switch ($request) {
 
-        // user controller  
+        // user controller
 
 
         case '/admin' :
             $user->adminHome();
-            break; 
+            break;
 
-	    case '/' :
-	        $user->createUser();
-	        break;
+        case '/' :
+            $user->createUser();
+            break;
 
-	    case '' :
-	        $user->createUser();
-	        break; 
+        case '' :
+            $user->createUser();
+            break;
 
         case '/employee/login' :
             $user->loginUser();
             break;
 
-        case '/employee?'.$query_string :
+        case '/employee?' . $query_string :
             $user->userTasks();
-            break;   
+            break;
 
-        case '/employee/task?'.$query_string :
+        case '/employee/task?' . $query_string :
             $user->userTaskPosts();
             break;
 
@@ -47,15 +49,15 @@
             $user->allUsers();
             break;
 
-        case '/delete.php?'.$query_string :
+        case '/delete.php?' . $query_string :
             $user->deleteUser();
-            break; 
+            break;
 
-        case '/user/update/?'.$query_string :
+        case '/user/update/?' . $query_string :
             $user->updateUser();
-            break; 
+            break;
 
-        case '/user/profile/?'.$query_string :
+        case '/user/profile/?' . $query_string :
             $user->userProfile();
             break;
 
@@ -65,19 +67,19 @@
 
         case '/user/added' :
             $user->createUser();
-            break; 
+            break;
 
-        case '/users/page/delete.php?'.$query_string :
+        case '/users/page/delete.php?' . $query_string :
             $user->deleteUser();
-            break; 
+            break;
 
-        case '/users/page/?'.$query_string :
+        case '/users/page/?' . $query_string :
             $user->allUsers();
-            break; 
+            break;
 
-	    case '/user/create' :
-	        $user->createUser();
-	        break;
+        case '/user/create' :
+            $user->createUser();
+            break;
 
         case '/user/add' :
             $user->createUser();
@@ -85,10 +87,10 @@
 
         case '/employee/post/submit' :
             $user->userTaskPosts();
-            break; 
+            break;
 
 
-        // client controller    
+        // client controller
 
         case '/clients' :
             $client->allClients();
@@ -98,46 +100,46 @@
             $client->createClient();
             break;
 
-        case '/client/?'.$query_string :
+        case '/client/?' . $query_string :
             $client->clientProfile();
             break;
 
-        case '/clients/page/?'.$query_string :
+        case '/clients/page/?' . $query_string :
             $client->allClients();
-            break; 
+            break;
 
-        
-        // project controller 
 
-        case '/client/project/add/?'.$query_string :
+        // project controller
+
+        case '/client/project/add/?' . $query_string :
             $project->createProject();
-            break; 
+            break;
 
         case '/projects' :
             $project->allProjects();
-            break; 
+            break;
 
-           
-        // task controller 
-    
-         case '/client/project/task?'.$query_string :
+
+        // task controller
+
+        case '/client/project/task?' . $query_string :
             $task->createTask();
             break;
 
-        case '/client/project/task/?'.$query_string :
+        case '/client/project/task/?' . $query_string :
             $task->viewTask();
             break;
 
         case '/employee/post/sub' :
             $task->viewTask();
-            break; 
+            break;
 
 
         //  default action on error url
-        
-	    default:
-	        require __DIR__ . '/view/error.php';
-	        break;
 
-	    }
+        default:
+            require __DIR__ . '/view/error.php';
+            break;
+
+    }
 

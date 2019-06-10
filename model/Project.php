@@ -1,5 +1,8 @@
 <?php
 
+namespace model;
+use db;
+
 class Project 
 {
 
@@ -9,8 +12,11 @@ class Project
 	public $name;
  
 
-	function __construct($db) {
-		$this->db_conn = $db;
+	function __construct() {
+
+        $conn = new db\Db();
+        $db = $conn->get_connected();
+        $this->db_conn = $db;
 	}
  
 
@@ -42,7 +48,7 @@ class Project
         $prep_state = $this->db_conn->prepare($sql);
         $prep_state->execute();
 
-        return $prep_state->fetchAll(PDO::FETCH_ASSOC);
+        return $prep_state->fetchAll(\PDO::FETCH_ASSOC);
     }
 
 
@@ -60,7 +66,7 @@ class Project
         $prep_state = $this->db_conn->prepare($sql);
         $prep_state->execute();
 
-        return $prep_state->fetchAll(PDO::FETCH_ASSOC);
+        return $prep_state->fetchAll(\PDO::FETCH_ASSOC);
     }
 
 
@@ -71,7 +77,7 @@ class Project
         $prep_state = $this->db_conn->prepare($sql);
         $prep_state->execute();
 
-        $project = $prep_state->fetch(PDO::FETCH_ASSOC);
+        $project = $prep_state->fetch(\PDO::FETCH_ASSOC);
 
         $this->name = $project['name'];
     }    
@@ -84,7 +90,7 @@ class Project
         $prep_state = $this->db_conn->prepare($sql);
         $prep_state->execute();
 
-        $project = $prep_state->fetchAll(PDO::FETCH_ASSOC);
+        $project = $prep_state->fetchAll(\PDO::FETCH_ASSOC);
 
         return $project;
     }   
@@ -97,7 +103,7 @@ class Project
         $prep_state = $this->db_conn->prepare($sql);
         $prep_state->execute();
 
-        return $prep_state->fetchAll(PDO::FETCH_ASSOC);
+        return $prep_state->fetchAll(\PDO::FETCH_ASSOC);
     }
    
 }

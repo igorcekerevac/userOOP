@@ -1,5 +1,9 @@
 <?php
 
+namespace model;
+use db;
+
+
 class User 
 {
 
@@ -7,41 +11,52 @@ class User
 	public $table_name = "user";
 
 	public $name;
-	public $age;
-	public $email;
+	public $job;
+    public $password;
+    public $email;
     public $user_id;
  
 
-	function __construct($db) {
+	function __construct() {
+
+	    $conn = new db\Db();
+	    $db = $conn->get_connected();
 		$this->db_conn = $db;
 	}
  
 
     public function create()
     {
-        $sql = "INSERT INTO " . $this->table_name . " SET name = ?, age = ?, email = ?";
+        $sql = "INSERT INTO " . $this->table_name . " SET name = ?, password = ?, email = ?, job = ?";
 
         $prep_state = $this->db_conn->prepare($sql);
 
         $prep_state->bindParam(1, $this->name);
-        $prep_state->bindParam(2, $this->age);
+        $prep_state->bindParam(2, $this->password);
         $prep_state->bindParam(3, $this->email);
+        $prep_state->bindParam(4, $this->job);
 
-        $prep_state->execute();
+        $hash = password_hash($this->password, PASSWORD_DEFAULT);
+
+        $prep_state->execute([$this->name, $hash, $this->email, $this->job]);
     }
 
 
-    public function update($id)
+    public function userUpdate($id)
     {
-        $sql = "UPDATE " . $this->table_name . " SET name = :name, age = :age, email = :email WHERE user_id = $id";
+        $sql = "UPDATE " . $this->table_name . " SET name = :name, password = :password, email = :email, job = :job
+         WHERE user_id = $id";
        
         $prep_state = $this->db_conn->prepare($sql);
 
 
         $prep_state->bindParam(':name', $this->name);
-        $prep_state->bindParam(':age', $this->age);
+        $prep_state->bindParam(':password', $this->password);
         $prep_state->bindParam(':email', $this->email);
+        $prep_state->bindParam(':job', $this->job);
+
         $prep_state->execute();
+
     }
 
 
@@ -50,7 +65,12 @@ class User
         $sql = "DELETE FROM " . $this->table_name . " WHERE user_id = $id ";
 
         $prep_state = $this->db_conn->prepare($sql);
-        $prep_state->execute();
+
+        if ($prep_state->execute()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 
@@ -61,7 +81,7 @@ class User
         $prep_state = $this->db_conn->prepare($sql);
         $prep_state->execute();
 
-        return $prep_state->fetchAll(PDO::FETCH_ASSOC);
+        return $prep_state->fetchAll(\PDO::FETCH_ASSOC);
     }
 
 
@@ -72,21 +92,22 @@ class User
         $prep_state = $this->db_conn->prepare($sql);
         $prep_state->execute();
 
-        return $prep_state->fetchAll(PDO::FETCH_ASSOC);
+        return $prep_state->fetchAll(\PDO::FETCH_ASSOC);
     }
     
     public function getUser($id)
     {
-        $sql = "SELECT name, age, email FROM " . $this->table_name . " WHERE user_id = $id";
+        $sql = "SELECT name, password, email, job FROM " . $this->table_name . " WHERE user_id = $id";
 
         $prep_state = $this->db_conn->prepare($sql);
         $prep_state->execute();
 
-        $user = $prep_state->fetch(PDO::FETCH_ASSOC);
+        $user = $prep_state->fetch(\PDO::FETCH_ASSOC);
 
         $this->name = $user['name'];
-        $this->age = $user['age'];
+        $this->password = $user['password'];
         $this->email = $user['email'];
+        $this->job = $user['job'];
     }   
 
     //num of rows, pagination

@@ -1,9 +1,8 @@
 <?php
 
-require_once $_SERVER['DOCUMENT_ROOT'].'/db/initial.php';
-require_once $_SERVER['DOCUMENT_ROOT'].'/functions.php';
-
-Functions::autoload_model();
+namespace controller;
+use model;
+use Functions;
 
 
 class UserController
@@ -12,17 +11,17 @@ class UserController
 
 	public function createUser()
 	{
-		global $db;
 
 		if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-			$user = new User($db);
+
+			$user = new model\User();
 
 			$name = $user->name = trim($_POST['name']);
-			$age = $user->age = trim($_POST['age']);
+			$job = $user->job = trim($_POST['job']);
 			$email = $user->email = trim($_POST['email']);
-
-			$emails = $user->getUserMail();
+            $password = $user->password = trim($_POST['password']);
+            $emails = $user->getUserMail();
 
 			$db_mail_validate = 0;
 
@@ -38,12 +37,12 @@ class UserController
 
 			if ($db_mail_validate==0) {
 				
-				if (!Functions::email_validation($email)) {
+				if (!Functions\Functions::email_validation($email)) {
 
 					$email = '';
 				}
 
-				if (empty($name) || empty($age) || empty($email)) {
+				if (empty($name) || empty($job) || empty($email) || empty($password)) {
 
 					$status = 'Please enter data in all fields!';
 
@@ -51,7 +50,6 @@ class UserController
 
 					$user->create();
 					header("Location:/");
-					$status = 'User added!';
 				}
 			}	
 		}	
@@ -64,22 +62,24 @@ class UserController
 	{
 		session_start();
 
-		global $db;
-
 		if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-			$user = new User($db);
+			$user = new model\User();
 
 			$email = trim($_POST['email']);
+            $password = trim($_POST['password']);
 
-			$users = $user->getUsers();
+
+            $users = $user->getUsers();
 
 			$mail_check = 0;
 
 			foreach ($users as $user) {
 						
-				if ($user['email'] === $email && $user['email'] !== 'admin@gmail.com') {
-					$mail_check = 1;
+				if ($user['email'] === $email && $user['email'] !== 'admin@gmail.com' &&
+                    password_verify($password, $user['password'])) {
+
+				    $mail_check = 1;
 
 					$user_id = $user['user_id'];
 					$user_name = $user['name'];
@@ -89,7 +89,7 @@ class UserController
 
 					header("Location: /employee?id=$user_id");
 
-				} elseif ($user['email'] === 'admin@gmail.com' && $user['email'] === $email) {
+				} elseif ($email === 'admin@gmail.com' && password_verify($password, $user['password'])) {
 					
 					$admin_name = $user['name'];
 					$admin_id = $user['user_id'];
@@ -103,7 +103,7 @@ class UserController
 
 			if ($mail_check == 0) {
 
-					$status ='Entered email address is not in database.';
+					$status ='Entered email or password is not in database.';
 			}
 		}
 
@@ -113,12 +113,10 @@ class UserController
 
     public function userTasks()
 	{
-		Functions::check_user();
+		Functions\Functions::check_user();
 
-		global $db;
-
-		$user = new User($db);
-		$task = new Task($db);
+		$user = new model\User();
+		$task = new model\Task();
 
 		$user_id = $_SESSION['user_id'];
 		$user_name = $_SESSION['name'];
@@ -132,11 +130,9 @@ class UserController
 
     public function userTaskPosts()
 	{
-		Functions::check_user();
+		Functions\Functions::check_user();
 
-		global $db;
-
-		$post = new Post($db);
+		$post = new model\Post();
 
 
 		if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -151,7 +147,7 @@ class UserController
 			$post->title = $title;
 			$post->body = $body;
 			$post->date = $date;
-			$post->user_id = $user_id;
+			$post->users_id = $user_id;
 
 			$post->create_post();
 			header("Location: /employee/task?id=$task_id");
@@ -159,9 +155,9 @@ class UserController
 
 		$task_id = htmlspecialchars($_GET['id']);
 		
-		$project = new Project($db);
+		$project = new model\Project();
 
-		$task = new Task($db);
+		$task = new model\Task();
 		
 		$task->get_task($task_id);
 
@@ -179,13 +175,11 @@ class UserController
 
     public function allUsers()
 	{
-		Functions::check_admin();
-
-		global $db;
+		Functions\Functions::check_admin();
 		
-		$user = new User($db);
+		$user = new model\User();
 
-		$results_per_page = 3;
+		$results_per_page = 4;
 
 	    $numer_of_results = $user->countAll();
 
@@ -230,41 +224,47 @@ class UserController
 
     public function deleteUser()
 	{
-		Functions::check_admin();
-
-		global $db;
+		Functions\Functions::check_admin();
 
 		$delete_id = htmlspecialchars($_GET["id"]);
 			
-		$user = new User($db);
-		$user->delete($delete_id);
+		$user = new model\User();
 
-		header("Location: /users");
+		if ($user->delete($delete_id)) {
+		    $status = 'User deleted.';
+        } else {
+            $status = 'Can not delete! User have active tasks.';
+        }
+
+		$_SESSION['message'] = $status;
+
+        header('Location: ' . $_SERVER['HTTP_REFERER']);
+
     }
 
 
     public function updateUser()
 	{
 		
-		Functions::check_user();
-		global $db;
+		Functions\Functions::check_user();
 
 		if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			
-			$user = new User($db);
+			$user = new model\User();
 
 			$update_id = $_SESSION['user_id'];
 			$name = $user->name =trim($_POST['name']);
-			$age = $user->age = trim($_POST['age']);
+			$job = $user->job = trim($_POST['job']);
 			$email = $user->email = trim($_POST['email']);
+            $password = $user->password = trim($_POST['password']);
 
-			$emails = $user->getUserMail();
+			$all = $user->getUsers();
 
 			$db_mail_validate = 0;
 
-			foreach ($emails as $user_email) {
+			foreach ($all as $users) {
 						
-				if ($user_email['email'] === $email) {
+				if ($users['email'] === $email && $update_id !== $users['user_id']) {
 		
 					$status ='Entered email address alredy occupied!';
 					$db_mail_validate = 1;
@@ -274,20 +274,28 @@ class UserController
 
 			if ($db_mail_validate==0) {
 				
-				if (!Functions::email_validation($email)) {
+				if (!Functions\Functions::email_validation($email)) {
 
 					$email = '';
 				}
 
-				if (empty($name) || empty($age) || empty($email)) {
+				if (empty($name) || empty($job) || empty($email) || empty($password)) {
 
 					$status = 'Please enter data in all fields!';
 
 				} else {
 
-					$user->update($update_id);
+                    $user->password = password_hash($password, PASSWORD_DEFAULT);
+
+                    if ($user->userUpdate($update_id)) {
+                        $status = 'User updated.';
+                    } else {
+                        $status = 'User is not updated.';
+                    }
+
 					$_SESSION['name'] = $name;
-					
+					$_SESSION['message'] = $status;
+
 					header("Location: /user/update/?id=$update_id");
 				}
 			}	
@@ -299,17 +307,16 @@ class UserController
 
     public function userProfile()
 	{
-		Functions::check_user();
-		global $db;
+		Functions\Functions::check_user();
 
-		$user = new User($db);
+		$user = new model\User();
 
 		$find_id = htmlspecialchars($_GET["id"]);
 		
 		$user->getUser($find_id);
 
 		$name = $user->name;
-		$age = $user->age;
+		$job = $user->job;
 		$email = $user->email;
 
 		include $_SERVER['DOCUMENT_ROOT'].'/view/user/profile.php';
@@ -328,7 +335,7 @@ class UserController
 
     public function adminHome()
 	{
-		Functions::check_admin();
+		Functions\Functions::check_admin();
 
 		include $_SERVER['DOCUMENT_ROOT'].'/view/user/home.php';
     }

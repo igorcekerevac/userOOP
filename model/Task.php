@@ -1,5 +1,8 @@
 <?php
 
+namespace model;
+use db;
+
 class Task 
 {
 
@@ -11,8 +14,11 @@ class Task
     public $user_id;
  
 
-	function __construct($db) {
-		$this->db_conn = $db;
+	function __construct() {
+
+        $conn = new db\Db();
+        $db = $conn->get_connected();
+        $this->db_conn = $db;
 	}
  
 
@@ -37,7 +43,7 @@ class Task
         $prep_state = $this->db_conn->prepare($sql);
         $prep_state->execute();
 
-        return $prep_state->fetchAll(PDO::FETCH_ASSOC);
+        return $prep_state->fetchAll(\PDO::FETCH_ASSOC);
     }
 
 
@@ -48,7 +54,7 @@ class Task
         $prep_state = $this->db_conn->prepare($sql);
         $prep_state->execute();
 
-        $task = $prep_state->fetch(PDO::FETCH_ASSOC);
+        $task = $prep_state->fetch(\PDO::FETCH_ASSOC);
 
         $this->name = $task['name'];
         $this->project_id = $task['project_id'];
@@ -62,7 +68,7 @@ class Task
         $prep_state = $this->db_conn->prepare($sql);
         $prep_state->execute();
 
-        return $prep_state->fetchAll(PDO::FETCH_ASSOC);
+        return $prep_state->fetchAll(\PDO::FETCH_ASSOC);
     }     
 
 }

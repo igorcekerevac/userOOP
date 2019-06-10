@@ -1,5 +1,9 @@
 <?php
 
+namespace model;
+use db;
+
+
 class Client 
 {
 
@@ -9,9 +13,11 @@ class Client
 	public $name;
  
 
-	function __construct($db) 
+	function __construct()
     {
-		$this->db_conn = $db;
+        $conn = new db\Db();
+        $db = $conn->get_connected();
+        $this->db_conn = $db;
 	}
  
 
@@ -55,7 +61,7 @@ class Client
         $prep_state = $this->db_conn->prepare($sql);
         $prep_state->execute();
 
-        return $prep_state->fetchAll(PDO::FETCH_ASSOC);
+        return $prep_state->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     
@@ -66,7 +72,7 @@ class Client
         $prep_state = $this->db_conn->prepare($sql);
         $prep_state->execute();
 
-        $client = $prep_state->fetch(PDO::FETCH_ASSOC);
+        $client = $prep_state->fetch(\PDO::FETCH_ASSOC);
 
         $this->name = $client['name'];
     }    
@@ -103,7 +109,7 @@ class Client
         $prep_state = $this->db_conn->prepare($sql);
         $prep_state->execute();
 
-        return $prep_state->fetchAll(PDO::FETCH_ASSOC);
+        return $prep_state->fetchAll(\PDO::FETCH_ASSOC);
     }
     
 }

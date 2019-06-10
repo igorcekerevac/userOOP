@@ -1,23 +1,21 @@
 <?php
 
-require_once $_SERVER['DOCUMENT_ROOT'].'/db/initial.php';
-require_once $_SERVER['DOCUMENT_ROOT'].'/functions.php';
-
-Functions::autoload_model();
+namespace controller;
+use model;
+use Functions;
 
 
 class ProjectController
 {
 
 	public function createProject()
-	{
-		Functions::check_admin();
+    {
+        Functions\Functions::check_admin();
 
-		global $db;
 
 		if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-			$project = new Project($db);
+			$project = new model\Project();
 
 			$name = $project->name = trim($_POST['name']);
 
@@ -56,11 +54,10 @@ class ProjectController
 
     public function allProjects()
 	{
-		Functions::check_admin();
+		Functions\Functions::check_admin();
 
-		global $db;
 
-		$project = new Project($db);
+		$project = new model\Project();
 		$all_projects = $project->get_all_projects_join();
 
 		include $_SERVER['DOCUMENT_ROOT'].'/view/project/all_projects.php';

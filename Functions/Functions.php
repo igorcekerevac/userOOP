@@ -1,5 +1,8 @@
 <?php
 
+namespace Functions;
+
+
 class Functions
 {
 	
@@ -38,15 +41,6 @@ class Functions
 			
 			header("Location: /employee/login");
 		}
-	}
-
-
-	public static function autoload_model()
-	{
-		spl_autoload_register(function ($class) 
-		{
-   		  include 'model/' . $class . '.php';
-		});
 	}
 
 }

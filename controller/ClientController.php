@@ -1,9 +1,9 @@
 <?php
 
-require_once $_SERVER['DOCUMENT_ROOT'].'/db/initial.php';
-require_once $_SERVER['DOCUMENT_ROOT'].'/functions.php';
+namespace controller;
+use model;
+use Functions;
 
-Functions::autoload_model();
 
 
 class ClientController
@@ -11,10 +11,9 @@ class ClientController
 
 	public function allClients()
 	{
-		Functions::check_admin();
+		Functions\Functions::check_admin();
 
-		global $db;
-		$client = new Client($db);
+		$client = new model\Client();
 
 		$results_per_page = 3;
 
@@ -44,13 +43,12 @@ class ClientController
 
     public function createClient()
     {
-		Functions::check_admin();
+		Functions\Functions::check_admin();
 
-		global $db;
 
 		if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-			$client = new Client($db);
+			$client = new model\Client();
 			$name = $client->name = trim($_POST['name']);
 			$names = $client->get_client_name();	
 			$db_name_validate = 0;
@@ -84,11 +82,10 @@ class ClientController
 
     public function clientProfile()
     {
-		Functions::check_admin();
+		Functions\Functions::check_admin();
 
-		global $db;
-		$client = new Client($db);
-		$project = new Project($db);
+		$client = new model\Client();
+		$project = new model\Project();
 
 		$find_id = htmlspecialchars($_GET["id"]);
 		

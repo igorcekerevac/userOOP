@@ -30,6 +30,11 @@
 				<td><input type="text" name="email" value=""></td>
 			</tr>
 
+            <tr>
+                <td>password</td>
+                <td><input type="password" name="password" value=""></td>
+            </tr>
+
 			<tr>
 				<td></td>
 				<td><input id="add_btn" type="submit" name="submit" value="login"></td>

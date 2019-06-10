@@ -1,9 +1,8 @@
 <?php
 
-require_once $_SERVER['DOCUMENT_ROOT'].'/db/initial.php';
-require_once $_SERVER['DOCUMENT_ROOT'].'/functions.php';
-
-Functions::autoload_model();
+namespace controller;
+use model;
+use Functions;
 
 
 class TaskController
@@ -11,10 +10,10 @@ class TaskController
 
 	public function createTask()
 	{
-		Functions::check_admin();
+		Functions\Functions::check_admin();
 
 		global $db;
-		$task = new Task($db);
+		$task = new model\Task();
 
 		if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
@@ -33,7 +32,7 @@ class TaskController
 
 		$project_id = $_GET['id'];
 		
-		$user = new User($db);
+		$user = new model\User();
 
 		$all = $user->getUsers();
 
@@ -48,7 +47,7 @@ class TaskController
 			}
 		}
 
-		$project = new Project($db);
+		$project = new model\Project();
 
 		$project->get_project($project_id);
 		$name = $project->name;
@@ -63,10 +62,10 @@ class TaskController
 
     public function viewTask()
 	{
-		Functions::check_admin();
+		Functions\Functions::check_admin();
 
 		global $db;
-		$post = new Post($db);
+		$post = new model\Post($db);
 
 		if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
@@ -80,7 +79,7 @@ class TaskController
 			$post->title = $title;
 			$post->body = $body;
 			$post->date = $date;
-			$post->user_id = $user_id;
+			$post->users_id = $user_id;
 
 			$post->create_post();
 
@@ -90,7 +89,7 @@ class TaskController
 
 		$task_id = htmlspecialchars($_GET["id"]);
 
-		$task = new Task($db);
+		$task = new model\Task($db);
 
 		$task->get_task($task_id);
 
@@ -98,7 +97,7 @@ class TaskController
 		$user_id = $task->user_id;
 
 
-		$post = new Post($db);
+		$post = new model\Post($db);
 		$all_posts = $post->get_all_posts($task_id);
 
 		include $_SERVER['DOCUMENT_ROOT'].'/view/task/task.php';

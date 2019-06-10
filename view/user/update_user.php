@@ -1,41 +1,51 @@
-<?php require 'view/include/header_user.php'; ?>
+<?php require 'view/include/header_user.php';?>
 
 	
 
 	<div id="update_form">
 
+
 		<h1 id="update_h1">UPDATE</h1>
 
+        <?php
+
+
+        if (isset($status)) {
+
+            echo '<p id="status">'.$status.'</p>';
+            echo $_SESSION['message'];
+
+        } else {
+
+            echo '<p id="status"> &nbsp </p>';
+
+        }
+
+        ?>
+
 		<form action="" method="post">
-
-			<?php 
-
-			if (isset($status)) {
-
-				echo '<p id="status">'.$status.'</p>';
-				
-			} else {
-
-				echo '<p id="status"> &nbsp </p>';
-
-			} ?>
 
 			<table>
 
 			<tr> 
 				<td>name</td>
-				<td><input type="text" name="name" value="<?php echo Functions::data_typed('name'); ?>"></td>
+				<td><input type="text" name="name" value="<?php echo Functions\Functions::data_typed('name'); ?>"></td>
 			</tr>
 			
 			<tr> 
-				<td>age</td>	
-				<td><input type="text" name="age" value="<?php echo Functions::data_typed('age'); ?>"></td>
+				<td>job</td>
+				<td><input type="text" name="job" value="<?php echo Functions\Functions::data_typed('job'); ?>"></td>
 			</tr>
 			
 			<tr> 
 				<td>email</td>
-				<td><input type="text" name="email" value="<?php echo Functions::data_typed('email'); ?>"></td>
+				<td><input type="text" name="email" value="<?php echo Functions\Functions::data_typed('email'); ?>"></td>
 			</tr>
+
+                <tr>
+                    <td>password</td>
+                    <td><input type="password" name="password" value="<?php echo Functions\Functions::data_typed('password'); ?>"></td>
+                </tr>
 
 			<tr> 
 				<td></td>

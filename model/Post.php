@@ -1,5 +1,8 @@
 <?php
 
+namespace model;
+use db;
+
 class Post 
 {
 
@@ -10,18 +13,20 @@ class Post
     public $body;
     public $date;
     public $task_id;
-    public $user_id;
+    public $users_id;
  
 
-	function __construct($db) 
+	function __construct()
     {
-		$this->db_conn = $db;
+        $conn = new db\Db();
+        $db = $conn->get_connected();
+        $this->db_conn = $db;
 	}
  
 
     public function create_post()
     {
-        $sql = "INSERT INTO " . $this->table_name . " SET title = ?, body = ?, date = ? , task_id = ?, user_id = ?";
+        $sql = "INSERT INTO " . $this->table_name . " SET title = ?, body = ?, date = ? , task_id = ?, users_id = ?";
 
         $prep_state = $this->db_conn->prepare($sql);
 
@@ -29,7 +34,7 @@ class Post
         $prep_state->bindParam(2, $this->body);
         $prep_state->bindParam(3, $this->date);
         $prep_state->bindParam(4, $this->task_id);
-        $prep_state->bindParam(5, $this->user_id);
+        $prep_state->bindParam(5, $this->users_id);
 
         $prep_state->execute();
     }
@@ -42,7 +47,7 @@ class Post
         $prep_state = $this->db_conn->prepare($sql);
         $prep_state->execute();
 
-        return $prep_state->fetchAll(PDO::FETCH_ASSOC);
+        return $prep_state->fetchAll(\PDO::FETCH_ASSOC);
     }
 
 
@@ -53,7 +58,7 @@ class Post
         $prep_state = $this->db_conn->prepare($sql);
         $prep_state->execute();
 
-        $post = $prep_state->fetch(PDO::FETCH_ASSOC);
+        $post = $prep_state->fetch(\PDO::FETCH_ASSOC);
 
         $this->title = $post['title'];
         $this->body = $post['body'];
