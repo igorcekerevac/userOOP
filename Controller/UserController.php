@@ -1,7 +1,7 @@
 <?php
 
-namespace controller;
-use model;
+namespace Controller;
+use Model;
 use Functions;
 
 
@@ -86,6 +86,8 @@ class UserController
 
 					$_SESSION['user_id'] = $user_id;
 					$_SESSION['name'] = $user_name;
+                    $_SESSION['message'] = "message";
+
 
 					header("Location: /employee?id=$user_id");
 
@@ -261,7 +263,6 @@ class UserController
 			$all = $user->getUsers();
 
 			$db_mail_validate = 0;
-
 			foreach ($all as $users) {
 						
 				if ($users['email'] === $email && $update_id !== $users['user_id']) {
@@ -288,13 +289,12 @@ class UserController
                     $user->password = password_hash($password, PASSWORD_DEFAULT);
 
                     if ($user->userUpdate($update_id)) {
-                        $status = 'User updated.';
+                        $_SESSION['message'] = 'User updated.';
                     } else {
-                        $status = 'User is not updated.';
+                        $_SESSION['message'] = 'User is not updated.';
                     }
 
 					$_SESSION['name'] = $name;
-					$_SESSION['message'] = $status;
 
 					header("Location: /user/update/?id=$update_id");
 				}

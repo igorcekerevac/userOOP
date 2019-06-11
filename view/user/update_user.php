@@ -1,6 +1,5 @@
 <?php require 'view/include/header_user.php';?>
 
-	
 
 	<div id="update_form">
 
@@ -13,7 +12,10 @@
         if (isset($status)) {
 
             echo '<p id="status">'.$status.'</p>';
-            echo $_SESSION['message'];
+
+        } elseif ($_SESSION['message'] !== 'message') {
+
+            echo '<p id="status">'.$_SESSION['message'].'</p>';
 
         } else {
 

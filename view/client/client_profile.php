@@ -10,7 +10,8 @@
 
 			foreach($found_projects as $project){
 
-				echo "<strong id='font'>".$project['name'] ."</strong><a style='margin-left: 15px;' id='task_names' href='/client/project/task?id=".$project['project_id']."'>tasks</a><br>";
+				echo "<strong id='font'>".$project['name'] ."</strong><a style='margin-left: 15px;' id='task_names'
+                href='/client/project/task?id=".$project['project_id']."'>tasks</a><br>";
 			}
 
 		} else {

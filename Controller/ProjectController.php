@@ -1,7 +1,7 @@
 <?php
 
-namespace controller;
-use model;
+namespace Controller;
+use Model;
 use Functions;
 
 

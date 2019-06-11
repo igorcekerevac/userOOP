@@ -29,13 +29,18 @@
 		</table>
 		
 		<input type="hidden" name="project_id" value= "<?php echo htmlspecialchars($_GET["id"]); ?>"/><br>
-		<input id="add_btn" style="float: none;" type="submit" name="submit" value="add task">
+		<input id="add_btn" style="float: left; " type="submit" name="submit" value="add task">
 
-	</form><br>
+	</form>
+
+
+    <input id="add_btn" style="float: left; width: 115px; margin-left: 15px;" type="submit" value="back to client"
+           onclick="location.href = '/client/?id=<?php echo $client_id; ?>';"></input><br><br><br>
 
 	<h2>ALL TASKS</h2>
 
 	<?php
+
 
 		if (!empty($all_tasks)) {
 		

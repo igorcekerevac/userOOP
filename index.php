@@ -7,18 +7,20 @@
     });
 
 
-    $user = new controller\UserController();
-    $project = new controller\ProjectController();
-    $client = new controller\ClientController();
-    $task = new controller\TaskController();
+    $user = new Controller\UserController();
+    $project = new Controller\ProjectController();
+    $client = new Controller\ClientController();
+    $task = new Controller\TaskController();
 
-    $request = $_SERVER['REQUEST_URI'];
-    $query_string = $_SERVER['QUERY_STRING'];
+    if(isset($_SERVER['REDIRECT_URL']))
+        $request = $_SERVER['REDIRECT_URL'];
+    else $request='';
+
 
 
     switch ($request) {
 
-        // user controller
+        // user Controller
 
 
         case '/admin' :
@@ -37,11 +39,11 @@
             $user->loginUser();
             break;
 
-        case '/employee?' . $query_string :
+        case '/employee':
             $user->userTasks();
             break;
 
-        case '/employee/task?' . $query_string :
+        case '/employee/task':
             $user->userTaskPosts();
             break;
 
@@ -49,15 +51,15 @@
             $user->allUsers();
             break;
 
-        case '/delete.php?' . $query_string :
+        case '/delete' :
             $user->deleteUser();
             break;
 
-        case '/user/update/?' . $query_string :
+        case '/user/update/' :
             $user->updateUser();
             break;
 
-        case '/user/profile/?' . $query_string :
+        case '/user/profile/' :
             $user->userProfile();
             break;
 
@@ -69,11 +71,11 @@
             $user->createUser();
             break;
 
-        case '/users/page/delete.php?' . $query_string :
+        case '/users/page/delete' :
             $user->deleteUser();
             break;
 
-        case '/users/page/?' . $query_string :
+        case '/users/page/' :
             $user->allUsers();
             break;
 
@@ -90,7 +92,7 @@
             break;
 
 
-        // client controller
+        // client Controller
 
         case '/clients' :
             $client->allClients();
@@ -100,18 +102,18 @@
             $client->createClient();
             break;
 
-        case '/client/?' . $query_string :
+        case '/client/' :
             $client->clientProfile();
             break;
 
-        case '/clients/page/?' . $query_string :
+        case '/clients/page/' :
             $client->allClients();
             break;
 
 
-        // project controller
+        // project Controller
 
-        case '/client/project/add/?' . $query_string :
+        case '/client/project/add/' :
             $project->createProject();
             break;
 
@@ -120,13 +122,13 @@
             break;
 
 
-        // task controller
+        // task Controller
 
-        case '/client/project/task?' . $query_string :
+        case '/client/project/task' :
             $task->createTask();
             break;
 
-        case '/client/project/task/?' . $query_string :
+        case '/client/project/task/':
             $task->viewTask();
             break;
 

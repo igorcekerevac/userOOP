@@ -1,7 +1,7 @@
 <?php
 
-namespace model;
-use db;
+namespace Model;
+use Db;
 
 class Task 
 {
@@ -69,7 +69,22 @@ class Task
         $prep_state->execute();
 
         return $prep_state->fetchAll(\PDO::FETCH_ASSOC);
-    }     
+    }
+
+    public function get_client_id($id)
+    {
+        $sql = "SELECT client.client_id from
+            client
+                 RIGHT JOIN
+            project ON client.client_id=project.client_id
+            where project_id = $id";
+
+        $prep_state = $this->db_conn->prepare($sql);
+        $prep_state->execute();
+
+        $client_id = $prep_state->fetch(\PDO::FETCH_ASSOC);
+        return $client_id;
+    }
 
 }
 

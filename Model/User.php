@@ -1,7 +1,7 @@
 <?php
 
-namespace model;
-use db;
+namespace Model;
+use Db;
 
 
 class User 
@@ -55,7 +55,11 @@ class User
         $prep_state->bindParam(':email', $this->email);
         $prep_state->bindParam(':job', $this->job);
 
-        $prep_state->execute();
+        if ($prep_state->execute()) {
+            return true;
+        } else {
+            return false;
+        }
 
     }
 

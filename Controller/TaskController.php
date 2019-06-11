@@ -1,7 +1,7 @@
 <?php
 
-namespace controller;
-use model;
+namespace Controller;
+use Model;
 use Functions;
 
 
@@ -12,7 +12,6 @@ class TaskController
 	{
 		Functions\Functions::check_admin();
 
-		global $db;
 		$task = new model\Task();
 
 		if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -54,6 +53,9 @@ class TaskController
 
 		$all_tasks = $task->get_all_tasks($project_id);
 
+        $client = $task->get_client_id($project_id);
+        $client_id = $client['client_id'];
+
 
 		include $_SERVER['DOCUMENT_ROOT'].'/view/task/add_task.php';
 
@@ -64,8 +66,7 @@ class TaskController
 	{
 		Functions\Functions::check_admin();
 
-		global $db;
-		$post = new model\Post($db);
+		$post = new model\Post();
 
 		if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
@@ -89,7 +90,7 @@ class TaskController
 
 		$task_id = htmlspecialchars($_GET["id"]);
 
-		$task = new model\Task($db);
+		$task = new model\Task();
 
 		$task->get_task($task_id);
 
@@ -97,7 +98,7 @@ class TaskController
 		$user_id = $task->user_id;
 
 
-		$post = new model\Post($db);
+		$post = new model\Post();
 		$all_posts = $post->get_all_posts($task_id);
 
 		include $_SERVER['DOCUMENT_ROOT'].'/view/task/task.php';

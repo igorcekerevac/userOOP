@@ -1,7 +1,7 @@
 <?php
 
-namespace model;
-use db;
+namespace Model;
+use Db;
 
 class Post 
 {
