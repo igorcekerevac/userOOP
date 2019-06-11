@@ -1,8 +1,12 @@
 <?php
 
 namespace Controller;
-use Model;
-use Functions;
+
+use Model\Task;
+use Model\Project;
+use Model\User;
+use Model\Post;
+use Functions\Functions;
 
 
 class UserController
@@ -15,7 +19,7 @@ class UserController
 		if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 
-			$user = new model\User();
+			$user = new User();
 
 			$name = $user->name = trim($_POST['name']);
 			$job = $user->job = trim($_POST['job']);
@@ -37,7 +41,7 @@ class UserController
 
 			if ($db_mail_validate==0) {
 				
-				if (!Functions\Functions::email_validation($email)) {
+				if (!Functions::email_validation($email)) {
 
 					$email = '';
 				}
@@ -64,7 +68,7 @@ class UserController
 
 		if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-			$user = new model\User();
+			$user = new User();
 
 			$email = trim($_POST['email']);
             $password = trim($_POST['password']);
@@ -115,10 +119,10 @@ class UserController
 
     public function user_tasks()
 	{
-		Functions\Functions::check_user();
+		Functions::check_user();
 
-		$user = new model\User();
-		$task = new model\Task();
+		$user = new User();
+		$task = new Task();
 
 		$user_id = $_SESSION['user_id'];
 		$user_name = $_SESSION['name'];
@@ -132,9 +136,9 @@ class UserController
 
     public function user_task_post()
 	{
-		Functions\Functions::check_user();
+		Functions::check_user();
 
-		$post = new model\Post();
+		$post = new Post();
 
 
 		if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -157,9 +161,9 @@ class UserController
 
 		$task_id = htmlspecialchars($_GET['id']);
 		
-		$project = new model\Project();
+		$project = new Project();
 
-		$task = new model\Task();
+		$task = new Task();
 		
 		$task->get_task($task_id);
 
@@ -177,9 +181,9 @@ class UserController
 
     public function all_users()
 	{
-		Functions\Functions::check_admin();
+		Functions::check_admin();
 		
-		$user = new model\User();
+		$user = new User();
 
 		$results_per_page = 4;
 
@@ -226,11 +230,11 @@ class UserController
 
     public function delete_user()
 	{
-		Functions\Functions::check_admin();
+		Functions::check_admin();
 
 		$delete_id = htmlspecialchars($_GET["id"]);
 			
-		$user = new model\User();
+		$user = new User();
 
 		if ($user->delete($delete_id)) {
 		    $status = 'User deleted.';
@@ -248,11 +252,11 @@ class UserController
     public function update_user()
 	{
 		
-		Functions\Functions::check_user();
+		Functions::check_user();
 
 		if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			
-			$user = new model\User();
+			$user = new User();
 
 			$update_id = $_SESSION['user_id'];
 			$name = $user->name =trim($_POST['name']);
@@ -275,7 +279,7 @@ class UserController
 
 			if ($db_mail_validate==0) {
 				
-				if (!Functions\Functions::email_validation($email)) {
+				if (!Functions::email_validation($email)) {
 
 					$email = '';
 				}
@@ -307,9 +311,9 @@ class UserController
 
     public function user_profile()
 	{
-		Functions\Functions::check_user();
+		Functions::check_user();
 
-		$user = new model\User();
+		$user = new User();
 
 		$find_id = htmlspecialchars($_GET["id"]);
 		
@@ -335,7 +339,7 @@ class UserController
 
     public function admin_home()
 	{
-		Functions\Functions::check_admin();
+		Functions::check_admin();
 
 		include $_SERVER['DOCUMENT_ROOT'].'/view/user/home.php';
     }

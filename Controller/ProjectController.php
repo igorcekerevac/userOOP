@@ -1,8 +1,9 @@
 <?php
 
 namespace Controller;
-use Model;
-use Functions;
+
+use Model\Project;
+use Functions\Functions;
 
 
 class ProjectController
@@ -10,12 +11,12 @@ class ProjectController
 
 	public function create_project()
     {
-        Functions\Functions::check_admin();
+        Functions::check_admin();
 
 
 		if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-			$project = new model\Project();
+			$project = new Project();
 
 			$name = $project->name = trim($_POST['name']);
 
@@ -54,10 +55,10 @@ class ProjectController
 
     public function all_projects()
 	{
-		Functions\Functions::check_admin();
+		Functions::check_admin();
 
 
-		$project = new model\Project();
+		$project = new Project();
 		$all_projects = $project->get_all_projects_join();
 
 		include $_SERVER['DOCUMENT_ROOT'].'/view/project/all_projects.php';

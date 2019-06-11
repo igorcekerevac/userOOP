@@ -1,8 +1,10 @@
 <?php
 
 namespace Controller;
-use Model;
-use Functions;
+
+use Model\Client;
+use Model\Project;
+use Functions\Functions;
 
 
 
@@ -11,9 +13,9 @@ class ClientController
 
 	public function all_clients()
 	{
-		Functions\Functions::check_admin();
+		Functions::check_admin();
 
-		$client = new model\Client();
+		$client = new Client();
 
 		$results_per_page = 3;
 
@@ -43,12 +45,12 @@ class ClientController
 
     public function create_client()
     {
-		Functions\Functions::check_admin();
+		Functions::check_admin();
 
 
 		if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-			$client = new model\Client();
+			$client = new Client();
 			$name = $client->name = trim($_POST['name']);
 			$names = $client->get_client_name();	
 			$db_name_validate = 0;
@@ -82,10 +84,10 @@ class ClientController
 
     public function client_profile()
     {
-		Functions\Functions::check_admin();
+		Functions::check_admin();
 
-		$client = new model\Client();
-		$project = new model\Project();
+		$client = new Client();
+		$project = new Project();
 
 		$find_id = htmlspecialchars($_GET["id"]);
 		

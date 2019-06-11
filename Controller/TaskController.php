@@ -1,8 +1,12 @@
 <?php
 
 namespace Controller;
-use Model;
-use Functions;
+
+use Model\Task;
+use Model\Project;
+use Model\User;
+use Model\Post;
+use Functions\Functions;
 
 
 class TaskController
@@ -10,9 +14,9 @@ class TaskController
 
 	public function create_task()
 	{
-		Functions\Functions::check_admin();
+		Functions::check_admin();
 
-		$task = new model\Task();
+		$task = new Task();
 
 		if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
@@ -31,7 +35,7 @@ class TaskController
 
 		$project_id = $_GET['id'];
 		
-		$user = new model\User();
+		$user = new User();
 
 		$all = $user->get_all_users();
 
@@ -46,7 +50,7 @@ class TaskController
 			}
 		}
 
-		$project = new model\Project();
+		$project = new Project();
 
 		$project->get_project($project_id);
 		$name = $project->name;
@@ -64,9 +68,9 @@ class TaskController
 
     public function view_task()
 	{
-		Functions\Functions::check_admin();
+		Functions::check_admin();
 
-		$post = new model\Post();
+		$post = new Post();
 
 		if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
@@ -90,7 +94,7 @@ class TaskController
 
 		$task_id = htmlspecialchars($_GET["id"]);
 
-		$task = new model\Task();
+		$task = new Task();
 
 		$task->get_task($task_id);
 
@@ -98,7 +102,7 @@ class TaskController
 		$user_id = $task->user_id;
 
 
-		$post = new model\Post();
+		$post = new Post();
 		$all_posts = $post->get_all_posts($task_id);
 
 		include $_SERVER['DOCUMENT_ROOT'].'/view/task/task.php';
