@@ -86,5 +86,19 @@ class Task
         return $client_id;
     }
 
+
+    public function delete($id)
+    {
+        $sql = "DELETE FROM " . $this->table_name . " WHERE task_id = $id ";
+
+        $prep_state = $this->db_conn->prepare($sql);
+
+        if ($prep_state->execute()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }
 

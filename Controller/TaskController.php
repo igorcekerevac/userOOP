@@ -110,4 +110,19 @@ class TaskController
     }
 
 
+    public function delete_task()
+    {
+        Functions::check_admin();
+
+        $task_id = htmlspecialchars($_GET["id"]);
+
+        $task = new Task();
+
+        $task->delete($task_id);
+
+        header('Location: ' . $_SERVER['HTTP_REFERER']);
+
+    }
+
+
 }

@@ -137,6 +137,10 @@
             $task->view_task();
             break;
 
+        case '/delete/task' :
+            $task->delete_task();
+            break;
+
 
         //  default action on error url
 
