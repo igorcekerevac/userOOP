@@ -9,7 +9,7 @@ use Functions;
 class ClientController
 {
 
-	public function allClients()
+	public function all_clients()
 	{
 		Functions\Functions::check_admin();
 
@@ -17,7 +17,7 @@ class ClientController
 
 		$results_per_page = 3;
 
-	    $numer_of_results = $client->countAll();
+	    $numer_of_results = $client->count_all();
 
 		$number_of_pages = ceil($numer_of_results/$results_per_page);
 
@@ -31,7 +31,7 @@ class ClientController
 
 	    $this_page_first_result = ($page-1)*$results_per_page;
 
-		$all_clients = $client->getAllClients($this_page_first_result,$results_per_page);
+		$all_clients = $client->get_all_clients_pagination($this_page_first_result,$results_per_page);
 
 		include $_SERVER['DOCUMENT_ROOT'].'/view/client/client.php';
 
@@ -41,7 +41,7 @@ class ClientController
     }
 
 
-    public function createClient()
+    public function create_client()
     {
 		Functions\Functions::check_admin();
 
@@ -80,7 +80,7 @@ class ClientController
     }
 
 
-    public function clientProfile()
+    public function client_profile()
     {
 		Functions\Functions::check_admin();
 

@@ -42,7 +42,7 @@ class User
     }
 
 
-    public function userUpdate($id)
+    public function user_update($id)
     {
         $sql = "UPDATE " . $this->table_name . " SET name = :name, password = :password, email = :email, job = :job
          WHERE user_id = $id";
@@ -78,7 +78,7 @@ class User
     }
 
 
-    public function getUsers()
+    public function get_all_users()
     {
         $sql = "SELECT * FROM user";
 
@@ -89,7 +89,7 @@ class User
     }
 
 
-    public function getUserMail()
+    public function get_user_mail()
     {
         $sql = "SELECT email FROM user";
 
@@ -99,7 +99,7 @@ class User
         return $prep_state->fetchAll(\PDO::FETCH_ASSOC);
     }
     
-    public function getUser($id)
+    public function get_user($id)
     {
         $sql = "SELECT name, password, email, job FROM " . $this->table_name . " WHERE user_id = $id";
 
@@ -115,7 +115,7 @@ class User
     }   
 
     //num of rows, pagination
-    public function countAll()
+    public function count_all_users()
     {
         $sql = "SELECT user_id FROM " . $this->table_name . "";
 
@@ -127,7 +127,7 @@ class User
     }
 
 
-    public function getAllUsers($from_record_num, $records_per_page)
+    public function get_all_users_pagination($from_record_num, $records_per_page)
     {
         $sql = "SELECT * FROM " . $this->table_name . " LIMIT " . $from_record_num . ',' .$records_per_page;
 

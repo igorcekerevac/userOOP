@@ -9,7 +9,7 @@ class UserController
 {
 
 
-	public function createUser()
+	public function create_user()
 	{
 
 		if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -21,7 +21,7 @@ class UserController
 			$job = $user->job = trim($_POST['job']);
 			$email = $user->email = trim($_POST['email']);
             $password = $user->password = trim($_POST['password']);
-            $emails = $user->getUserMail();
+            $emails = $user->get_user_mail();
 
 			$db_mail_validate = 0;
 
@@ -58,7 +58,7 @@ class UserController
     }
 
 
-    public function loginUser()
+    public function login_user()
 	{
 		session_start();
 
@@ -70,7 +70,7 @@ class UserController
             $password = trim($_POST['password']);
 
 
-            $users = $user->getUsers();
+            $users = $user->get_all_users();
 
 			$mail_check = 0;
 
@@ -113,7 +113,7 @@ class UserController
     }
 
 
-    public function userTasks()
+    public function user_tasks()
 	{
 		Functions\Functions::check_user();
 
@@ -130,7 +130,7 @@ class UserController
     }
 
 
-    public function userTaskPosts()
+    public function user_task_post()
 	{
 		Functions\Functions::check_user();
 
@@ -175,7 +175,7 @@ class UserController
     }
 
 
-    public function allUsers()
+    public function all_users()
 	{
 		Functions\Functions::check_admin();
 		
@@ -183,7 +183,7 @@ class UserController
 
 		$results_per_page = 4;
 
-	    $numer_of_results = $user->countAll();
+	    $numer_of_results = $user->count_all_users();
 
 		$number_of_pages = ceil($numer_of_results/$results_per_page);
 
@@ -200,7 +200,7 @@ class UserController
 
 	    $this_page_first_result = ($page-1)*$results_per_page;
 
-		$all = $user->getAllUsers($this_page_first_result,$results_per_page);
+		$all = $user->get_all_users_pagination($this_page_first_result,$results_per_page);
 
 		$all_users = array();
 
@@ -224,7 +224,7 @@ class UserController
     }
 
 
-    public function deleteUser()
+    public function delete_user()
 	{
 		Functions\Functions::check_admin();
 
@@ -245,7 +245,7 @@ class UserController
     }
 
 
-    public function updateUser()
+    public function update_user()
 	{
 		
 		Functions\Functions::check_user();
@@ -260,7 +260,7 @@ class UserController
 			$email = $user->email = trim($_POST['email']);
             $password = $user->password = trim($_POST['password']);
 
-			$all = $user->getUsers();
+			$all = $user->get_all_users();
 
 			$db_mail_validate = 0;
 			foreach ($all as $users) {
@@ -288,7 +288,7 @@ class UserController
 
                     $user->password = password_hash($password, PASSWORD_DEFAULT);
 
-                    if ($user->userUpdate($update_id)) {
+                    if ($user->user_update($update_id)) {
                         $_SESSION['message'] = 'User updated.';
                     } else {
                         $_SESSION['message'] = 'User is not updated.';
@@ -305,7 +305,7 @@ class UserController
     }
 
 
-    public function userProfile()
+    public function user_profile()
 	{
 		Functions\Functions::check_user();
 
@@ -313,7 +313,7 @@ class UserController
 
 		$find_id = htmlspecialchars($_GET["id"]);
 		
-		$user->getUser($find_id);
+		$user->get_user($find_id);
 
 		$name = $user->name;
 		$job = $user->job;
@@ -323,7 +323,7 @@ class UserController
     }
 
 
-    public function logoutUser()
+    public function logout_user()
 	{
 		session_start();
 		session_destroy();
@@ -333,7 +333,7 @@ class UserController
     }
 
 
-    public function adminHome()
+    public function admin_home()
 	{
 		Functions\Functions::check_admin();
 

@@ -78,7 +78,7 @@ class Client
     }    
 
     //num of rows, pagination
-    public function countAll()
+    public function count_all()
     {
         $sql = "SELECT client_id FROM " . $this->table_name . "";
 
@@ -90,7 +90,7 @@ class Client
     }
 
 
-    public function getAllClients($from_record_num, $records_per_page)
+    public function get_all_clients_pagination($from_record_num, $records_per_page)
     {
         $sql = "SELECT * FROM " . $this->table_name . " LIMIT " . $from_record_num . ',' .$records_per_page;
 

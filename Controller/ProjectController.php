@@ -8,7 +8,7 @@ use Functions;
 class ProjectController
 {
 
-	public function createProject()
+	public function create_project()
     {
         Functions\Functions::check_admin();
 
@@ -52,7 +52,7 @@ class ProjectController
 		include $_SERVER['DOCUMENT_ROOT'].'/view/project/add_project.php';	
     }
 
-    public function allProjects()
+    public function all_projects()
 	{
 		Functions\Functions::check_admin();
 

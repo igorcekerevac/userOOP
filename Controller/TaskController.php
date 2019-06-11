@@ -8,7 +8,7 @@ use Functions;
 class TaskController
 {
 
-	public function createTask()
+	public function create_task()
 	{
 		Functions\Functions::check_admin();
 
@@ -33,7 +33,7 @@ class TaskController
 		
 		$user = new model\User();
 
-		$all = $user->getUsers();
+		$all = $user->get_all_users();
 
 		$all_users = array();
 
@@ -62,7 +62,7 @@ class TaskController
     }
 
 
-    public function viewTask()
+    public function view_task()
 	{
 		Functions\Functions::check_admin();
 

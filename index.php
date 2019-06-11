@@ -12,10 +12,11 @@
     $client = new Controller\ClientController();
     $task = new Controller\TaskController();
 
-    if(isset($_SERVER['REDIRECT_URL']))
+    if (isset($_SERVER['REDIRECT_URL'])) {
         $request = $_SERVER['REDIRECT_URL'];
-    else $request='';
-
+    } else {
+        $request='';
+    }
 
 
     switch ($request) {
@@ -24,116 +25,116 @@
 
 
         case '/admin' :
-            $user->adminHome();
+            $user->admin_home();
             break;
 
         case '/' :
-            $user->createUser();
+            $user->create_user();
             break;
 
         case '' :
-            $user->createUser();
+            $user->create_user();
             break;
 
         case '/employee/login' :
-            $user->loginUser();
+            $user->login_user();
             break;
 
         case '/employee':
-            $user->userTasks();
+            $user->user_tasks();
             break;
 
         case '/employee/task':
-            $user->userTaskPosts();
+            $user->user_task_post();
             break;
 
         case '/users' :
-            $user->allUsers();
+            $user->all_users();
             break;
 
         case '/delete' :
-            $user->deleteUser();
+            $user->delete_user();
             break;
 
         case '/user/update/' :
-            $user->updateUser();
+            $user->update_user();
             break;
 
         case '/user/profile/' :
-            $user->userProfile();
+            $user->user_profile();
             break;
 
         case '/employee/logout' :
-            $user->logoutUser();
+            $user->logout_user();
             break;
 
         case '/user/added' :
-            $user->createUser();
+            $user->create_user();
             break;
 
         case '/users/page/delete' :
-            $user->deleteUser();
+            $user->delete_user();
             break;
 
         case '/users/page/' :
-            $user->allUsers();
+            $user->all_users();
             break;
 
         case '/user/create' :
-            $user->createUser();
+            $user->create_user();
             break;
 
         case '/user/add' :
-            $user->createUser();
+            $user->create_user();
             break;
 
         case '/employee/post/submit' :
-            $user->userTaskPosts();
+            $user->user_task_post();
             break;
 
 
         // client Controller
 
         case '/clients' :
-            $client->allClients();
+            $client->all_clients();
             break;
 
         case '/client/create' :
-            $client->createClient();
+            $client->create_client();
             break;
 
         case '/client/' :
-            $client->clientProfile();
+            $client->client_profile();
             break;
 
         case '/clients/page/' :
-            $client->allClients();
+            $client->all_clients();
             break;
 
 
         // project Controller
 
         case '/client/project/add/' :
-            $project->createProject();
+            $project->create_project();
             break;
 
         case '/projects' :
-            $project->allProjects();
+            $project->all_projects();
             break;
 
 
         // task Controller
 
         case '/client/project/task' :
-            $task->createTask();
+            $task->create_task();
             break;
 
         case '/client/project/task/':
-            $task->viewTask();
+            $task->view_task();
             break;
 
         case '/employee/post/sub' :
-            $task->viewTask();
+            $task->view_task();
             break;
 
 
