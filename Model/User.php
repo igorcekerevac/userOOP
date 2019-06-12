@@ -8,7 +8,6 @@ class User
 {
 
 	public $db_conn;
-	public $table_name = "user";
 
 	public $name;
 	public $job;
@@ -26,7 +25,7 @@ class User
 
     public function create()
     {
-        $sql = "INSERT INTO " . $this->table_name . " SET name = ?, password = ?, email = ?, job = ?";
+        $sql = "INSERT INTO user SET name = ?, password = ?, email = ?, job = ?";
 
         $prep_state = $this->db_conn->prepare($sql);
 
@@ -43,8 +42,8 @@ class User
 
     public function user_update($id)
     {
-        $sql = "UPDATE " . $this->table_name . " SET name = :name, password = :password, email = :email, job = :job
-         WHERE user_id = $id";
+        $sql = "UPDATE user SET name = :name, password = :password, email = :email, job = :job
+         WHERE user_id = :id";
        
         $prep_state = $this->db_conn->prepare($sql);
 
@@ -53,6 +52,7 @@ class User
         $prep_state->bindParam(':password', $this->password);
         $prep_state->bindParam(':email', $this->email);
         $prep_state->bindParam(':job', $this->job);
+        $prep_state->bindParam(':id', $id);
 
         if ($prep_state->execute()) {
             return true;
@@ -67,9 +67,10 @@ class User
     {
         $db_conn = Db::get_connected();
 
-        $sql = "DELETE FROM user WHERE user_id = $id ";
+        $sql = "DELETE FROM user WHERE user_id = :id ";
 
         $prep_state = $db_conn->prepare($sql);
+        $prep_state->bindParam(':id', $id);
 
         if ($prep_state->execute()) {
             return true;
@@ -108,9 +109,11 @@ class User
     {
         $db_conn = Db::get_connected();
 
-        $sql = "SELECT name, password, email, job FROM user WHERE user_id = $id";
+        $sql = "SELECT name, password, email, job FROM user WHERE user_id = :id";
 
         $prep_state = $db_conn->prepare($sql);
+        $prep_state->bindParam(':id', $id);
+
         $prep_state->execute();
 
         $user = $prep_state->fetch(\PDO::FETCH_ASSOC);

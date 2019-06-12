@@ -7,7 +7,6 @@ class Post
 {
 
 	public $db_conn;
-	public $table_name = "post";
 
 	public $title;
     public $body;
@@ -25,7 +24,7 @@ class Post
 
     public function create_post()
     {
-        $sql = "INSERT INTO " . $this->table_name . " SET title = ?, body = ?, date = ? , task_id = ?, users_id = ?";
+        $sql = "INSERT INTO post SET title = ?, body = ?, date = ? , task_id = ?, users_id = ?";
 
         $prep_state = $this->db_conn->prepare($sql);
 
@@ -43,9 +42,12 @@ class Post
     {
         $db_conn = Db::get_connected();
 
-        $sql = "SELECT * FROM post where task_id = $task_id ORDER BY date DESC ";
+        $sql = "SELECT * FROM post where task_id = :task_id ORDER BY date DESC ";
 
         $prep_state = $db_conn->prepare($sql);
+
+        $prep_state->bindParam(':task_id', $task_id);
+
         $prep_state->execute();
 
         return $prep_state->fetchAll(\PDO::FETCH_ASSOC);

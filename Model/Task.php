@@ -7,7 +7,6 @@ class Task
 {
 
 	public $db_conn;
-	public $table_name = "task";
 
 	public $name;
     public $project_id;
@@ -23,7 +22,7 @@ class Task
 
     public function create_task()
     {
-        $sql = "INSERT INTO " . $this->table_name . " SET name = ?, project_id = ?, user_id = ?";
+        $sql = "INSERT INTO task SET name = ?, project_id = ?, user_id = ?";
 
         $prep_state = $this->db_conn->prepare($sql);
 
@@ -39,9 +38,11 @@ class Task
     {
         $db_conn = Db::get_connected();
 
-        $sql = "SELECT * FROM task where project_id = $project_id";
+        $sql = "SELECT * FROM task where project_id = :project_id";
 
         $prep_state = $db_conn->prepare($sql);
+        $prep_state->bindParam(':project_id', $project_id);
+
         $prep_state->execute();
 
         return $prep_state->fetchAll(\PDO::FETCH_ASSOC);
@@ -52,9 +53,11 @@ class Task
     {
         $db_conn = Db::get_connected();
 
-        $sql = "SELECT * FROM task WHERE task_id = $task_id";
+        $sql = "SELECT * FROM task WHERE task_id = :task_id";
 
         $prep_state = $db_conn->prepare($sql);
+        $prep_state->bindParam(':task_id', $task_id);
+
         $prep_state->execute();
 
         $task = $prep_state->fetch(\PDO::FETCH_ASSOC);
@@ -67,9 +70,11 @@ class Task
     {
         $db_conn = Db::get_connected();
 
-        $sql = "SELECT * FROM task WHERE user_id = $user_id";
+        $sql = "SELECT * FROM task WHERE user_id = :user_id";
 
         $prep_state = $db_conn->prepare($sql);
+        $prep_state->bindParam(':user_id', $user_id);
+
         $prep_state->execute();
 
         return $prep_state->fetchAll(\PDO::FETCH_ASSOC);
@@ -83,9 +88,11 @@ class Task
             client
                  RIGHT JOIN
             project ON client.client_id=project.client_id
-            where project_id = $id";
+            where project_id = :id";
 
         $prep_state = $db_conn->prepare($sql);
+        $prep_state->bindParam(':id', $id);
+
         $prep_state->execute();
 
         $client= $prep_state->fetch(\PDO::FETCH_ASSOC);
@@ -98,9 +105,10 @@ class Task
     {
         $db_conn = Db::get_connected();
 
-        $sql = "DELETE FROM task WHERE task_id = $id ";
+        $sql = "DELETE FROM task WHERE task_id = :id ";
 
         $prep_state = $db_conn->prepare($sql);
+        $prep_state->bindParam(':id', $id);
 
         if ($prep_state->execute()) {
             return true;

@@ -8,8 +8,6 @@ class Client
 {
 
 	public $db_conn;
-	public $table_name = "client";
-
 	public $name;
 
 
@@ -23,7 +21,7 @@ class Client
     public function create()
     {
 
-        $sql = "INSERT INTO " . $this->table_name . " SET name = ?";
+        $sql = "INSERT INTO client SET name = ?";
 
         $prep_state = $this->db_conn->prepare($sql);
 
@@ -32,17 +30,6 @@ class Client
         $prep_state->execute();
     }
 
-
-    public function update($id)
-    {
-        $sql = "UPDATE " . $this->table_name . " SET name = :name WHERE client_id = $id";
-       
-        $prep_state = $this->db_conn->prepare($sql);
-
-
-        $prep_state->bindParam(':name', $this->name);
-        $prep_state->execute();
-    }
 
 
     public static function get_all_clients()
@@ -62,9 +49,10 @@ class Client
     {
         $db_conn = Db::get_connected();
 
-        $sql = "SELECT name FROM client WHERE client_id = $id";
+        $sql = "SELECT name FROM client WHERE client_id = :id";
 
         $prep_state = $db_conn->prepare($sql);
+        $prep_state->bindParam(':id',$id);
         $prep_state->execute();
 
         $client = $prep_state->fetch(\PDO::FETCH_ASSOC);

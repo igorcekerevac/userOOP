@@ -7,7 +7,6 @@ class Project
 {
 
 	public $db_conn;
-	public $table_name = "project";
 
 	public $name;
  
@@ -21,11 +20,12 @@ class Project
 
     public function create($client_id)
     {
-        $sql = "INSERT INTO " . $this->table_name . " SET name = ?, client_id = $client_id";
+        $sql = "INSERT INTO project SET name = ?, client_id = :client_id";
 
         $prep_state = $this->db_conn->prepare($sql);
 
         $prep_state->bindParam(1, $this->name);
+        $prep_state->bindParam(':client_id', $client_id);
 
         $prep_state->execute();
     }
@@ -35,9 +35,11 @@ class Project
     {
         $db_conn = Db::get_connected();
 
-        $sql = "DELETE FROM project WHERE project_id = $id ";
+        $sql = "DELETE FROM project WHERE project_id = :id ";
 
         $prep_state = $db_conn->prepare($sql);
+        $prep_state->bindParam(':id', $id);
+
         $prep_state->execute();
     }
 
@@ -81,9 +83,11 @@ class Project
     {
         $db_conn = Db::get_connected();
 
-        $sql = "SELECT name FROM project WHERE project_id = $id";
+        $sql = "SELECT name FROM project WHERE project_id = :id";
 
         $prep_state = $db_conn->prepare($sql);
+        $prep_state->bindParam(':id', $id);
+
         $prep_state->execute();
 
         $project = $prep_state->fetch(\PDO::FETCH_ASSOC);
@@ -96,9 +100,11 @@ class Project
     {
         $db_conn = Db::get_connected();
 
-        $sql = "SELECT * FROM project WHERE client_id = $client_id";
+        $sql = "SELECT * FROM project WHERE client_id = :client_id";
 
         $prep_state = $db_conn->prepare($sql);
+        $prep_state->bindParam(':client_id', $client_id);
+
         $prep_state->execute();
 
         $project = $prep_state->fetchAll(\PDO::FETCH_ASSOC);
