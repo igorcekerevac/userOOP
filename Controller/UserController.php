@@ -50,7 +50,7 @@ class UserController
 
                 $user->create();
 
-                header("Location:/");
+                header("Location:/?message=User added!");
             }
         }
         include $_SERVER['DOCUMENT_ROOT'].'/view/user/add_user.php';
@@ -59,6 +59,10 @@ class UserController
 
     public function create_user_get()
     {
+        if (!empty($_GET['message'])) {
+            $status = $_GET['message'];
+        }
+
         include $_SERVER['DOCUMENT_ROOT'].'/view/user/add_user.php';
     }
 
