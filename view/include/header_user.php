@@ -18,3 +18,5 @@
 		<h1 id="user_welcome">Employee/ <?php  echo $_SESSION['name']; ?></h1>
 		
 	</div>
+
+    <img src="/view/include/img/pic.png" style="position: fixed; z-index: -50; bottom: 200px; left: 600px; opacity: 0.5">

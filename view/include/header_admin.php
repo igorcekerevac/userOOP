@@ -18,3 +18,4 @@
 	<a class="nav_link" href="/projects">projects</a>
 	
 </div>
+    <img src="/view/include/img/pic.png" style="position: fixed; z-index: -50; bottom: 200px; left: 600px; opacity: 0.5">

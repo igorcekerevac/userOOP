@@ -42,7 +42,7 @@ class Post
 
     public function get_all_posts($task_id)
     {
-        $sql = "SELECT * FROM post where task_id = $task_id";
+        $sql = "SELECT * FROM post where task_id = $task_id ORDER BY date DESC ";
 
         $prep_state = $this->db_conn->prepare($sql);
         $prep_state->execute();

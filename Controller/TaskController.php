@@ -75,13 +75,12 @@ class TaskController
 		if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 			$task_id = $_POST['task_id'];
-			$title = $_POST['title'];
 			$body = $_POST['body'];
 			$user_id = $_SESSION['admin_id'];
 			$date = date("Y-m-d H:i:s");
 
 			$post->task_id = $task_id;
-			$post->title = $title;
+			$post->title = $_SESSION['admin_name'];
 			$post->body = $body;
 			$post->date = $date;
 			$post->users_id = $user_id;
