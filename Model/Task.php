@@ -1,7 +1,7 @@
 <?php
 
 namespace Model;
-use Db;
+use Db\Db;
 
 class Task 
 {
@@ -16,8 +16,7 @@ class Task
 
 	function __construct() {
 
-        $conn = new db\Db();
-        $db = $conn->get_connected();
+        $db = Db::get_connected();
         $this->db_conn = $db;
 	}
  
@@ -36,62 +35,72 @@ class Task
     }
 
 
-    public function get_all_tasks($project_id)
+    public static function get_all_tasks($project_id)
     {
+        $db_conn = Db::get_connected();
+
         $sql = "SELECT * FROM task where project_id = $project_id";
 
-        $prep_state = $this->db_conn->prepare($sql);
+        $prep_state = $db_conn->prepare($sql);
         $prep_state->execute();
 
         return $prep_state->fetchAll(\PDO::FETCH_ASSOC);
     }
 
 
-    public function get_task($task_id)
+    public static function get_task($task_id)
     {
-        $sql = "SELECT * FROM " . $this->table_name . " WHERE task_id = $task_id";
+        $db_conn = Db::get_connected();
 
-        $prep_state = $this->db_conn->prepare($sql);
+        $sql = "SELECT * FROM task WHERE task_id = $task_id";
+
+        $prep_state = $db_conn->prepare($sql);
         $prep_state->execute();
 
         $task = $prep_state->fetch(\PDO::FETCH_ASSOC);
 
-        $this->name = $task['name'];
-        $this->project_id = $task['project_id'];
+        return $task;
     }   
 
 
-    public function get_user_tasks($user_id)
+    public static function get_user_tasks($user_id)
     {
-        $sql = "SELECT * FROM " . $this->table_name . " WHERE user_id = $user_id";
+        $db_conn = Db::get_connected();
 
-        $prep_state = $this->db_conn->prepare($sql);
+        $sql = "SELECT * FROM task WHERE user_id = $user_id";
+
+        $prep_state = $db_conn->prepare($sql);
         $prep_state->execute();
 
         return $prep_state->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function get_client_id($id)
+    public static function get_client_id($id)
     {
+        $db_conn = Db::get_connected();
+
         $sql = "SELECT client.client_id from
             client
                  RIGHT JOIN
             project ON client.client_id=project.client_id
             where project_id = $id";
 
-        $prep_state = $this->db_conn->prepare($sql);
+        $prep_state = $db_conn->prepare($sql);
         $prep_state->execute();
 
-        $client_id = $prep_state->fetch(\PDO::FETCH_ASSOC);
-        return $client_id;
+        $client= $prep_state->fetch(\PDO::FETCH_ASSOC);
+
+        return $client;
     }
 
 
-    public function delete($id)
+    public static function delete($id)
     {
-        $sql = "DELETE FROM " . $this->table_name . " WHERE task_id = $id ";
+        $db_conn = Db::get_connected();
 
-        $prep_state = $this->db_conn->prepare($sql);
+        $sql = "DELETE FROM task WHERE task_id = $id ";
+
+        $prep_state = $db_conn->prepare($sql);
 
         if ($prep_state->execute()) {
             return true;

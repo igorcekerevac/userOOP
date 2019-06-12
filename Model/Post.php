@@ -1,7 +1,7 @@
 <?php
 
 namespace Model;
-use Db;
+use Db\Db;
 
 class Post 
 {
@@ -18,8 +18,7 @@ class Post
 
 	function __construct()
     {
-        $conn = new db\Db();
-        $db = $conn->get_connected();
+        $db = Db::get_connected();
         $this->db_conn = $db;
 	}
  
@@ -40,30 +39,18 @@ class Post
     }
 
 
-    public function get_all_posts($task_id)
+    public static function get_all_posts($task_id)
     {
+        $db_conn = Db::get_connected();
+
         $sql = "SELECT * FROM post where task_id = $task_id ORDER BY date DESC ";
 
-        $prep_state = $this->db_conn->prepare($sql);
+        $prep_state = $db_conn->prepare($sql);
         $prep_state->execute();
 
         return $prep_state->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-
-    public function get_task($post_id)
-    {
-        $sql = "SELECT * FROM " . $this->table_name . " WHERE post_id = $post_id";
-
-        $prep_state = $this->db_conn->prepare($sql);
-        $prep_state->execute();
-
-        $post = $prep_state->fetch(\PDO::FETCH_ASSOC);
-
-        $this->title = $post['title'];
-        $this->body = $post['body'];
-        $this->date = $post['date'];
-    }   
 
 }
 

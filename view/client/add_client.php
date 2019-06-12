@@ -4,7 +4,7 @@
 <div id="content">
 	<h1>ADD CLIENT</h1><br>
 
-	<form action="" method="post">
+	<form action="/client/create/post" method="post">
 
 		<h4>NAME</h4>
 

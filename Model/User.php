@@ -1,7 +1,7 @@
 <?php
 
 namespace Model;
-use Db;
+use Db\Db;
 
 
 class User 
@@ -19,9 +19,8 @@ class User
 
 	function __construct() {
 
-	    $conn = new db\Db();
-	    $db = $conn->get_connected();
-		$this->db_conn = $db;
+        $db = Db::get_connected();
+        $this->db_conn = $db;
 	}
  
 
@@ -64,11 +63,13 @@ class User
     }
 
 
-    public function delete($id)
+    public static function delete($id)
     {
-        $sql = "DELETE FROM " . $this->table_name . " WHERE user_id = $id ";
+        $db_conn = Db::get_connected();
 
-        $prep_state = $this->db_conn->prepare($sql);
+        $sql = "DELETE FROM user WHERE user_id = $id ";
+
+        $prep_state = $db_conn->prepare($sql);
 
         if ($prep_state->execute()) {
             return true;
@@ -78,48 +79,53 @@ class User
     }
 
 
-    public function get_all_users()
+    public static function get_all_users()
     {
+        $db_conn = Db::get_connected();
+
         $sql = "SELECT * FROM user";
 
-        $prep_state = $this->db_conn->prepare($sql);
+        $prep_state = $db_conn->prepare($sql);
         $prep_state->execute();
 
         return $prep_state->fetchAll(\PDO::FETCH_ASSOC);
     }
 
 
-    public function get_user_mail()
+    public static function get_user_mail()
     {
+        $db_conn = Db::get_connected();
+
         $sql = "SELECT email FROM user";
 
-        $prep_state = $this->db_conn->prepare($sql);
+        $prep_state = $db_conn->prepare($sql);
         $prep_state->execute();
 
         return $prep_state->fetchAll(\PDO::FETCH_ASSOC);
     }
     
-    public function get_user($id)
+    public static function get_user($id)
     {
-        $sql = "SELECT name, password, email, job FROM " . $this->table_name . " WHERE user_id = $id";
+        $db_conn = Db::get_connected();
 
-        $prep_state = $this->db_conn->prepare($sql);
+        $sql = "SELECT name, password, email, job FROM user WHERE user_id = $id";
+
+        $prep_state = $db_conn->prepare($sql);
         $prep_state->execute();
 
         $user = $prep_state->fetch(\PDO::FETCH_ASSOC);
 
-        $this->name = $user['name'];
-        $this->password = $user['password'];
-        $this->email = $user['email'];
-        $this->job = $user['job'];
+        return $user;
     }   
 
     //num of rows, pagination
-    public function count_all_users()
+    public static function count_all_users()
     {
-        $sql = "SELECT user_id FROM " . $this->table_name . "";
+        $db_conn = Db::get_connected();
 
-        $prep_state = $this->db_conn->prepare($sql);
+        $sql = "SELECT user_id FROM user";
+
+        $prep_state = $db_conn->prepare($sql);
         $prep_state->execute();
 
         $num = $prep_state->rowCount(); 
@@ -127,12 +133,13 @@ class User
     }
 
 
-    public function get_all_users_pagination($from_record_num, $records_per_page)
+    public static function get_all_users_pagination($from_record_num, $records_per_page)
     {
-        $sql = "SELECT * FROM " . $this->table_name . " LIMIT " . $from_record_num . ',' .$records_per_page;
+        $db_conn = Db::get_connected();
 
+        $sql = "SELECT * FROM user LIMIT " . $from_record_num . ',' .$records_per_page;
 
-        $prep_state = $this->db_conn->prepare($sql);
+        $prep_state = $db_conn->prepare($sql);
         $prep_state->execute();
 
         return $prep_state;

@@ -1,7 +1,7 @@
 <?php
 
 namespace Model;
-use Db;
+use Db\Db;
 
 
 class Client 
@@ -11,18 +11,18 @@ class Client
 	public $table_name = "client";
 
 	public $name;
- 
+
 
 	function __construct()
     {
-        $conn = new db\Db();
-        $db = $conn->get_connected();
+        $db = Db::get_connected();
         $this->db_conn = $db;
 	}
- 
+
 
     public function create()
     {
+
         $sql = "INSERT INTO " . $this->table_name . " SET name = ?";
 
         $prep_state = $this->db_conn->prepare($sql);
@@ -45,44 +45,41 @@ class Client
     }
 
 
-    public function delete($id)
+    public static function get_all_clients()
     {
-        $sql = "DELETE FROM " . $this->table_name . " WHERE user_id = $id ";
+        $db_conn = Db::get_connected();
 
-        $prep_state = $this->db_conn->prepare($sql);
-        $prep_state->execute();
-    }
-
-
-    public function get_all_clients()
-    {
         $sql = "SELECT * FROM client";
 
-        $prep_state = $this->db_conn->prepare($sql);
+        $prep_state = $db_conn->prepare($sql);
         $prep_state->execute();
 
         return $prep_state->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     
-    public function get_client($id)
+    public static function get_client($id)
     {
-        $sql = "SELECT name FROM " . $this->table_name . " WHERE client_id = $id";
+        $db_conn = Db::get_connected();
 
-        $prep_state = $this->db_conn->prepare($sql);
+        $sql = "SELECT name FROM client WHERE client_id = $id";
+
+        $prep_state = $db_conn->prepare($sql);
         $prep_state->execute();
 
         $client = $prep_state->fetch(\PDO::FETCH_ASSOC);
 
-        $this->name = $client['name'];
+        return $client['name'];
     }    
 
     //num of rows, pagination
-    public function count_all()
+    public static function count_all()
     {
-        $sql = "SELECT client_id FROM " . $this->table_name . "";
+        $db_conn = Db::get_connected();
 
-        $prep_state = $this->db_conn->prepare($sql);
+        $sql = "SELECT client_id FROM client";
+
+        $prep_state = $db_conn->prepare($sql);
         $prep_state->execute();
 
         $num = $prep_state->rowCount(); 
@@ -90,23 +87,26 @@ class Client
     }
 
 
-    public function get_all_clients_pagination($from_record_num, $records_per_page)
+    public static function get_all_clients_pagination($from_record_num, $records_per_page)
     {
-        $sql = "SELECT * FROM " . $this->table_name . " LIMIT " . $from_record_num . ',' .$records_per_page;
+        $db_conn = Db::get_connected();
 
+        $sql = "SELECT * FROM client LIMIT " . $from_record_num . ',' .$records_per_page;
 
-        $prep_state = $this->db_conn->prepare($sql);
+        $prep_state = $db_conn->prepare($sql);
         $prep_state->execute();
 
         return $prep_state;
     }
 
 
-    public function get_client_name()
+    public static function get_client_name()
     {
+        $db_conn = Db::get_connected();
+
         $sql = "SELECT name FROM client";
 
-        $prep_state = $this->db_conn->prepare($sql);
+        $prep_state = $db_conn->prepare($sql);
         $prep_state->execute();
 
         return $prep_state->fetchAll(\PDO::FETCH_ASSOC);

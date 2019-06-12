@@ -6,16 +6,18 @@ namespace Db;
 class Db
 {
 
-	private $db_host = 'localhost:3308';
-	private $db_username = 'root';
-	private $db_password = '';
-	private $db_name = 'phpoop2';
 
-	public function get_connected()
+	public static function get_connected()
 	{
+
+        $db_host = 'localhost:3308';
+        $db_username = 'root';
+        $db_password = '';
+        $db_name = 'phpoop2';
+
 		try {
-			$conn = new \PDO('mysql:host=' . $this->db_host .';dbname='.
-			$this->db_name, $this->db_username, $this->db_password);
+			$conn = new \PDO('mysql:host=' . $db_host .';dbname='.
+			$db_name, $db_username, $db_password);
 
 		} catch (PDOException $e) {
 			echo 'Database connection error' .$e;

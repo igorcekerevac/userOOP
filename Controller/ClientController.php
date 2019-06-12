@@ -15,11 +15,9 @@ class ClientController
 	{
 		Functions::check_admin();
 
-		$client = new Client();
-
 		$results_per_page = 3;
 
-	    $numer_of_results = $client->count_all();
+	    $numer_of_results = Client::count_all();
 
 		$number_of_pages = ceil($numer_of_results/$results_per_page);
 
@@ -33,7 +31,7 @@ class ClientController
 
 	    $this_page_first_result = ($page-1)*$results_per_page;
 
-		$all_clients = $client->get_all_clients_pagination($this_page_first_result,$results_per_page);
+		$all_clients = Client::get_all_clients_pagination($this_page_first_result,$results_per_page);
 
 		include $_SERVER['DOCUMENT_ROOT'].'/view/client/client.php';
 
@@ -43,42 +41,46 @@ class ClientController
     }
 
 
-    public function create_client()
+    public function create_client_post()
     {
 		Functions::check_admin();
 
 
-		if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+		$client = new Client();
+		$name = $client->name = trim($_POST['name']);
+		$names = $client->get_client_name();
+		$db_name_validate = 0;
 
-			$client = new Client();
-			$name = $client->name = trim($_POST['name']);
-			$names = $client->get_client_name();	
-			$db_name_validate = 0;
-
-			foreach ($names as $client_name) {
+		foreach ($names as $client_name) {
 					
-				if ($client_name['name'] === $name) {
+		    if ($client_name['name'] === $name) {
 	
-					$status ='Client allready in the database.';
-					$db_name_validate = 1;
-					break;
-				}
-			}
+		        $status ='Client allready in the database.';
+		        $db_name_validate = 1;
+		        break;
+		    }
+		}
 
-			if ($db_name_validate==0) {
+		if ($db_name_validate==0) {
 
-				if (empty($name)) {
+		    if (empty($name)) {
 
-					$status = 'Please enter client name!';
+		        $status = 'Please enter client name!';
 
-				} else {
+		    } else {
 
-					$client->create();
-					header("Location: /clients");
-				}
-			}	
-		}	
-		include $_SERVER['DOCUMENT_ROOT'].'/view/client/add_client.php';	
+		        $client->create();
+		        header("Location: /clients");
+		    }
+		}
+    }
+
+
+    public function create_client_get()
+    {
+        Functions::check_admin();
+
+        include $_SERVER['DOCUMENT_ROOT'].'/view/client/add_client.php';
     }
 
 
@@ -86,16 +88,11 @@ class ClientController
     {
 		Functions::check_admin();
 
-		$client = new Client();
-		$project = new Project();
-
 		$find_id = htmlspecialchars($_GET["id"]);
 		
-		$client->get_client($find_id);
+		$name = Client::get_client($find_id);
 
-		$name = $client->name;
-
-		$found_projects = $project->get_project_client($find_id);
+		$found_projects = Project::get_project_client($find_id);
 
 		include $_SERVER['DOCUMENT_ROOT'].'/view/client/client_profile.php';		
     }

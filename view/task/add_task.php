@@ -4,7 +4,7 @@
 
 	<h1>ADD TASK FOR PROJECT/<?php echo ' '. $name ?></h1><br>
 
-	<form action='/client/project/task?id='". <?php echo $project_id; ?>."' method="post">
+	<form action='/client/project/post/?id='". <?php echo $project_id; ?>."' method="post">
 
 		<table>
 			<tr>

@@ -13,180 +13,176 @@ class UserController
 {
 
 
-	public function create_user()
+	public function create_user_post()
 	{
+        $user = new User();
 
-		if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $name = $user->name = trim($_POST['name']);
+        $job = $user->job = trim($_POST['job']);
+        $email = $user->email = trim($_POST['email']);
+        $password = $user->password = trim($_POST['password']);
+        $emails = User::get_user_mail();
 
+        $db_mail_validate = 0;
 
-			$user = new User();
+        foreach ($emails as $user_email) {
 
-			$name = $user->name = trim($_POST['name']);
-			$job = $user->job = trim($_POST['job']);
-			$email = $user->email = trim($_POST['email']);
-            $password = $user->password = trim($_POST['password']);
-            $emails = $user->get_user_mail();
+            if ($user_email['email'] === $email) {
 
-			$db_mail_validate = 0;
+                $status = 'Entered email address allready occupied!';
+                $db_mail_validate = 1;
+                break;
+            }
+        }
 
-			foreach ($emails as $user_email) {
-						
-				if ($user_email['email'] === $email) {
-		
-					$status ='Entered email address alredy occupied!';
-					$db_mail_validate = 1;
-					break;
-				}
-			}
+        if ($db_mail_validate == 0) {
 
-			if ($db_mail_validate==0) {
-				
-				if (!Functions::email_validation($email)) {
+            if (!Functions::email_validation($email)) {
 
-					$email = '';
-				}
+                $email = '';
+            }
 
-				if (empty($name) || empty($job) || empty($email) || empty($password)) {
+            if (empty($name) || empty($job) || empty($email) || empty($password)) {
 
-					$status = 'Please enter data in all fields!';
+                $status = 'Please enter data in all fields!';
 
-				} else {
+            } else {
 
-					$user->create();
-					header("Location:/");
-				}
-			}	
-		}	
-	
-		include $_SERVER['DOCUMENT_ROOT'].'/view/user/add_user.php';
+                $user->create();
+
+                header("Location:/");
+            }
+        }
+        include $_SERVER['DOCUMENT_ROOT'].'/view/user/add_user.php';
     }
 
 
-    public function login_user()
+    public function create_user_get()
+    {
+        include $_SERVER['DOCUMENT_ROOT'].'/view/user/add_user.php';
+    }
+
+
+
+    public function login_user_post()
 	{
 		session_start();
 
-		if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-			$user = new User();
-
-			$email = trim($_POST['email']);
-            $password = trim($_POST['password']);
+        $email = trim($_POST['email']);
+        $password = trim($_POST['password']);
 
 
-            $users = $user->get_all_users();
+        $users = User::get_all_users();
 
-			$mail_check = 0;
+        $mail_check = 0;
 
-			foreach ($users as $user) {
-						
-				if ($user['email'] === $email && $user['email'] !== 'admin@gmail.com' &&
-                    password_verify($password, $user['password'])) {
+        foreach ($users as $user) {
 
-				    $mail_check = 1;
+            if ($user['email'] === $email && $user['email'] !== 'admin@gmail.com' &&
+                password_verify($password, $user['password'])) {
 
-					$user_id = $user['user_id'];
-					$user_name = $user['name'];
+                $mail_check = 1;
 
-					$_SESSION['user_id'] = $user_id;
-					$_SESSION['name'] = $user_name;
-                    $_SESSION['message'] = "message";
+                $user_id = $user['user_id'];
+                $user_name = $user['name'];
+
+                $_SESSION['user_id'] = $user_id;
+                $_SESSION['name'] = $user_name;
+                $_SESSION['message'] = "message";
 
 
-					header("Location: /employee?id=$user_id");
+                header("Location: /employee?id=$user_id");
 
-				} elseif ($email === 'admin@gmail.com' && password_verify($password, $user['password'])) {
-					
-					$admin_name = $user['name'];
-					$admin_id = $user['user_id'];
+            } elseif ($email === 'admin@gmail.com' && password_verify($password, $user['password'])) {
 
-					$_SESSION['admin_id'] = $admin_id;
-					$_SESSION['admin_name'] = $admin_name;
+                $admin_name = $user['name'];
+                $admin_id = $user['user_id'];
 
-					header("Location: /admin");
-				}		
-			} 
+                $_SESSION['admin_id'] = $admin_id;
+                $_SESSION['admin_name'] = $admin_name;
 
-			if ($mail_check == 0) {
+                header("Location: /admin");
+            }
+        }
 
-					$status ='Entered email or password is not in database.';
-			}
-		}
+        if ($mail_check == 0) {
 
-		include $_SERVER['DOCUMENT_ROOT'].'/view/user/login.php';
+            $status = 'Entered email or password is not in database.';
+        }
+
+        include $_SERVER['DOCUMENT_ROOT'].'/view/user/login.php';
     }
+
+
+    public function login_user_get()
+    {
+        session_start();
+
+        include $_SERVER['DOCUMENT_ROOT'].'/view/user/login.php';
+    }
+
 
 
     public function user_tasks()
 	{
 		Functions::check_user();
 
-		$user = new User();
-		$task = new Task();
-
-		$user_id = $_SESSION['user_id'];
-		$user_name = $_SESSION['name'];
-
-
-		$all_tasks = $task->get_user_tasks($user_id);
+		$all_tasks = Task::get_user_tasks($_SESSION['user_id']);
 
 		include $_SERVER['DOCUMENT_ROOT'].'/view/user/user_tasks.php';
     }
 
 
-    public function user_task_post()
+    public function user_task_post_post()
 	{
 		Functions::check_user();
 
-		$post = new Post();
+        $post = new Post();
+
+        $task_id = $_POST['task_id'];
+        $body = $_POST['body'];
+        $user_id = $_SESSION['user_id'];
+        $date = date("Y-m-d H:i:s");
+
+        $post->task_id = $task_id;
+        $post->title = $_SESSION['name'];
+        $post->body = $body;
+        $post->date = $date;
+        $post->users_id = $user_id;
+
+        $post->create_post();
+        header("Location: /employee/task?id=$task_id");
+
+    }
 
 
-		if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    public function user_task_post_get()
+    {
+        Functions::check_user();
 
-			$task_id = $_POST['task_id'];
-			$body = $_POST['body'];
-			$user_id = $_SESSION['user_id'];
-			$date = date("Y-m-d H:i:s");
+        $task_id = htmlspecialchars($_GET['id']);
 
-			$post->task_id = $task_id;
-			$post->title = $_SESSION['name'];
-			$post->body = $body;
-			$post->date = $date;
-			$post->users_id = $user_id;
+        $task = Task::get_task($task_id);
 
-			$post->create_post();
-			header("Location: /employee/task?id=$task_id");
-		}
+        $task_name = $task['name'];
+        $project_id = $task['project_id'];
 
-		$task_id = htmlspecialchars($_GET['id']);
-		
-		$project = new Project();
+        $project_name = Project::get_project($project_id);
 
-		$task = new Task();
-		
-		$task->get_task($task_id);
+        $all_posts = Post::get_all_posts($task_id);
 
-		$task_name = $task->name;
-		$project_id = $task->project_id;
-
-		$project->get_project($project_id);
-		$project_name = $project->name;
-
-		$all_posts = $post->get_all_posts($task_id);
-
-		include $_SERVER['DOCUMENT_ROOT'].'/view/user/user_posts.php';
+        include $_SERVER['DOCUMENT_ROOT'].'/view/user/user_posts.php';
     }
 
 
     public function all_users()
 	{
 		Functions::check_admin();
-		
-		$user = new User();
 
 		$results_per_page = 4;
 
-	    $numer_of_results = $user->count_all_users();
+	    $numer_of_results = User::count_all_users();
 
 		$number_of_pages = ceil($numer_of_results/$results_per_page);
 
@@ -203,7 +199,7 @@ class UserController
 
 	    $this_page_first_result = ($page-1)*$results_per_page;
 
-		$all = $user->get_all_users_pagination($this_page_first_result,$results_per_page);
+		$all = User::get_all_users_pagination($this_page_first_result,$results_per_page);
 
 		$all_users = array();
 
@@ -232,12 +228,13 @@ class UserController
 		Functions::check_admin();
 
 		$delete_id = htmlspecialchars($_GET["id"]);
-			
-		$user = new User();
 
-		if ($user->delete($delete_id)) {
+		if (User::delete($delete_id)) {
+
 		    $status = 'User deleted.';
+
         } else {
+
             $status = 'Can not delete! User have active tasks.';
         }
 
@@ -248,79 +245,86 @@ class UserController
     }
 
 
-    public function update_user()
+    public function update_user_post()
 	{
 		
 		Functions::check_user();
 
-		if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-			
-			$user = new User();
 
-			$update_id = $_SESSION['user_id'];
-			$name = $user->name =trim($_POST['name']);
-			$job = $user->job = trim($_POST['job']);
-			$email = $user->email = trim($_POST['email']);
-            $password = $user->password = trim($_POST['password']);
+        $user = new User();
 
-			$all = $user->get_all_users();
+        $update_id = $_SESSION['user_id'];
+        $name = $user->name = trim($_POST['name']);
+        $job = $user->job = trim($_POST['job']);
+        $email = $user->email = trim($_POST['email']);
+        $password = $user->password = trim($_POST['password']);
 
-			$db_mail_validate = 0;
-			foreach ($all as $users) {
-						
-				if ($users['email'] === $email && $update_id !== $users['user_id']) {
-		
-					$status ='Entered email address alredy occupied!';
-					$db_mail_validate = 1;
-					break;
-				}
-			}
+        $all = User::get_all_users();
 
-			if ($db_mail_validate==0) {
-				
-				if (!Functions::email_validation($email)) {
+        $db_mail_validate = 0;
 
-					$email = '';
-				}
+        foreach ($all as $users) {
 
-				if (empty($name) || empty($job) || empty($email) || empty($password)) {
+            if ($users['email'] === $email && $update_id !== $users['user_id']) {
 
-					$status = 'Please enter data in all fields!';
+                $status = 'Entered email address alredy occupied!';
+                $db_mail_validate = 1;
+                break;
+            }
+        }
 
-				} else {
+        if ($db_mail_validate == 0) {
 
-                    $user->password = password_hash($password, PASSWORD_DEFAULT);
+            if (!Functions::email_validation($email)) {
 
-                    if ($user->user_update($update_id)) {
-                        $_SESSION['message'] = 'User updated.';
-                    } else {
-                        $_SESSION['message'] = 'User is not updated.';
-                    }
+                $email = '';
+            }
 
-					$_SESSION['name'] = $name;
+            if (empty($name) || empty($job) || empty($email) || empty($password)) {
 
-					header("Location: /user/update/?id=$update_id");
-				}
-			}	
-		}	
+                $status = 'Please enter data in all fields!';
 
-		include $_SERVER['DOCUMENT_ROOT'].'/view/user/update_user.php';
+            } else {
+
+                $user->password = password_hash($password, PASSWORD_DEFAULT);
+
+                if ($user->user_update($update_id)) {
+                    $_SESSION['message'] = 'User updated.';
+                } else {
+                    $_SESSION['message'] = 'User is not updated.';
+                }
+
+                $_SESSION['name'] = $name;
+
+                header("Location: /user/update/?id=$update_id");
+            }
+        }
+
+        include $_SERVER['DOCUMENT_ROOT'].'/view/user/update_user.php';
     }
+
+
+
+    public function update_user_get()
+    {
+        Functions::check_user();
+
+        include $_SERVER['DOCUMENT_ROOT'].'/view/user/update_user.php';
+    }
+
 
 
     public function user_profile()
 	{
 		Functions::check_user();
 
-		$user = new User();
-
 		$find_id = htmlspecialchars($_GET["id"]);
 		
-		$user->get_user($find_id);
+		$user = User::get_user($find_id);
 
-		$name = $user->name;
-		$job = $user->job;
-		$email = $user->email;
+		$name = $user['name'];
+		$job = $user['job'];
+		$email = $user['email'];
 
 		include $_SERVER['DOCUMENT_ROOT'].'/view/user/profile.php';
     }

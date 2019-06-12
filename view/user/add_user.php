@@ -15,6 +15,7 @@
 
         <?php
 
+
         if (isset($status)) {
 
             echo '<p id="status">' . $status . '</p>';

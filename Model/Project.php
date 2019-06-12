@@ -1,7 +1,7 @@
 <?php
 
 namespace Model;
-use Db;
+use Db\Db;
 
 class Project 
 {
@@ -12,10 +12,9 @@ class Project
 	public $name;
  
 
-	function __construct() {
-
-        $conn = new db\Db();
-        $db = $conn->get_connected();
+	function __construct()
+    {
+        $db = Db::get_connected();
         $this->db_conn = $db;
 	}
  
@@ -32,28 +31,34 @@ class Project
     }
 
 
-    public function delete($id)
+    public static function delete($id)
     {
-        $sql = "DELETE FROM " . $this->table_name . " WHERE project_id = $id ";
+        $db_conn = Db::get_connected();
 
-        $prep_state = $this->db_conn->prepare($sql);
+        $sql = "DELETE FROM project WHERE project_id = $id ";
+
+        $prep_state = $db_conn->prepare($sql);
         $prep_state->execute();
     }
 
 
-    public function get_all_projects()
+    public static function get_all_projects()
     {
+        $db_conn = Db::get_connected();
+
         $sql = "SELECT * FROM project";
 
-        $prep_state = $this->db_conn->prepare($sql);
+        $prep_state = $db_conn->prepare($sql);
         $prep_state->execute();
 
         return $prep_state->fetchAll(\PDO::FETCH_ASSOC);
     }
 
 
-    public function get_all_projects_join()
+    public static function get_all_projects_join()
     {
+        $db_conn = Db::get_connected();
+
         $sql = "SELECT client.name AS client_name,project.project_id, project.name AS project_name,
             task.name AS task_name ,user.name AS user_name, task.task_id 
             FROM
@@ -65,31 +70,35 @@ class Project
                 LEFT JOIN
             user ON task.user_id = user.user_id";
 
-        $prep_state = $this->db_conn->prepare($sql);
+        $prep_state = $db_conn->prepare($sql);
         $prep_state->execute();
 
         return $prep_state->fetchAll(\PDO::FETCH_ASSOC);
     }
 
 
-    public function get_project($id)
+    public static function get_project($id)
     {
-        $sql = "SELECT name FROM " . $this->table_name . " WHERE project_id = $id";
+        $db_conn = Db::get_connected();
 
-        $prep_state = $this->db_conn->prepare($sql);
+        $sql = "SELECT name FROM project WHERE project_id = $id";
+
+        $prep_state = $db_conn->prepare($sql);
         $prep_state->execute();
 
         $project = $prep_state->fetch(\PDO::FETCH_ASSOC);
 
-        $this->name = $project['name'];
+        return $project['name'];
     }    
 
 
-    public function get_project_client($client_id)
+    public static function get_project_client($client_id)
     {
-        $sql = "SELECT * FROM " . $this->table_name . " WHERE client_id = $client_id";
+        $db_conn = Db::get_connected();
 
-        $prep_state = $this->db_conn->prepare($sql);
+        $sql = "SELECT * FROM project WHERE client_id = $client_id";
+
+        $prep_state = $db_conn->prepare($sql);
         $prep_state->execute();
 
         $project = $prep_state->fetchAll(\PDO::FETCH_ASSOC);
@@ -98,11 +107,13 @@ class Project
     }   
 
 
-    public function get_project_name()
+    public static function get_projects_names()
     {
+        $db_conn = Db::get_connected();
+
         $sql = "SELECT name FROM project";
 
-        $prep_state = $this->db_conn->prepare($sql);
+        $prep_state = $db_conn->prepare($sql);
         $prep_state->execute();
 
         return $prep_state->fetchAll(\PDO::FETCH_ASSOC);

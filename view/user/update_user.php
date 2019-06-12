@@ -25,7 +25,7 @@
 
         ?>
 
-		<form action="" method="post">
+		<form action="/user/update/post" method="post">
 
 			<table>
 

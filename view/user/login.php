@@ -22,7 +22,7 @@
 
 		} ?>
 
-	<form action="" method="post">
+	<form action="/employee/login/post" method="post">
 
 		<table>
 			<tr>
