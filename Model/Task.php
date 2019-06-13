@@ -3,7 +3,7 @@
 namespace Model;
 use Db\Db;
 
-class Task 
+class Task extends Model
 {
 
 	public $db_conn;
@@ -15,8 +15,8 @@ class Task
 
 	function __construct() {
 
-        $db = Db::get_connected();
-        $this->db_conn = $db;
+        $instance = Db::get_instance();
+        $this->db_conn = $instance->get_connection();
 	}
  
 
@@ -34,55 +34,10 @@ class Task
     }
 
 
-    public static function get_all_tasks($project_id)
-    {
-        $db_conn = Db::get_connected();
-
-        $sql = "SELECT * FROM task where project_id = :project_id";
-
-        $prep_state = $db_conn->prepare($sql);
-        $prep_state->bindParam(':project_id', $project_id);
-
-        $prep_state->execute();
-
-        return $prep_state->fetchAll(\PDO::FETCH_ASSOC);
-    }
-
-
-    public static function get_task($task_id)
-    {
-        $db_conn = Db::get_connected();
-
-        $sql = "SELECT * FROM task WHERE task_id = :task_id";
-
-        $prep_state = $db_conn->prepare($sql);
-        $prep_state->bindParam(':task_id', $task_id);
-
-        $prep_state->execute();
-
-        $task = $prep_state->fetch(\PDO::FETCH_ASSOC);
-
-        return $task;
-    }   
-
-
-    public static function get_user_tasks($user_id)
-    {
-        $db_conn = Db::get_connected();
-
-        $sql = "SELECT * FROM task WHERE user_id = :user_id";
-
-        $prep_state = $db_conn->prepare($sql);
-        $prep_state->bindParam(':user_id', $user_id);
-
-        $prep_state->execute();
-
-        return $prep_state->fetchAll(\PDO::FETCH_ASSOC);
-    }
-
     public static function get_client_id($id)
     {
-        $db_conn = Db::get_connected();
+        $instance = Db::get_instance();
+        $db_conn = $instance->get_connection();
 
         $sql = "SELECT client.client_id from
             client
@@ -100,22 +55,6 @@ class Task
         return $client;
     }
 
-
-    public static function delete($id)
-    {
-        $db_conn = Db::get_connected();
-
-        $sql = "DELETE FROM task WHERE task_id = :id ";
-
-        $prep_state = $db_conn->prepare($sql);
-        $prep_state->bindParam(':id', $id);
-
-        if ($prep_state->execute()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 
 }
 

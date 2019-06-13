@@ -17,26 +17,22 @@ class TaskController
     {
         Functions::check_admin();
 
+
         $project_id = $_GET['id'];
 
-        $all = User::get_all_users();
 
-        $all_users = array();
+        $all = User::get_all('user');
+
+        $all_users = Functions::populate_users_array_no_admin($all);
 
 
-        foreach ($all as $user) {
+        $name = Project::get_column_value($project_id, 'name', 'project');
 
-            if ($user['name'] !== 'admin') {
+        $all_tasks = Task::get_all_with_specific_id('task', $project_id, 'project');
 
-                array_push($all_users, $user);
-            }
-        }
-
-        $name = Project::get_project($project_id);
-
-        $all_tasks = Task::get_all_tasks($project_id);
 
         $client = Task::get_client_id($project_id);
+
         $client_id = $client['client_id'];
 
 
@@ -63,51 +59,13 @@ class TaskController
     }
 
 
-    public function view_task()
-	{
-		Functions::check_admin();
-
-		if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-
-            $post = new Post();
-
-			$task_id = $_POST['task_id'];
-			$body = $_POST['body'];
-			$user_id = $_SESSION['admin_id'];
-			$date = date("Y-m-d H:i:s");
-
-			$post->task_id = $task_id;
-			$post->title = $_SESSION['admin_name'];
-			$post->body = $body;
-			$post->date = $date;
-			$post->users_id = $user_id;
-
-			$post->create_post();
-
-			header("Location: /client/project/task/?id=$task_id");
-		}
-
-		$task_id = htmlspecialchars($_GET["id"]);
-
-		$task = Task::get_task($task_id);
-
-		$name = $task['name'];
-		$user_id = $task['user_id'];
-
-
-		$all_posts = Post::get_all_posts($task_id);
-
-		include $_SERVER['DOCUMENT_ROOT'].'/view/task/task.php';
-
-    }
-
     public function view_task_get()
     {
         Functions::check_admin();
 
         $task_id = htmlspecialchars($_GET["id"]);
 
-        $task = Task::get_task($task_id);
+        $task = Task::get($task_id, 'task');
 
         $name = $task['name'];
         $user_id = $task['user_id'];
@@ -147,7 +105,8 @@ class TaskController
 
         $task_id = htmlspecialchars($_GET["id"]);
 
-        Task::delete($task_id);
+        Task::delete($task_id, 'task');
+
 
         header('Location: ' . $_SERVER['HTTP_REFERER']);
 

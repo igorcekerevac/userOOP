@@ -9,21 +9,16 @@
         <?php
 
 
+
         if (isset($status)) {
 
-            echo '<p id="status">'.$status.'</p>';
-
-        } elseif ($_SESSION['message'] !== 'message') {
-
-            echo '<p id="status">'.$_SESSION['message'].'</p>';
+            echo '<p id="status">' . $status . '</p>';
 
         } else {
 
             echo '<p id="status"> &nbsp </p>';
 
-        }
-
-        ?>
+        } ?>
 
 		<form action="/user/update/post" method="post">
 

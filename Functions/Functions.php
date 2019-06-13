@@ -43,4 +43,20 @@ class Functions
 		}
 	}
 
+
+	public static function populate_users_array_no_admin($all_users)
+    {
+        $users = array();
+
+        foreach ($all_users as $user) {
+
+            if ($user['name'] !== 'admin') {
+
+                array_push($users, $user);
+            }
+        }
+
+        return $users;
+    }
+
 }

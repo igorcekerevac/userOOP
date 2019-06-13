@@ -20,7 +20,7 @@
                     '<a id="task_names" href="/client/project/task/?id=' . $project['task_id'] . '">' . $project['task_name'] . '</a>' .
                     ' &nbsp&nbsp/&nbsp Employee: ' . $project['user_name'] . ' 
                 <a id=\'task_delete\' style=\' margin-left: 15px;\' href="delete/task?id=' . $project['task_id'] . '">delete task</a>
-                </li></h5>';
+                </li></h5><br>';
             }
 		?>
 

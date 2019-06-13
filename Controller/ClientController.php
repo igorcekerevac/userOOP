@@ -17,21 +17,21 @@ class ClientController
 
 		$results_per_page = 3;
 
-	    $numer_of_results = Client::count_all();
+	    $numer_of_results = Client::count_all('client');
 
 		$number_of_pages = ceil($numer_of_results/$results_per_page);
 
+
 		if (!isset($_GET['page'])) {
 	    	$page = 1;
-
-	    }else{
+	    } else {
 	    	$page = $_GET['page'];
 	    }
 
 
 	    $this_page_first_result = ($page-1)*$results_per_page;
 
-		$all_clients = Client::get_all_clients_pagination($this_page_first_result,$results_per_page);
+		$all_clients = Client::get_all_pagination($this_page_first_result, $results_per_page, 'client');
 
 		include $_SERVER['DOCUMENT_ROOT'].'/view/client/client.php';
 
@@ -45,21 +45,18 @@ class ClientController
     {
 		Functions::check_admin();
 
-
 		$client = new Client();
 		$name = $client->name = trim($_POST['name']);
-		$names = $client->get_client_name();
+
 		$db_name_validate = 0;
 
-		foreach ($names as $client_name) {
-					
-		    if ($client_name['name'] === $name) {
-	
-		        $status ='Client allready in the database.';
-		        $db_name_validate = 1;
-		        break;
-		    }
-		}
+
+        if (Client::check_column_value_exist('name', 'client')) {
+
+            $status = 'Client already in the database.';
+            $db_name_validate = 1;
+        }
+
 
 		if ($db_name_validate==0) {
 
@@ -73,6 +70,7 @@ class ClientController
 		        header("Location: /clients");
 		    }
 		}
+        include $_SERVER['DOCUMENT_ROOT'].'/view/client/add_client.php';
     }
 
 
@@ -90,9 +88,9 @@ class ClientController
 
 		$find_id = htmlspecialchars($_GET["id"]);
 		
-		$name = Client::get_client($find_id);
+		$name = Client::get_column_value($find_id, 'name', 'client');
 
-		$found_projects = Project::get_project_client($find_id);
+		$found_projects = Project::get_all_with_specific_id('project', $find_id, 'client');
 
 		include $_SERVER['DOCUMENT_ROOT'].'/view/client/client_profile.php';		
     }

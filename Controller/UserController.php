@@ -21,19 +21,16 @@ class UserController
         $job = $user->job = trim($_POST['job']);
         $email = $user->email = trim($_POST['email']);
         $password = $user->password = trim($_POST['password']);
-        $emails = User::get_user_mail();
+
 
         $db_mail_validate = 0;
 
-        foreach ($emails as $user_email) {
+        if (User::check_email_exists($email)) {
 
-            if ($user_email['email'] === $email) {
-
-                $status = 'Entered email address allready occupied!';
-                $db_mail_validate = 1;
-                break;
-            }
+            $status = 'Entered email address already occupied!';
+            $db_mail_validate = 1;
         }
+
 
         if ($db_mail_validate == 0) {
 
@@ -72,48 +69,35 @@ class UserController
 	{
 		session_start();
 
-
         $email = trim($_POST['email']);
         $password = trim($_POST['password']);
 
-
-        $users = User::get_all_users();
-
-        $mail_check = 0;
-
-        foreach ($users as $user) {
-
-            if ($user['email'] === $email && $user['email'] !== 'admin@gmail.com' &&
-                password_verify($password, $user['password'])) {
-
-                $mail_check = 1;
-
-                $user_id = $user['user_id'];
-                $user_name = $user['name'];
-
-                $_SESSION['user_id'] = $user_id;
-                $_SESSION['name'] = $user_name;
-                $_SESSION['message'] = "message";
+        $user = User::check_user_credentials($email);
 
 
-                header("Location: /employee?id=$user_id");
+        if ($user['email'] === $email && $user['email'] !== 'admin@gmail.com' &&
+            password_verify($password, $user['password'])) {
 
-            } elseif ($email === 'admin@gmail.com' && password_verify($password, $user['password'])) {
+            $user_id = $user['user_id'];
+            $user_name = $user['name'];
 
-                $admin_name = $user['name'];
-                $admin_id = $user['user_id'];
+            $_SESSION['user_id'] = $user_id;
+            $_SESSION['name'] = $user_name;
 
-                $_SESSION['admin_id'] = $admin_id;
-                $_SESSION['admin_name'] = $admin_name;
+            header("Location: /employee?id=$user_id");
 
-                header("Location: /admin");
-            }
+        } elseif ($email === 'admin@gmail.com' && password_verify($password, $user['password'])) {
+
+            $admin_name = $user['name'];
+            $admin_id = $user['user_id'];
+
+            $_SESSION['admin_id'] = $admin_id;
+            $_SESSION['admin_name'] = $admin_name;
+
+            header("Location: /admin");
         }
 
-        if ($mail_check == 0) {
-
-            $status = 'Entered email or password is not in database.';
-        }
+        $status = 'Entered email or password is not in database.';
 
         include $_SERVER['DOCUMENT_ROOT'].'/view/user/login.php';
     }
@@ -132,7 +116,7 @@ class UserController
 	{
 		Functions::check_user();
 
-		$all_tasks = Task::get_user_tasks($_SESSION['user_id']);
+        $all_tasks = Task::get_all_with_specific_id('task', $_SESSION['user_id'], 'user');
 
 		include $_SERVER['DOCUMENT_ROOT'].'/view/user/user_tasks.php';
     }
@@ -167,12 +151,12 @@ class UserController
 
         $task_id = htmlspecialchars($_GET['id']);
 
-        $task = Task::get_task($task_id);
+        $task = Task::get($task_id, 'task');
 
         $task_name = $task['name'];
         $project_id = $task['project_id'];
 
-        $project_name = Project::get_project($project_id);
+        $project_name = Project::get_column_value($project_id, 'name', 'project');
 
         $all_posts = Post::get_all_posts($task_id);
 
@@ -186,7 +170,7 @@ class UserController
 
 		$results_per_page = 4;
 
-	    $numer_of_results = User::count_all_users();
+	    $numer_of_results = User::count_all('user');
 
 		$number_of_pages = ceil($numer_of_results/$results_per_page);
 
@@ -203,18 +187,9 @@ class UserController
 
 	    $this_page_first_result = ($page-1)*$results_per_page;
 
-		$all = User::get_all_users_pagination($this_page_first_result,$results_per_page);
+		$all = User::get_all_pagination($this_page_first_result, $results_per_page, 'user');
 
-		$all_users = array();
-
-
-		foreach ($all as $user) {
-			
-			if ($user['name'] !== 'admin') {
-				
-				array_push($all_users, $user);
-			}
-		}
+		$all_users = Functions::populate_users_array_no_admin($all);
 
 
 		include $_SERVER['DOCUMENT_ROOT'].'/view/user/user.php';
@@ -233,7 +208,8 @@ class UserController
 
 		$delete_id = htmlspecialchars($_GET["id"]);
 
-		if (User::delete($delete_id)) {
+
+		if (User::delete($delete_id, 'user')) {
 
 		    $status = 'User deleted.';
 
@@ -254,7 +230,6 @@ class UserController
 		
 		Functions::check_user();
 
-
         $user = new User();
 
         $update_id = $_SESSION['user_id'];
@@ -263,19 +238,17 @@ class UserController
         $email = $user->email = trim($_POST['email']);
         $password = $user->password = trim($_POST['password']);
 
-        $all = User::get_all_users();
+        $result = User::check_user_credentials($email);
 
         $db_mail_validate = 0;
 
-        foreach ($all as $users) {
 
-            if ($users['email'] === $email && $update_id !== $users['user_id']) {
+        if ($result['email'] === $email && $update_id !== $result['user_id']) {
 
-                $status = 'Entered email address alredy occupied!';
-                $db_mail_validate = 1;
-                break;
-            }
+            $status = 'Entered email address already occupied!';
+            $db_mail_validate = 1;
         }
+
 
         if ($db_mail_validate == 0) {
 
@@ -293,14 +266,14 @@ class UserController
                 $user->password = password_hash($password, PASSWORD_DEFAULT);
 
                 if ($user->user_update($update_id)) {
-                    $_SESSION['message'] = 'User updated.';
+                    $message = 'User updated.';
                 } else {
-                    $_SESSION['message'] = 'User is not updated.';
+                    $message = 'User is not updated.';
                 }
 
                 $_SESSION['name'] = $name;
 
-                header("Location: /user/update/?id=$update_id");
+                header("Location: /user/update/?message=$message");
             }
         }
 
@@ -313,6 +286,10 @@ class UserController
     {
         Functions::check_user();
 
+        if (!empty($_GET['message'])) {
+            $status = $_GET['message'];
+        }
+
         include $_SERVER['DOCUMENT_ROOT'].'/view/user/update_user.php';
     }
 
@@ -324,7 +301,7 @@ class UserController
 
 		$find_id = htmlspecialchars($_GET["id"]);
 		
-		$user = User::get_user($find_id);
+		$user = User::get($find_id, 'user');
 
 		$name = $user['name'];
 		$job = $user['job'];

@@ -17,8 +17,8 @@ class Post
 
 	function __construct()
     {
-        $db = Db::get_connected();
-        $this->db_conn = $db;
+        $instance = Db::get_instance();
+        $this->db_conn = $instance->get_connection();
 	}
  
 
@@ -40,7 +40,8 @@ class Post
 
     public static function get_all_posts($task_id)
     {
-        $db_conn = Db::get_connected();
+        $instance = Db::get_instance();
+        $db_conn = $instance->get_connection();
 
         $sql = "SELECT * FROM post where task_id = :task_id ORDER BY date DESC ";
 

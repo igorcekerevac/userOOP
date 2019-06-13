@@ -1,10 +1,11 @@
 <?php
 
 namespace Model;
+
 use Db\Db;
 
 
-class User 
+class User extends Model
 {
 
 	public $db_conn;
@@ -18,8 +19,8 @@ class User
 
 	function __construct() {
 
-        $db = Db::get_connected();
-        $this->db_conn = $db;
+	    $instance = Db::get_instance();
+	    $this->db_conn = $instance->get_connection();
 	}
  
 
@@ -63,89 +64,42 @@ class User
     }
 
 
-    public static function delete($id)
+    public static function check_user_credentials($email)
     {
-        $db_conn = Db::get_connected();
+        $instance = Db::get_instance();
+        $db_conn = $instance->get_connection();
 
-        $sql = "DELETE FROM user WHERE user_id = :id ";
+        $sql = "SELECT * FROM user WHERE email = :email";
 
         $prep_state = $db_conn->prepare($sql);
-        $prep_state->bindParam(':id', $id);
+        $prep_state->bindParam(':email', $email);
 
-        if ($prep_state->execute()) {
-            return true;
-        } else {
-            return false;
+        $prep_state->execute();
+
+        if ($user = $prep_state->fetch(\PDO::FETCH_ASSOC)) {
+            return $user;
         }
     }
 
 
-    public static function get_all_users()
-    {
-        $db_conn = Db::get_connected();
 
-        $sql = "SELECT * FROM user";
+    public static function check_email_exists($email)
+    {
+        $instance = Db::get_instance();
+        $db_conn = $instance->get_connection();
+
+        $sql = "SELECT email FROM user WHERE email = :email";
 
         $prep_state = $db_conn->prepare($sql);
-        $prep_state->execute();
-
-        return $prep_state->fetchAll(\PDO::FETCH_ASSOC);
-    }
-
-
-    public static function get_user_mail()
-    {
-        $db_conn = Db::get_connected();
-
-        $sql = "SELECT email FROM user";
-
-        $prep_state = $db_conn->prepare($sql);
-        $prep_state->execute();
-
-        return $prep_state->fetchAll(\PDO::FETCH_ASSOC);
-    }
-    
-    public static function get_user($id)
-    {
-        $db_conn = Db::get_connected();
-
-        $sql = "SELECT name, password, email, job FROM user WHERE user_id = :id";
-
-        $prep_state = $db_conn->prepare($sql);
-        $prep_state->bindParam(':id', $id);
+        $prep_state->bindParam(':email', $email);
 
         $prep_state->execute();
 
-        $user = $prep_state->fetch(\PDO::FETCH_ASSOC);
-
-        return $user;
-    }   
-
-    //num of rows, pagination
-    public static function count_all_users()
-    {
-        $db_conn = Db::get_connected();
-
-        $sql = "SELECT user_id FROM user";
-
-        $prep_state = $db_conn->prepare($sql);
-        $prep_state->execute();
-
-        $num = $prep_state->rowCount(); 
-        return $num;
-    }
-
-
-    public static function get_all_users_pagination($from_record_num, $records_per_page)
-    {
-        $db_conn = Db::get_connected();
-
-        $sql = "SELECT * FROM user LIMIT " . $from_record_num . ',' .$records_per_page;
-
-        $prep_state = $db_conn->prepare($sql);
-        $prep_state->execute();
-
-        return $prep_state;
+        if ($prep_state->fetch(\PDO::FETCH_ASSOC)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }

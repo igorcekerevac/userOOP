@@ -25,21 +25,19 @@ class ProjectController
 
         $name = $project->name = trim($_POST['name']);
 
-        $names = Project::get_projects_names();
-
         $db_name_validate = 0;
 
         $client_id = $_POST['id'];
 
-        foreach ($names as $project_name) {
+        $project->client_id = $client_id;
 
-            if ($project_name['name'] === $name) {
 
-                $status ='Project allready in the database.';
-                $db_name_validate = 1;
-                break;
-            }
+        if (Project::check_column_value_exist('name', 'project')) {
+
+            $status = 'Project already in the database.';
+            $db_name_validate = 1;
         }
+
 
         if ($db_name_validate==0) {
 
@@ -49,10 +47,14 @@ class ProjectController
 
             } else {
 
-                $project->create($client_id);
+                $project->create();
                 header("Location: /clients");
             }
         }
+
+        $_GET['id'] = $client_id;
+
+        include $_SERVER['DOCUMENT_ROOT'].'/view/project/add_project.php';
     }
 
 

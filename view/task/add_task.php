@@ -17,9 +17,10 @@
 				<?php
 					echo "<select name='user_id'>";
 						echo "<option>choose employee</option>";
-						foreach($all_users as $user){
+
+						foreach ($all_users as $user) {
 						echo "<option value='" . $user['user_id'] . "'>". $user['name'] ."/".$user['job']."</option>";
-					}
+						}
 
 					echo "</select>";
 
