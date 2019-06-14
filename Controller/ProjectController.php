@@ -32,7 +32,7 @@ class ProjectController
         $project->client_id = $client_id;
 
 
-        if (Project::check_column_value_exist('name')) {
+        if (Project::check_column_value_exist('name', $name)) {
 
             $status = 'Project already in the database.';
             $db_name_validate = 1;

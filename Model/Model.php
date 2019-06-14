@@ -125,14 +125,15 @@ abstract class Model
     }
 
 
-    public static function check_column_value_exist($column)
+    public static function check_column_value_exist($column, $value)
     {
         $instance = Db::get_instance();
         $db_conn = $instance->get_connection();
 
-        $sql = "SELECT " . $column . " FROM " . static::$table_name . " WHERE " . $column . " = " . $column;
+        $sql = "SELECT " . $column . " FROM " . static::$table_name . " WHERE " . $column . " = :value";
 
         $prep_state = $db_conn->prepare($sql);
+        $prep_state->bindParam(':value', $value);
 
         $prep_state->execute();
 

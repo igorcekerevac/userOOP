@@ -51,7 +51,7 @@ class ClientController
 		$db_name_validate = 0;
 
 
-        if (Client::check_column_value_exist('name')) {
+        if (Client::check_column_value_exist('name', $name)) {
 
             $status = 'Client already in the database.';
             $db_name_validate = 1;
@@ -90,7 +90,7 @@ class ClientController
 		
 		$name = Client::get_column_value($find_id, 'name');
 
-		$found_projects = Project::get_all_with_specific_id('project', $find_id);
+		$found_projects = Project::get_all_with_specific_id($find_id, 'client');
 
 		include $_SERVER['DOCUMENT_ROOT'].'/view/client/client_profile.php';		
     }
