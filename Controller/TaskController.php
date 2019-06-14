@@ -103,12 +103,17 @@ class TaskController
     {
         Functions::check_admin();
 
-        $task = new Task();
-
         $task_id = htmlspecialchars($_GET["id"]);
 
-        $task->delete($task_id);
+        $obj = Task::get($task_id);
 
+        $task = new Task();
+        $task->task_id = $obj->task_id;
+        $task->project_id = $obj->project_id;
+        $task->user_id = $obj->user_id;
+        $task->name = $obj->name;
+
+        $task->delete();
 
         header('Location: ' . $_SERVER['HTTP_REFERER']);
 

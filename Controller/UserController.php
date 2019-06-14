@@ -206,12 +206,20 @@ class UserController
 	{
 		Functions::check_admin();
 
-		$user = new User();
-
 		$delete_id = htmlspecialchars($_GET["id"]);
 
+        $obj = User::get($delete_id);
 
-		if ($user->delete($delete_id)) {
+        $user = new User();
+
+        $user->user_id = $obj->user_id;
+        $user->job = $obj->job;
+        $user->email = $obj->email;
+        $user->name = $obj->name;
+        $user->password = $obj->password;
+
+
+		if ($user->delete()) {
 
 		    $status = 'User deleted.';
 

@@ -11,8 +11,9 @@ class Task extends Model
 	public $name;
     public $project_id;
     public $user_id;
+    public $task_id;
     protected static $table_name = 'task';
- 
+
 
 	function __construct() {
 

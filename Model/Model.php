@@ -12,15 +12,18 @@ abstract class Model
     protected static $table_name = '';
 
 
-    public function delete($id)
+    public function delete()
     {
         $instance = Db::get_instance();
         $db_conn = $instance->get_connection();
+
+        $id = $_GET['id'];
 
         $sql = "DELETE FROM " . static::$table_name . " WHERE " . static::$table_name . "_id = :id ";
 
         $prep_state = $db_conn->prepare($sql);
         $prep_state->bindParam(':id', $id);
+
 
         if ($prep_state->execute()) {
             return true;
