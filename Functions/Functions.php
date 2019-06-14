@@ -50,7 +50,7 @@ class Functions
 
         foreach ($all_users as $user) {
 
-            if ($user['name'] !== 'admin') {
+            if ($user->name !== 'admin') {
 
                 array_push($users, $user);
             }

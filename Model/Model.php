@@ -11,7 +11,8 @@ abstract class Model
 
     protected static $table_name = '';
 
-    public static function delete($id)
+
+    public function delete($id)
     {
         $instance = Db::get_instance();
         $db_conn = $instance->get_connection();
@@ -39,7 +40,7 @@ abstract class Model
         $prep_state = $db_conn->prepare($sql);
         $prep_state->execute();
 
-        return $prep_state->fetchAll(\PDO::FETCH_ASSOC);
+        return $prep_state->fetchAll(\PDO::FETCH_OBJ);
     }
 
 
@@ -55,9 +56,9 @@ abstract class Model
 
         $prep_state->execute();
 
-        $found = $prep_state->fetch(\PDO::FETCH_ASSOC);
+        $obj = $prep_state->fetch(\PDO::FETCH_OBJ);
 
-        return $found;
+        return $obj;
     }
 
 
@@ -87,7 +88,9 @@ abstract class Model
         $prep_state = $db_conn->prepare($sql);
         $prep_state->execute();
 
-        return $prep_state;
+        $users = $prep_state->fetchAll(\PDO::FETCH_OBJ);
+
+        return $users;
     }
 
 
@@ -103,7 +106,7 @@ abstract class Model
 
         $prep_state->execute();
 
-        return $prep_state->fetchAll(\PDO::FETCH_ASSOC);
+        return $prep_state->fetchAll(\PDO::FETCH_OBJ);
     }
 
 
@@ -125,20 +128,22 @@ abstract class Model
     }
 
 
-    public static function check_column_value_exist($column, $value)
+    public static function check_row_exists_where_column_value($column, $value)
     {
         $instance = Db::get_instance();
         $db_conn = $instance->get_connection();
 
-        $sql = "SELECT " . $column . " FROM " . static::$table_name . " WHERE " . $column . " = :value";
+        $sql = "SELECT * FROM " . static::$table_name . " WHERE " . $column . " = :value";
 
         $prep_state = $db_conn->prepare($sql);
         $prep_state->bindParam(':value', $value);
 
         $prep_state->execute();
 
-        if ($prep_state->fetch(\PDO::FETCH_ASSOC)) {
-            return true;
+        if ($obj = $prep_state->fetch(\PDO::FETCH_OBJ)) {
+            return $obj;
+        } else {
+            return false;
         }
     }
 }

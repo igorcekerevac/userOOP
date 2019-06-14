@@ -25,7 +25,7 @@ class UserController
 
         $db_mail_validate = 0;
 
-        if (User::check_email_exists($email)) {
+        if (User::check_row_exists_where_column_value('email', $email)) {
 
             $status = 'Entered email address already occupied!';
             $db_mail_validate = 1;
@@ -72,29 +72,29 @@ class UserController
         $email = trim($_POST['email']);
         $password = trim($_POST['password']);
 
-        $user = User::check_user_credentials($email);
+        if ($user = User::check_row_exists_where_column_value('email', $email)) {
 
+            if ($user->email === $email && $user->email !== 'admin@gmail.com' &&
+                password_verify($password, $user->password)) {
 
-        if ($user['email'] === $email && $user['email'] !== 'admin@gmail.com' &&
-            password_verify($password, $user['password'])) {
+                $user_id = $user->user_id;
+                $user_name = $user->name;
 
-            $user_id = $user['user_id'];
-            $user_name = $user['name'];
+                $_SESSION['user_id'] = $user_id;
+                $_SESSION['name'] = $user_name;
 
-            $_SESSION['user_id'] = $user_id;
-            $_SESSION['name'] = $user_name;
+                header("Location: /employee?id=$user_id");
 
-            header("Location: /employee?id=$user_id");
+            } elseif ($email === 'admin@gmail.com' && password_verify($password, $user->password)) {
 
-        } elseif ($email === 'admin@gmail.com' && password_verify($password, $user['password'])) {
+                $admin_name = $user->name;
+                $admin_id = $user->user_id;
 
-            $admin_name = $user['name'];
-            $admin_id = $user['user_id'];
+                $_SESSION['admin_id'] = $admin_id;
+                $_SESSION['admin_name'] = $admin_name;
 
-            $_SESSION['admin_id'] = $admin_id;
-            $_SESSION['admin_name'] = $admin_name;
-
-            header("Location: /admin");
+                header("Location: /admin");
+            }
         }
 
         $status = 'Entered email or password is not in database.';
@@ -153,8 +153,8 @@ class UserController
 
         $task = Task::get($task_id);
 
-        $task_name = $task['name'];
-        $project_id = $task['project_id'];
+        $task_name = $task->name;
+        $project_id = $task->project_id;
 
         $project_name = Project::get_column_value($project_id, 'name');
 
@@ -206,10 +206,12 @@ class UserController
 	{
 		Functions::check_admin();
 
+		$user = new User();
+
 		$delete_id = htmlspecialchars($_GET["id"]);
 
 
-		if (User::delete($delete_id)) {
+		if ($user->delete($delete_id)) {
 
 		    $status = 'User deleted.';
 
@@ -238,17 +240,16 @@ class UserController
         $email = $user->email = trim($_POST['email']);
         $password = $user->password = trim($_POST['password']);
 
-        $result = User::check_user_credentials($email);
-
         $db_mail_validate = 0;
 
+        if ($result = User::check_row_exists_where_column_value('email', $email)) {
 
-        if ($result['email'] === $email && $update_id !== $result['user_id']) {
+            if ($result->email === $email && $update_id !== $result->user_id) {
 
-            $status = 'Entered email address already occupied!';
-            $db_mail_validate = 1;
+                $status = 'Entered email address already occupied!';
+                $db_mail_validate = 1;
+            }
         }
-
 
         if ($db_mail_validate == 0) {
 
@@ -303,9 +304,9 @@ class UserController
 		
 		$user = User::get($find_id);
 
-		$name = $user['name'];
-		$job = $user['job'];
-		$email = $user['email'];
+		$name = $user->name;
+		$job = $user->job;
+		$email = $user->email;
 
 		include $_SERVER['DOCUMENT_ROOT'].'/view/user/profile.php';
     }

@@ -67,8 +67,8 @@ class TaskController
 
         $task = Task::get($task_id);
 
-        $name = $task['name'];
-        $user_id = $task['user_id'];
+        $name = $task->name;
+        $user_id = $task->user_id;
 
         $all_posts = Post::get_all_posts($task_id);
 
@@ -103,9 +103,11 @@ class TaskController
     {
         Functions::check_admin();
 
+        $task = new Task();
+
         $task_id = htmlspecialchars($_GET["id"]);
 
-        Task::delete($task_id);
+        $task->delete($task_id);
 
 
         header('Location: ' . $_SERVER['HTTP_REFERER']);

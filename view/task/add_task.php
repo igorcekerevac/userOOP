@@ -19,7 +19,7 @@
 						echo "<option>choose employee</option>";
 
 						foreach ($all_users as $user) {
-						echo "<option value='" . $user['user_id'] . "'>". $user['name'] ."/".$user['job']."</option>";
+						echo "<option value='" . $user->user_id . "'>". $user->name ."/".$user->job."</option>";
 						}
 
 					echo "</select>";
@@ -47,7 +47,8 @@
 		
 			foreach ($all_tasks as $task) {
 
-				echo '<li><a id="task_names" href="/client/project/task/?id='.$task['task_id'].'"><strong id="font">'.$task['name'].'</strong></a></li><br>';
+				echo '<li><a id="task_names" href="/client/project/task/?id='.$task->task_id.'">
+                      <strong id="font">'.$task->name.'</strong></a></li><br>';
 			}
 		} else {
 

@@ -51,7 +51,7 @@ class ClientController
 		$db_name_validate = 0;
 
 
-        if (Client::check_column_value_exist('name', $name)) {
+        if (Client::check_row_exists_where_column_value('name', $name)) {
 
             $status = 'Client already in the database.';
             $db_name_validate = 1;

@@ -64,44 +64,5 @@ class User extends Model
 
     }
 
-
-    public static function check_user_credentials($email)
-    {
-        $instance = Db::get_instance();
-        $db_conn = $instance->get_connection();
-
-        $sql = "SELECT * FROM user WHERE email = :email";
-
-        $prep_state = $db_conn->prepare($sql);
-        $prep_state->bindParam(':email', $email);
-
-        $prep_state->execute();
-
-        if ($user = $prep_state->fetch(\PDO::FETCH_ASSOC)) {
-            return $user;
-        }
-    }
-
-
-
-    public static function check_email_exists($email)
-    {
-        $instance = Db::get_instance();
-        $db_conn = $instance->get_connection();
-
-        $sql = "SELECT email FROM user WHERE email = :email";
-
-        $prep_state = $db_conn->prepare($sql);
-        $prep_state->bindParam(':email', $email);
-
-        $prep_state->execute();
-
-        if ($prep_state->fetch(\PDO::FETCH_ASSOC)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
 }
 
