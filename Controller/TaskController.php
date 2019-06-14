@@ -21,14 +21,14 @@ class TaskController
         $project_id = $_GET['id'];
 
 
-        $all = User::get_all('user');
+        $all = User::get_all();
 
         $all_users = Functions::populate_users_array_no_admin($all);
 
 
-        $name = Project::get_column_value($project_id, 'name', 'project');
+        $name = Project::get_column_value($project_id, 'name');
 
-        $all_tasks = Task::get_all_with_specific_id('task', $project_id, 'project');
+        $all_tasks = Task::get_all_with_specific_id($project_id, 'project');
 
 
         $client = Task::get_client_id($project_id);
@@ -65,7 +65,7 @@ class TaskController
 
         $task_id = htmlspecialchars($_GET["id"]);
 
-        $task = Task::get($task_id, 'task');
+        $task = Task::get($task_id);
 
         $name = $task['name'];
         $user_id = $task['user_id'];
@@ -105,7 +105,7 @@ class TaskController
 
         $task_id = htmlspecialchars($_GET["id"]);
 
-        Task::delete($task_id, 'task');
+        Task::delete($task_id);
 
 
         header('Location: ' . $_SERVER['HTTP_REFERER']);

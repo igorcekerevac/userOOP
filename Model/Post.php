@@ -13,6 +13,7 @@ class Post
     public $date;
     public $task_id;
     public $users_id;
+    protected static $table_name = 'post';
  
 
 	function __construct()

@@ -8,7 +8,9 @@ class Client extends Model
 {
 
 	public $db_conn;
+
 	public $name;
+	protected static $table_name = 'client';
 
 
 	function __construct()

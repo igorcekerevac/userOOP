@@ -9,12 +9,14 @@ use Db\Db;
 abstract class Model
 {
 
-    public static function delete($id, $table)
+    protected static $table_name = '';
+
+    public static function delete($id)
     {
         $instance = Db::get_instance();
         $db_conn = $instance->get_connection();
 
-        $sql = "DELETE FROM " . $table . " WHERE " . $table . "_id = :id ";
+        $sql = "DELETE FROM " . static::$table_name . " WHERE " . static::$table_name . "_id = :id ";
 
         $prep_state = $db_conn->prepare($sql);
         $prep_state->bindParam(':id', $id);
@@ -27,12 +29,12 @@ abstract class Model
     }
 
 
-    public static function get_all($table)
+    public static function get_all()
     {
         $instance = Db::get_instance();
         $db_conn = $instance->get_connection();
 
-        $sql = "SELECT * FROM " . $table;
+        $sql = "SELECT * FROM " . static::$table_name;
 
         $prep_state = $db_conn->prepare($sql);
         $prep_state->execute();
@@ -41,12 +43,12 @@ abstract class Model
     }
 
 
-    public static function get($id, $table)
+    public static function get($id)
     {
         $instance = Db::get_instance();
         $db_conn = $instance->get_connection();
 
-        $sql = "SELECT * FROM " .$table. " WHERE " . $table ."_id = :id";
+        $sql = "SELECT * FROM " .static::$table_name. " WHERE " . static::$table_name ."_id = :id";
 
         $prep_state = $db_conn->prepare($sql);
         $prep_state->bindParam(':id', $id);
@@ -60,12 +62,12 @@ abstract class Model
 
 
     //num of rows, pagination
-    public static function count_all($table)
+    public static function count_all()
     {
         $instance = Db::get_instance();
         $db_conn = $instance->get_connection();
 
-        $sql = "SELECT " . $table ."_id FROM " .$table;
+        $sql = "SELECT " . static::$table_name ."_id FROM " . static::$table_name;
 
         $prep_state = $db_conn->prepare($sql);
         $prep_state->execute();
@@ -75,12 +77,12 @@ abstract class Model
     }
 
 
-    public static function get_all_pagination($from_record_num, $records_per_page, $table)
+    public static function get_all_pagination($from_record_num, $records_per_page)
     {
         $instance = Db::get_instance();
         $db_conn = $instance->get_connection();
 
-        $sql = "SELECT * FROM " . $table . " LIMIT " . $from_record_num . ',' .$records_per_page;
+        $sql = "SELECT * FROM " . static::$table_name . " LIMIT " . $from_record_num . ',' .$records_per_page;
 
         $prep_state = $db_conn->prepare($sql);
         $prep_state->execute();
@@ -89,12 +91,12 @@ abstract class Model
     }
 
 
-    public static function get_all_with_specific_id($table , $id, $id_name)
+    public static function get_all_with_specific_id($id, $id_name)
     {
         $instance = Db::get_instance();
         $db_conn = $instance->get_connection();
 
-        $sql = "SELECT * FROM " . $table . " where " . $id_name . "_id= :id";
+        $sql = "SELECT * FROM " . static::$table_name . " where " . $id_name . "_id= :id";
 
         $prep_state = $db_conn->prepare($sql);
         $prep_state->bindParam(':id', $id);
@@ -105,12 +107,12 @@ abstract class Model
     }
 
 
-    public static function get_column_value($id, $column, $table)
+    public static function get_column_value($id, $column)
     {
         $instance = Db::get_instance();
         $db_conn = $instance->get_connection();
 
-        $sql = "SELECT " . $column . " FROM " . $table . " WHERE " . $table . "_id = :id";
+        $sql = "SELECT " . $column . " FROM " . static::$table_name . " WHERE " . static::$table_name . "_id = :id";
 
         $prep_state = $db_conn->prepare($sql);
         $prep_state->bindParam(':id', $id);
@@ -123,12 +125,12 @@ abstract class Model
     }
 
 
-    public static function check_column_value_exist($column, $table)
+    public static function check_column_value_exist($column)
     {
         $instance = Db::get_instance();
         $db_conn = $instance->get_connection();
 
-        $sql = "SELECT " . $column . " FROM " . $table . " WHERE " . $column . " = " . $column;
+        $sql = "SELECT " . $column . " FROM " . static::$table_name . " WHERE " . $column . " = " . $column;
 
         $prep_state = $db_conn->prepare($sql);
 

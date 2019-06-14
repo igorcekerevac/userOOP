@@ -15,6 +15,7 @@ class User extends Model
     public $password;
     public $email;
     public $user_id;
+    protected static $table_name = 'user';
  
 
 	function __construct() {
@@ -22,7 +23,7 @@ class User extends Model
 	    $instance = Db::get_instance();
 	    $this->db_conn = $instance->get_connection();
 	}
- 
+
 
     public function create()
     {

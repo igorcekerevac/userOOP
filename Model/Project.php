@@ -11,6 +11,7 @@ class Project extends Model
 
 	public $name;
 	public $client_id;
+    protected static $table_name = 'project';
  
 
 	function __construct()

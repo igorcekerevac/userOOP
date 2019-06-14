@@ -116,7 +116,7 @@ class UserController
 	{
 		Functions::check_user();
 
-        $all_tasks = Task::get_all_with_specific_id('task', $_SESSION['user_id'], 'user');
+        $all_tasks = Task::get_all_with_specific_id($_SESSION['user_id'], 'user');
 
 		include $_SERVER['DOCUMENT_ROOT'].'/view/user/user_tasks.php';
     }
@@ -151,12 +151,12 @@ class UserController
 
         $task_id = htmlspecialchars($_GET['id']);
 
-        $task = Task::get($task_id, 'task');
+        $task = Task::get($task_id);
 
         $task_name = $task['name'];
         $project_id = $task['project_id'];
 
-        $project_name = Project::get_column_value($project_id, 'name', 'project');
+        $project_name = Project::get_column_value($project_id, 'name');
 
         $all_posts = Post::get_all_posts($task_id);
 
@@ -170,7 +170,7 @@ class UserController
 
 		$results_per_page = 4;
 
-	    $numer_of_results = User::count_all('user');
+	    $numer_of_results = User::count_all();
 
 		$number_of_pages = ceil($numer_of_results/$results_per_page);
 
@@ -187,7 +187,7 @@ class UserController
 
 	    $this_page_first_result = ($page-1)*$results_per_page;
 
-		$all = User::get_all_pagination($this_page_first_result, $results_per_page, 'user');
+		$all = User::get_all_pagination($this_page_first_result, $results_per_page);
 
 		$all_users = Functions::populate_users_array_no_admin($all);
 
@@ -209,7 +209,7 @@ class UserController
 		$delete_id = htmlspecialchars($_GET["id"]);
 
 
-		if (User::delete($delete_id, 'user')) {
+		if (User::delete($delete_id)) {
 
 		    $status = 'User deleted.';
 
@@ -301,7 +301,7 @@ class UserController
 
 		$find_id = htmlspecialchars($_GET["id"]);
 		
-		$user = User::get($find_id, 'user');
+		$user = User::get($find_id);
 
 		$name = $user['name'];
 		$job = $user['job'];
