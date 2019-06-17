@@ -11,7 +11,7 @@ class Client extends Model
 
 	public $name;
 	protected static $table_name = 'client';
-
+    protected static $class_name = __CLASS__;
 
 	function __construct()
     {

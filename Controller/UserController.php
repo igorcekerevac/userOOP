@@ -8,13 +8,12 @@ use Model\User;
 use Model\Post;
 use Functions\Functions;
 
-
 class UserController
 {
 
 
-	public function create_user_post()
-	{
+    public function create_user_post()
+    {
         $user = new User();
 
         $name = $user->name = trim($_POST['name']);
@@ -39,9 +38,9 @@ class UserController
                 $email = '';
             }
 
-            if (empty($name) || empty($job) || empty($email) || empty($password)) {
+            if (strlen($name) < 3 || empty($job) || empty($email) || empty($password)) {
 
-                $status = 'Please enter data in all fields!';
+                $status = 'Please enter data in all fields! Name must have more then two characters.';
 
             } else {
 
@@ -50,7 +49,7 @@ class UserController
                 header("Location:/?message=User added!");
             }
         }
-        include $_SERVER['DOCUMENT_ROOT'].'/view/user/add_user.php';
+        include $_SERVER['DOCUMENT_ROOT'] . '/view/user/add_user.php';
     }
 
 
@@ -60,14 +59,13 @@ class UserController
             $status = $_GET['message'];
         }
 
-        include $_SERVER['DOCUMENT_ROOT'].'/view/user/add_user.php';
+        include $_SERVER['DOCUMENT_ROOT'] . '/view/user/add_user.php';
     }
 
 
-
     public function login_user_post()
-	{
-		session_start();
+    {
+        session_start();
 
         $email = trim($_POST['email']);
         $password = trim($_POST['password']);
@@ -99,7 +97,7 @@ class UserController
 
         $status = 'Entered email or password is not in database.';
 
-        include $_SERVER['DOCUMENT_ROOT'].'/view/user/login.php';
+        include $_SERVER['DOCUMENT_ROOT'] . '/view/user/login.php';
     }
 
 
@@ -107,24 +105,23 @@ class UserController
     {
         session_start();
 
-        include $_SERVER['DOCUMENT_ROOT'].'/view/user/login.php';
+        include $_SERVER['DOCUMENT_ROOT'] . '/view/user/login.php';
     }
 
 
-
     public function user_tasks()
-	{
-		Functions::check_user();
+    {
+        Functions::check_user();
 
         $all_tasks = Task::get_all_with_specific_id($_SESSION['user_id'], 'user');
 
-		include $_SERVER['DOCUMENT_ROOT'].'/view/user/user_tasks.php';
+        include $_SERVER['DOCUMENT_ROOT'] . '/view/user/user_tasks.php';
     }
 
 
     public function user_task_post_post()
-	{
-		Functions::check_user();
+    {
+        Functions::check_user();
 
         $post = new Post();
 
@@ -160,67 +157,67 @@ class UserController
 
         $all_posts = Post::get_all_posts($task_id);
 
-        include $_SERVER['DOCUMENT_ROOT'].'/view/user/user_posts.php';
+        include $_SERVER['DOCUMENT_ROOT'] . '/view/user/user_posts.php';
     }
 
 
     public function all_users()
-	{
-		Functions::check_admin();
+    {
+        Functions::check_admin();
 
-		$results_per_page = 4;
+        $results_per_page = 4;
 
-	    $numer_of_results = User::count_all();
+        $numer_of_results = User::count_all();
 
-		$number_of_pages = ceil($numer_of_results/$results_per_page);
-
-
-		if (!isset($_GET['page'])) {
-	    	
-	    	$page = 1;
-
-	    } else {
-
-	    	$page = $_GET['page'];
-	    }
+        $number_of_pages = ceil($numer_of_results / $results_per_page);
 
 
-	    $this_page_first_result = ($page-1)*$results_per_page;
+        if (!isset($_GET['page'])) {
 
-		$all = User::get_all_pagination($this_page_first_result, $results_per_page);
+            $page = 1;
 
-		$all_users = Functions::populate_users_array_no_admin($all);
+        } else {
+
+            $page = $_GET['page'];
+        }
 
 
-		include $_SERVER['DOCUMENT_ROOT'].'/view/user/user.php';
+        $this_page_first_result = ($page - 1) * $results_per_page;
+
+        $all = User::get_all_pagination($this_page_first_result, $results_per_page);
+
+        $all_users = Functions::populate_users_array_no_admin($all);
 
 
-		for ($page=1; $page<=$number_of_pages ; $page++) {
+        include $_SERVER['DOCUMENT_ROOT'] . '/view/user/user.php';
 
-	    	echo '<a id="page" href="/users/page/?page=' .$page. '">page ' . $page . '</a>';
-	    }
+
+        for ($page = 1; $page <= $number_of_pages; $page++) {
+
+            echo '<a id="page" href="/users/page/?page=' . $page . '">page ' . $page . '</a>';
+        }
     }
 
 
     public function delete_user()
-	{
-		Functions::check_admin();
+    {
+        Functions::check_admin();
 
-		$delete_id = htmlspecialchars($_GET["id"]);
+        $delete_id = htmlspecialchars($_GET["id"]);
 
         $user = User::get($delete_id);
 
 
-		if ($user->delete()) {
+        if ($user->delete()) {
 
-		    $status = 'User deleted.';
+            $status = 'User deleted.';
 
         } else {
 
             $status = 'Can not delete! User have active tasks.';
         }
 
-		$_SESSION['message'] = $status;
+        $_SESSION['message'] = $status;
 
         header('Location: ' . $_SERVER['HTTP_REFERER']);
 
@@ -228,9 +225,9 @@ class UserController
 
 
     public function update_user_post()
-	{
-		
-		Functions::check_user();
+    {
+
+        Functions::check_user();
 
         $user = new User();
 
@@ -258,9 +255,9 @@ class UserController
                 $email = '';
             }
 
-            if (empty($name) || empty($job) || empty($email) || empty($password)) {
+            if (strlen($name) < 3 || empty($job) || empty($email) || empty($password)) {
 
-                $status = 'Please enter data in all fields!';
+                $status = 'Please enter data in all fields! Name must have more then two characters.';
 
             } else {
 
@@ -278,9 +275,8 @@ class UserController
             }
         }
 
-        include $_SERVER['DOCUMENT_ROOT'].'/view/user/update_user.php';
+        include $_SERVER['DOCUMENT_ROOT'] . '/view/user/update_user.php';
     }
-
 
 
     public function update_user_get()
@@ -291,43 +287,42 @@ class UserController
             $status = $_GET['message'];
         }
 
-        include $_SERVER['DOCUMENT_ROOT'].'/view/user/update_user.php';
+        include $_SERVER['DOCUMENT_ROOT'] . '/view/user/update_user.php';
     }
 
 
-
     public function user_profile()
-	{
-		Functions::check_user();
+    {
+        Functions::check_user();
 
-		$find_id = htmlspecialchars($_GET["id"]);
-		
-		$user = User::get($find_id);
+        $find_id = htmlspecialchars($_GET["id"]);
 
-		$name = $user->name;
-		$job = $user->job;
-		$email = $user->email;
+        $user = User::get($find_id);
 
-		include $_SERVER['DOCUMENT_ROOT'].'/view/user/profile.php';
+        $name = $user->name;
+        $job = $user->job;
+        $email = $user->email;
+
+        include $_SERVER['DOCUMENT_ROOT'] . '/view/user/profile.php';
     }
 
 
     public function logout_user()
-	{
-		session_start();
-		session_destroy();
-		$_SESSION = array();
+    {
+        session_start();
+        session_destroy();
+        $_SESSION = array();
 
-		header("Location: /employee/login");
+        header("Location: /employee/login");
     }
 
 
     public function admin_home()
-	{
-		Functions::check_admin();
+    {
+        Functions::check_admin();
 
-		include $_SERVER['DOCUMENT_ROOT'].'/view/user/home.php';
+        include $_SERVER['DOCUMENT_ROOT'] . '/view/user/home.php';
     }
 
-    
+
 }

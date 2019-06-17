@@ -14,9 +14,9 @@ class Post
     public $task_id;
     public $users_id;
     protected static $table_name = 'post';
- 
+    protected static $class_name = __CLASS__;
 
-	function __construct()
+    function __construct()
     {
         $instance = Db::get_instance();
         $this->db_conn = $instance->get_connection();

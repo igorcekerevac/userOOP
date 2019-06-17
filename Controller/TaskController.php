@@ -8,7 +8,6 @@ use Model\User;
 use Model\Post;
 use Functions\Functions;
 
-
 class TaskController
 {
 

@@ -12,7 +12,7 @@
 
 			if (!in_array($project['project_id'], $id)) {
 			  	array_push($id, $project['project_id']);
-			  	echo '<h3>'.$project['project_id'].'. '.$project['client_name'].' / '.$project['project_name'].' / '.'
+			  	echo '<h3>#id'.$project['project_id'].'/ '.$project['client_name'].' / '.$project['project_name'].' / '.'
                 <a id="add_task" href="client/project/task?id='.$project['project_id'] .'">add task</a></h3>';
 			}
 			if ($project['task_id'] !== null) {

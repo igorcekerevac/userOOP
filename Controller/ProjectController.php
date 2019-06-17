@@ -5,7 +5,6 @@ namespace Controller;
 use Model\Project;
 use Functions\Functions;
 
-
 class ProjectController
 {
 

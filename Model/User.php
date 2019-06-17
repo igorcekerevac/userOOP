@@ -16,6 +16,7 @@ class User extends Model
     public $email;
     public $user_id;
     protected static $table_name = 'user';
+    protected static $class_name = __CLASS__;
  
 
 	function __construct() {

@@ -12,9 +12,9 @@ class Project extends Model
 	public $name;
 	public $client_id;
     protected static $table_name = 'project';
- 
+    protected static $class_name = __CLASS__;
 
-	function __construct()
+    function __construct()
     {
         $instance = Db::get_instance();
         $this->db_conn = $instance->get_connection();

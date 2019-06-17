@@ -6,8 +6,6 @@ use Model\Client;
 use Model\Project;
 use Functions\Functions;
 
-
-
 class ClientController
 {
 
