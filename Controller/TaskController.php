@@ -105,13 +105,7 @@ class TaskController
 
         $task_id = htmlspecialchars($_GET["id"]);
 
-        $obj = Task::get($task_id);
-
-        $task = new Task();
-        $task->task_id = $obj->task_id;
-        $task->project_id = $obj->project_id;
-        $task->user_id = $obj->user_id;
-        $task->name = $obj->name;
+        $task = Task::get($task_id);
 
         $task->delete();
 

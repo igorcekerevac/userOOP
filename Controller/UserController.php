@@ -208,15 +208,7 @@ class UserController
 
 		$delete_id = htmlspecialchars($_GET["id"]);
 
-        $obj = User::get($delete_id);
-
-        $user = new User();
-
-        $user->user_id = $obj->user_id;
-        $user->job = $obj->job;
-        $user->email = $obj->email;
-        $user->name = $obj->name;
-        $user->password = $obj->password;
+        $user = User::get($delete_id);
 
 
 		if ($user->delete()) {
