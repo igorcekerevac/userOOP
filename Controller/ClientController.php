@@ -13,7 +13,7 @@ class ClientController
 	{
 		Functions::check_admin();
 
-		$results_per_page = 3;
+		$results_per_page = 5;
 
 	    $numer_of_results = Client::count_all();
 

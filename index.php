@@ -139,7 +139,12 @@
 
         case '/projects' :
             $project = new Controller\ProjectController();
-            $project->all_projects();
+            $project->all_projects_get();
+            break;
+
+        case '/project/add/' :
+            $project = new Controller\ProjectController();
+            $project->all_project_add_project();
             break;
 
 

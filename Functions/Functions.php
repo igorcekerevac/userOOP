@@ -58,5 +58,4 @@ class Functions
 
         return $users;
     }
-
 }

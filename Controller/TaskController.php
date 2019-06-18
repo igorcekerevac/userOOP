@@ -11,24 +11,19 @@ use Functions\Functions;
 class TaskController
 {
 
-
     public function create_task_get()
     {
         Functions::check_admin();
 
-
         $project_id = $_GET['id'];
-
 
         $all = User::get_all();
 
         $all_users = Functions::populate_users_array_no_admin($all);
 
-
         $name = Project::get_column_value($project_id, 'name');
 
         $all_tasks = Task::get_all_with_specific_id($project_id, 'project');
-
 
         $client = Task::get_client_id($project_id);
 
@@ -109,8 +104,5 @@ class TaskController
         $task->delete();
 
         header('Location: ' . $_SERVER['HTTP_REFERER']);
-
     }
-
-
 }
