@@ -17,13 +17,12 @@ abstract class Model
         $instance = Db::get_instance();
         $db_conn = $instance->get_connection();
 
-        $id = $_GET['id'];
+        $id = static::$table_name.'_id';
 
         $sql = "DELETE FROM " . static::$table_name . " WHERE " . static::$table_name . "_id = :id ";
 
         $prep_state = $db_conn->prepare($sql);
-        $prep_state->bindParam(':id', $id);
-
+        $prep_state->bindParam(':id', $this->$id);
 
         if ($prep_state->execute()) {
             return true;
