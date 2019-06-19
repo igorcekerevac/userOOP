@@ -6,13 +6,13 @@ namespace Functions;
 class Functions
 {
 	
-	public static function email_validation($email)
+	public static function emailValidation($email)
 	{
 		return filter_var($email, FILTER_VALIDATE_EMAIL);
 	}
 
 
-	public static function data_typed($key)
+	public static function dataTyped($key)
 	{
 
 		if (!empty($_REQUEST[$key])) {
@@ -22,7 +22,7 @@ class Functions
 	}
 
 
-	public static function check_admin()
+	public static function checkAdmin()
 	{
 		session_start();
 
@@ -33,7 +33,7 @@ class Functions
 	}
 
 
-	public static function check_user()
+	public static function checkUser()
 	{
 		session_start();
 
@@ -44,11 +44,11 @@ class Functions
 	}
 
 
-	public static function populate_users_array_no_admin($all_users)
+	public static function populateUsersArray($allUsers)
     {
         $users = array();
 
-        foreach ($all_users as $user) {
+        foreach ($allUsers as $user) {
 
             if ($user->name !== 'admin') {
 

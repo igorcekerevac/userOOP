@@ -29,24 +29,24 @@
 
             <tr>
                 <td>name</td>
-                <td><input type="text" name="name" value="<?php echo Functions\Functions::data_typed('name'); ?>"></td>
+                <td><input type="text" name="name" value="<?php echo Functions\Functions::dataTyped('name'); ?>"></td>
             </tr>
 
             <tr>
                 <td>job title</td>
-                <td><input type="text" name="job" value="<?php echo Functions\Functions::data_typed('job'); ?>"></td>
+                <td><input type="text" name="job" value="<?php echo Functions\Functions::dataTyped('job'); ?>"></td>
             </tr>
 
             <tr>
                 <td>email</td>
-                <td><input type="text" name="email" value="<?php echo Functions\Functions::data_typed('email'); ?>">
+                <td><input type="text" name="email" value="<?php echo Functions\Functions::dataTyped('email'); ?>">
                 </td>
             </tr>
 
             <tr>
                 <td>password</td>
                 <td><input type="password" name="password"
-                           value="<?php echo Functions\Functions::data_typed('password'); ?>"></td>
+                           value="<?php echo Functions\Functions::dataTyped('password'); ?>"></td>
             </tr>
 
 

@@ -9,19 +9,19 @@ use Functions\Functions;
 class ProjectController
 {
 
-	public function create_project_get()
+	public function addProjectGet()
     {
-        Functions::check_admin();
+        Functions::checkAdmin();
 
-        $client = Client::get_by_id(htmlspecialchars($_GET['id']));
+        $client = Client::getById(htmlspecialchars($_GET['id']));
 
 		include $_SERVER['DOCUMENT_ROOT'].'/view/project/add_project.php';	
     }
 
 
-    public function create_project_post()
+    public function addProjectPost()
     {
-        Functions::check_admin();
+        Functions::checkAdmin();
 
         $project = new Project();
 
@@ -42,32 +42,32 @@ class ProjectController
 
         $_GET['id'] = $project->client_id;
 
-        $client = Client::get_by_id($_GET['id']);
+        $client = Client::getById($_GET['id']);
 
         include $_SERVER['DOCUMENT_ROOT'].'/view/project/add_project.php';
     }
 
 
-    public function all_projects_get()
+    public function showAllGet()
 	{
-		Functions::check_admin();
+		Functions::checkAdmin();
 
         if (!empty($_GET['message'])) {
             $status = $_GET['message'];
         }
 
-		$all_projects = Project::get_all_projects_join();
+		$all_projects = Project::getAllJoined();
 
-		$all_clients = Client::get_all();
+		$all_clients = Client::getAll();
 
 		include $_SERVER['DOCUMENT_ROOT'].'/view/project/all_projects.php';
 
     }
 
 
-    public function all_project_post()
+    public function showAllPost()
     {
-        Functions::check_admin();
+        Functions::checkAdmin();
 
         $project = new Project();
 
@@ -86,9 +86,9 @@ class ProjectController
             header("Location: /projects?message=Project added.");
         }
 
-        $all_projects = Project::get_all_projects_join();
+        $all_projects = Project::getAllJoined();
 
-        $all_clients = Client::get_all();
+        $all_clients = Client::getAll();
 
         include $_SERVER['DOCUMENT_ROOT'].'/view/project/all_projects.php';
     }

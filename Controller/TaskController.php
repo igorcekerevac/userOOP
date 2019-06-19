@@ -2,7 +2,6 @@
 
 namespace Controller;
 
-use Model\Client;
 use Model\Task;
 use Model\Project;
 use Model\User;
@@ -12,28 +11,25 @@ use Functions\Functions;
 class TaskController
 {
 
-    public function create_task_get()
+    public function addTaskGet()
     {
-        Functions::check_admin();
+        Functions::checkAdmin();
 
-        $project = Project::get_by_id($_GET['id']);
+        $project = Project::getById($_GET['id']);
 
-        $users = User::get_all();
+        $users = User::getAll();
 
-        $all_users = Functions::populate_users_array_no_admin($users);
+        $all_users = Functions::populateUsersArray($users);
 
-        $all_tasks = $project->get_all_tasks();
-
-        $client_id = Client::get_client_id($project->project_id);
-
+        $all_tasks = $project->getTasks();
 
         include $_SERVER['DOCUMENT_ROOT'].'/view/task/add_task.php';
     }
 
 
-    public function create_task_post()
+    public function addTaskPost()
     {
-        Functions::check_admin();
+        Functions::checkAdmin();
 
         $task = new Task();
 
@@ -46,21 +42,21 @@ class TaskController
     }
 
 
-    public function view_task_get()
+    public function taskCommentsGet()
     {
-        Functions::check_admin();
+        Functions::checkAdmin();
 
-        $task = Task::get_by_id(htmlspecialchars($_GET["id"]));
+        $task = Task::getById(htmlspecialchars($_GET["id"]));
 
-        $all_posts = $task->get_all_posts();
+        $all_posts = $task->getPosts();
 
         include $_SERVER['DOCUMENT_ROOT'].'/view/task/task.php';
     }
 
 
-    public function view_task_post()
+    public function taskCommentsPost()
     {
-        Functions::check_admin();
+        Functions::checkAdmin();
 
         $post = new Post();
 
@@ -77,11 +73,11 @@ class TaskController
     }
 
 
-    public function delete_task()
+    public function delete()
     {
-        Functions::check_admin();
+        Functions::checkAdmin();
 
-        $task = Task::get_by_id(htmlspecialchars($_GET["id"]));
+        $task = Task::getById(htmlspecialchars($_GET["id"]));
 
         $task->delete();
 

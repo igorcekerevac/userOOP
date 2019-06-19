@@ -14,17 +14,17 @@ class User extends Model
     public $email;
     public $user_id;
 
-    protected static $table_name = 'user';
+    protected static $tableName = 'user';
 
 
     public function save()
     {
-        $instance = Db::get_instance();
-        $db_conn = $instance->get_connection();
+        $instance = Db::getInstance();
+        $conn = $instance->getConnection();
 
         $sql = "INSERT INTO user SET name = ?, password = ?, email = ?, job = ?";
 
-        $prep_state = $db_conn->prepare($sql);
+        $prep_state = $conn->prepare($sql);
 
         $hash = password_hash($this->password, PASSWORD_DEFAULT);
 
@@ -43,13 +43,13 @@ class User extends Model
 
     public function update()
     {
-        $instance = Db::get_instance();
-        $db_conn = $instance->get_connection();
+        $instance = Db::getInstance();
+        $conn = $instance->getConnection();
 
         $sql = "UPDATE user SET name = :name, password = :password, email = :email, job = :job
          WHERE user_id = :id";
        
-        $prep_state = $db_conn->prepare($sql);
+        $prep_state = $conn->prepare($sql);
 
         $prep_state->bindParam(':name', $this->name);
         $prep_state->bindParam(':password', $this->password);
@@ -65,14 +65,14 @@ class User extends Model
     }
 
 
-    public function get_all_tasks()
+    public function getTasks()
     {
-        $instance = Db::get_instance();
-        $db_conn = $instance->get_connection();
+        $instance = Db::getInstance();
+        $conn = $instance->getConnection();
 
         $sql = "SELECT * FROM task where user_id= :id";
 
-        $prep_state = $db_conn->prepare($sql);
+        $prep_state = $conn->prepare($sql);
         $prep_state->bindParam(':id', $this->user_id);
         $prep_state->setFetchMode(\PDO::FETCH_CLASS, '\Model\Task');
 

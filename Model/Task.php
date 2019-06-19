@@ -11,17 +11,17 @@ class Task extends Model
     public $user_id;
     public $task_id;
 
-    protected static $table_name = 'task';
+    protected static $tableName = 'task';
  
 
     public function save()
     {
-        $instance = Db::get_instance();
-        $db_conn = $instance->get_connection();
+        $instance = Db::getInstance();
+        $conn = $instance->getConnection();
 
         $sql = "INSERT INTO task SET name = ?, project_id = ?, user_id = ?";
 
-        $prep_state = $db_conn->prepare($sql);
+        $prep_state = $conn->prepare($sql);
 
         $prep_state->bindParam(1, $this->name);
         $prep_state->bindParam(2, $this->project_id);
@@ -35,14 +35,14 @@ class Task extends Model
     }
 
 
-    public function get_all_posts()
+    public function getPosts()
     {
-        $instance = Db::get_instance();
-        $db_conn = $instance->get_connection();
+        $instance = Db::getInstance();
+        $conn = $instance->getConnection();
 
         $sql = "SELECT * FROM post where task_id = :task_id ORDER BY date DESC ";
 
-        $prep_state = $db_conn->prepare($sql);
+        $prep_state = $conn->prepare($sql);
 
         $prep_state->bindParam(':task_id', $this->task_id);
         $prep_state->setFetchMode(\PDO::FETCH_CLASS, '\Model\Post');

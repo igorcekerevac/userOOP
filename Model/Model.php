@@ -8,19 +8,19 @@ use Db\Db;
 abstract class Model
 {
 
-    protected static $table_name = '';
+    protected static $tableName = '';
 
 
     public function delete()
     {
-        $instance = Db::get_instance();
-        $db_conn = $instance->get_connection();
+        $instance = Db::getInstance();
+        $conn = $instance->getConnection();
 
-        $id = static::$table_name.'_id';
+        $id = static::$tableName.'_id';
 
-        $sql = "DELETE FROM " . static::$table_name . " WHERE " . static::$table_name . "_id = :id ";
+        $sql = "DELETE FROM " . static::$tableName . " WHERE " . static::$tableName . "_id = :id ";
 
-        $prep_state = $db_conn->prepare($sql);
+        $prep_state = $conn->prepare($sql);
         $prep_state->bindParam(':id', $this->$id);
 
         if ($prep_state->execute()) {
@@ -31,14 +31,14 @@ abstract class Model
     }
 
 
-    public static function get_all()
+    public static function getAll()
     {
-        $instance = Db::get_instance();
-        $db_conn = $instance->get_connection();
+        $instance = Db::getInstance();
+        $conn = $instance->getConnection();
 
-        $sql = "SELECT * FROM " . static::$table_name;
+        $sql = "SELECT * FROM " . static::$tableName;
 
-        $prep_state = $db_conn->prepare($sql);
+        $prep_state = $conn->prepare($sql);
         $prep_state->setFetchMode(\PDO::FETCH_CLASS, get_called_class());
         $prep_state->execute();
 
@@ -50,14 +50,14 @@ abstract class Model
     }
 
 
-    public static function get_by_id($id)
+    public static function getById($id)
     {
-        $instance = Db::get_instance();
-        $db_conn = $instance->get_connection();
+        $instance = Db::getInstance();
+        $conn = $instance->getConnection();
 
-        $sql = "SELECT * FROM " .static::$table_name. " WHERE " . static::$table_name ."_id = :id";
+        $sql = "SELECT * FROM " .static::$tableName. " WHERE " . static::$tableName ."_id = :id";
 
-        $prep_state = $db_conn->prepare($sql);
+        $prep_state = $conn->prepare($sql);
         $prep_state->bindParam(':id', $id);
         $prep_state->setFetchMode(\PDO::FETCH_CLASS, get_called_class());
 
@@ -72,14 +72,14 @@ abstract class Model
 
 
     //num of rows, pagination
-    public static function count_all()
+    public static function countAll()
     {
-        $instance = Db::get_instance();
-        $db_conn = $instance->get_connection();
+        $instance = Db::getInstance();
+        $conn = $instance->getConnection();
 
-        $sql = "SELECT " . static::$table_name ."_id FROM " . static::$table_name;
+        $sql = "SELECT " . static::$tableName ."_id FROM " . static::$tableName;
 
-        $prep_state = $db_conn->prepare($sql);
+        $prep_state = $conn->prepare($sql);
         $prep_state->execute();
 
         $num = $prep_state->rowCount();
@@ -87,14 +87,14 @@ abstract class Model
     }
 
 
-    public static function get_all_pagination($from_record_num, $records_per_page)
+    public static function getAllPagination($from_record_num, $records_per_page)
     {
-        $instance = Db::get_instance();
-        $db_conn = $instance->get_connection();
+        $instance = Db::getInstance();
+        $conn = $instance->getConnection();
 
-        $sql = "SELECT * FROM " . static::$table_name . " LIMIT " . $from_record_num . ',' .$records_per_page;
+        $sql = "SELECT * FROM " . static::$tableName . " LIMIT " . $from_record_num . ',' .$records_per_page;
 
-        $prep_state = $db_conn->prepare($sql);
+        $prep_state = $conn->prepare($sql);
         $prep_state->setFetchMode(\PDO::FETCH_CLASS, get_called_class());
         $prep_state->execute();
 
@@ -108,12 +108,12 @@ abstract class Model
 
     public static function where($column, $value)
     {
-        $instance = Db::get_instance();
-        $db_conn = $instance->get_connection();
+        $instance = Db::getInstance();
+        $conn = $instance->getConnection();
 
-        $sql = "SELECT * FROM " . static::$table_name . " WHERE " . $column . " = :value";
+        $sql = "SELECT * FROM " . static::$tableName . " WHERE " . $column . " = :value";
 
-        $prep_state = $db_conn->prepare($sql);
+        $prep_state = $conn->prepare($sql);
         $prep_state->bindParam(':value', $value);
         $prep_state->setFetchMode(\PDO::FETCH_CLASS, get_called_class());
 

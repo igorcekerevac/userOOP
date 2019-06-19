@@ -11,17 +11,17 @@ class Project extends Model
 	public $client_id;
 	public $project_id;
 
-    protected static $table_name = 'project';
+    protected static $tableName = 'project';
 
 
     public function save()
     {
-        $instance = Db::get_instance();
-        $db_conn = $instance->get_connection();
+        $instance = Db::getInstance();
+        $conn = $instance->getConnection();
 
         $sql = "INSERT INTO project SET name = ?, client_id = ?";
 
-        $prep_state = $db_conn->prepare($sql);
+        $prep_state = $conn->prepare($sql);
 
         $prep_state->bindParam(1, $this->name);
         $prep_state->bindParam(2, $this->client_id);
@@ -34,10 +34,10 @@ class Project extends Model
     }
 
 
-    public static function get_all_projects_join()
+    public static function getAllJoined()
     {
-        $instance = Db::get_instance();
-        $db_conn = $instance->get_connection();
+        $instance = Db::getInstance();
+        $conn = $instance->getConnection();
 
         $sql = "SELECT client.name AS client_name,project.project_id, project.name AS project_name,
             task.name AS task_name ,user.name AS user_name, task.task_id 
@@ -50,21 +50,21 @@ class Project extends Model
                 LEFT JOIN
             user ON task.user_id = user.user_id";
 
-        $prep_state = $db_conn->prepare($sql);
+        $prep_state = $conn->prepare($sql);
         $prep_state->execute();
 
         return $prep_state->fetchAll(\PDO::FETCH_ASSOC);
     }
 
 
-    public function get_all_tasks()
+    public function getTasks()
     {
-        $instance = Db::get_instance();
-        $db_conn = $instance->get_connection();
+        $instance = Db::getInstance();
+        $conn = $instance->getConnection();
 
         $sql = "SELECT * FROM task where project_id= :id";
 
-        $prep_state = $db_conn->prepare($sql);
+        $prep_state = $conn->prepare($sql);
         $prep_state->bindParam(':id', $this->project_id);
         $prep_state->setFetchMode(\PDO::FETCH_CLASS, '\Model\Task');
 

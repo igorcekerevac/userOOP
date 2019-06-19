@@ -8,13 +8,13 @@ use Functions\Functions;
 class ClientController
 {
 
-	public function all_clients()
+	public function showAll()
 	{
-		Functions::check_admin();
+		Functions::checkAdmin();
 
 		$results_per_page = 5;
 
-	    $numer_of_results = Client::count_all();
+	    $numer_of_results = Client::countAll();
 
 		$number_of_pages = ceil($numer_of_results/$results_per_page);
 
@@ -28,7 +28,7 @@ class ClientController
 
 	    $this_page_first_result = ($page-1)*$results_per_page;
 
-		$all_clients = Client::get_all_pagination($this_page_first_result, $results_per_page);
+		$all_clients = Client::getAllPagination($this_page_first_result, $results_per_page);
 
 		include $_SERVER['DOCUMENT_ROOT'].'/view/client/client.php';
 
@@ -38,9 +38,9 @@ class ClientController
     }
 
 
-    public function create_client_post()
+    public function addClientPost()
     {
-		Functions::check_admin();
+		Functions::checkAdmin();
 
 		$client = new Client();
 		$name = $client->name = htmlspecialchars(trim($_POST['name']));
@@ -71,22 +71,22 @@ class ClientController
     }
 
 
-    public function create_client_get()
+    public function addClientGet()
     {
-        Functions::check_admin();
+        Functions::checkAdmin();
 
         include $_SERVER['DOCUMENT_ROOT'].'/view/client/add_client.php';
     }
 
 
 
-    public function client_profile()
+    public function clientPage()
     {
-		Functions::check_admin();
+		Functions::checkAdmin();
 
-		$client = Client::get_by_id(htmlspecialchars($_GET["id"]));
+		$client = Client::getById(htmlspecialchars($_GET["id"]));
 
-		$client_projects = $client->get_all_projects();
+		$client_projects = $client->getAllProjects();
 
 		include $_SERVER['DOCUMENT_ROOT'].'/view/client/client_profile.php';		
     }

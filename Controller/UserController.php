@@ -12,7 +12,7 @@ class UserController
 {
 
 
-    public function create_user_post()
+    public function addUserPost()
     {
         $user = new User();
 
@@ -32,7 +32,7 @@ class UserController
 
         if ($db_mail_validate == 0) {
 
-            if (!Functions::email_validation($email)) {
+            if (!Functions::emailValidation($email)) {
 
                 $email = '';
             }
@@ -56,7 +56,7 @@ class UserController
     }
 
 
-    public function create_user_get()
+    public function addUserGet()
     {
         if (!empty($_GET['message'])) {
             $status = $_GET['message'];
@@ -66,7 +66,7 @@ class UserController
     }
 
 
-    public function login_user_post()
+    public function loginPost()
     {
         session_start();
 
@@ -98,7 +98,7 @@ class UserController
     }
 
 
-    public function login_user_get()
+    public function loginGet()
     {
         session_start();
 
@@ -106,21 +106,21 @@ class UserController
     }
 
 
-    public function user_tasks()
+    public function allTasks()
     {
-        Functions::check_user();
+        Functions::checkUser();
 
-        $user = User::get_by_id($_SESSION['user_id']);
+        $user = User::getById($_SESSION['user_id']);
 
-        $all_tasks = $user->get_all_tasks();
+        $all_tasks = $user->getTasks();
 
         include $_SERVER['DOCUMENT_ROOT'] . '/view/user/user_tasks.php';
     }
 
 
-    public function user_task_comment_post()
+    public function taskCommentsPost()
     {
-        Functions::check_user();
+        Functions::checkUser();
 
         $post = new Post();
 
@@ -136,27 +136,27 @@ class UserController
     }
 
 
-    public function user_task_comment_get()
+    public function taskCommentsGet()
     {
-        Functions::check_user();
+        Functions::checkUser();
 
-        $task = Task::get_by_id(htmlspecialchars($_GET['id']));
+        $task = Task::getById(htmlspecialchars($_GET['id']));
 
-        $project = Project::get_by_id($task->project_id);
+        $project = Project::getById($task->project_id);
 
-        $all_posts = $task->get_all_posts();
+        $all_posts = $task->getPosts();
 
         include $_SERVER['DOCUMENT_ROOT'] . '/view/user/user_posts.php';
     }
 
 
-    public function all_users()
+    public function showAll()
     {
-        Functions::check_admin();
+        Functions::checkAdmin();
 
         $results_per_page = 4;
 
-        $numer_of_results = User::count_all();
+        $numer_of_results = User::countAll();
 
         $number_of_pages = ceil($numer_of_results / $results_per_page);
 
@@ -173,9 +173,9 @@ class UserController
 
         $this_page_first_result = ($page - 1) * $results_per_page;
 
-        $all = User::get_all_pagination($this_page_first_result, $results_per_page);
+        $all = User::getAllPagination($this_page_first_result, $results_per_page);
 
-        $all_users = Functions::populate_users_array_no_admin($all);
+        $all_users = Functions::populateUsersArray($all);
 
 
         include $_SERVER['DOCUMENT_ROOT'] . '/view/user/user.php';
@@ -188,11 +188,11 @@ class UserController
     }
 
 
-    public function delete_user()
+    public function delete()
     {
-        Functions::check_admin();
+        Functions::checkAdmin();
 
-        $user = User::get_by_id(htmlspecialchars($_GET["id"]));
+        $user = User::getById(htmlspecialchars($_GET["id"]));
 
         if ($user->delete()) {
 
@@ -210,9 +210,9 @@ class UserController
     }
 
 
-    public function update_user_post()
+    public function updatePost()
     {
-        Functions::check_user();
+        Functions::checkUser();
 
         $user = new User();
 
@@ -235,7 +235,7 @@ class UserController
 
         if ($db_mail_validate == 0) {
 
-            if (!Functions::email_validation($email)) {
+            if (!Functions::emailValidation($email)) {
 
                 $email = '';
             }
@@ -264,9 +264,9 @@ class UserController
     }
 
 
-    public function update_user_get()
+    public function updateGet()
     {
-        Functions::check_user();
+        Functions::checkUser();
 
         if (!empty($_GET['message'])) {
             $status = $_GET['message'];
@@ -276,17 +276,17 @@ class UserController
     }
 
 
-    public function user_profile()
+    public function profile()
     {
-        Functions::check_user();
+        Functions::checkUser();
 
-        $user = User::get_by_id(htmlspecialchars($_GET["id"]));
+        $user = User::getById(htmlspecialchars($_GET["id"]));
 
         include $_SERVER['DOCUMENT_ROOT'] . '/view/user/profile.php';
     }
 
 
-    public function logout_user()
+    public function logout()
     {
         session_start();
         session_destroy();
@@ -296,9 +296,9 @@ class UserController
     }
 
 
-    public function admin_home()
+    public function adminHome()
     {
-        Functions::check_admin();
+        Functions::checkAdmin();
 
         include $_SERVER['DOCUMENT_ROOT'] . '/view/user/home.php';
     }

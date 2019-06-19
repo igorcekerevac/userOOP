@@ -3,7 +3,7 @@
 namespace Model;
 use Db\Db;
 
-class Post 
+class Post extends Model
 {
 
 	public $title;
@@ -13,17 +13,17 @@ class Post
     public $users_id;
     public $post_id;
 
-    protected static $table_name = 'post';
+    protected static $tableName = 'post';
 
 
     public function save()
     {
-        $instance = Db::get_instance();
-        $db_conn = $instance->get_connection();
+        $instance = Db::getInstance();
+        $conn = $instance->getConnection();
 
         $sql = "INSERT INTO post SET title = ?, body = ?, date = ? , task_id = ?, users_id = ?";
 
-        $prep_state = $db_conn->prepare($sql);
+        $prep_state = $conn->prepare($sql);
 
         $prep_state->bindParam(1, $this->title);
         $prep_state->bindParam(2, $this->body);

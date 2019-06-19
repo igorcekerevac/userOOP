@@ -36,7 +36,7 @@
 
 
     <input id="add_btn" style="float: left; width: 115px; margin-left: 15px;" type="submit" value="back to client"
-           onclick="location.href = '/client/?id=<?php echo $client_id; ?>';"></input><br><br><br>
+           onclick="location.href = '/client/?id=<?php echo $project->client_id; ?>';"></input><br><br><br>
 
 	<h2>ALL TASKS</h2>
 
