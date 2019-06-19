@@ -13,7 +13,7 @@ class ProjectController
     {
         Functions::check_admin();
 
-        $client_name = Client::get_column_value($_GET['id'], 'name');
+        $client = Client::get_by_id(htmlspecialchars($_GET['id']));
 
 		include $_SERVER['DOCUMENT_ROOT'].'/view/project/add_project.php';	
     }
@@ -25,11 +25,9 @@ class ProjectController
 
         $project = new Project();
 
-        $name = $project->name = trim($_POST['name']);
+        $name = $project->name = htmlspecialchars(trim($_POST['name']));
 
-        $client_id = $_POST['id'];
-
-        $project->client_id = $client_id;
+        $project->client_id = $_POST['id'];
 
 
         if (strlen($name) < 5) {
@@ -38,13 +36,13 @@ class ProjectController
 
         } else {
 
-            $project->create();
+            $project->save();
             header("Location: /clients");
         }
 
-        $_GET['id'] = $client_id;
+        $_GET['id'] = $project->client_id;
 
-        $client_name = Client::get_column_value($_GET['id'], 'name');
+        $client = Client::get_by_id($_GET['id']);
 
         include $_SERVER['DOCUMENT_ROOT'].'/view/project/add_project.php';
     }
@@ -67,26 +65,24 @@ class ProjectController
     }
 
 
-    public function all_project_add_project()
+    public function all_project_post()
     {
         Functions::check_admin();
 
         $project = new Project();
 
-        $name = $project->name = trim($_POST['name']);
+        $name = $project->name = htmlspecialchars(trim($_POST['name']));
 
-        $client_id = $_POST['id'];
-
-        $project->client_id = $client_id;
+        $project->client_id = $_POST['id'];
 
 
-        if (strlen($name) < 5 || $client_id === 'choose client') {
+        if (strlen($name) < 5 || $project->client_id === 'choose client') {
 
             $status = 'Please enter project name with minimum 5 characters and client name!';
 
         } else {
 
-            $project->create();
+            $project->save();
             header("Location: /projects?message=Project added.");
         }
 

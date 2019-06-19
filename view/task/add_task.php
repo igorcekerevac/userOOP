@@ -2,9 +2,9 @@
 
 <div id="content">
 
-	<h1>ADD TASK FOR PROJECT/<?php echo ' '. $name ?></h1><br>
+	<h1>ADD TASK FOR PROJECT/<?php echo ' '. $project->name ?></h1><br>
 
-	<form action='/client/project/post/?id='". <?php echo $project_id; ?>."' method="post">
+	<form action='/client/project/post/?id='". <?php echo $project->project_id; ?>."' method="post">
 
 		<table>
 			<tr>

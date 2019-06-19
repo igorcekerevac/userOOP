@@ -9,7 +9,6 @@ abstract class Model
 {
 
     protected static $table_name = '';
-    protected static $class_name;
 
 
     public function delete()
@@ -40,13 +39,18 @@ abstract class Model
         $sql = "SELECT * FROM " . static::$table_name;
 
         $prep_state = $db_conn->prepare($sql);
+        $prep_state->setFetchMode(\PDO::FETCH_CLASS, get_called_class());
         $prep_state->execute();
 
-        return $prep_state->fetchAll(\PDO::FETCH_OBJ);
+        if ($array = $prep_state->fetchAll()) {
+            return $array;
+        } else {
+            return array();
+        }
     }
 
 
-    public static function get($id)
+    public static function get_by_id($id)
     {
         $instance = Db::get_instance();
         $db_conn = $instance->get_connection();
@@ -55,13 +59,15 @@ abstract class Model
 
         $prep_state = $db_conn->prepare($sql);
         $prep_state->bindParam(':id', $id);
-        $prep_state->setFetchMode(\PDO::FETCH_CLASS, static::$class_name);
+        $prep_state->setFetchMode(\PDO::FETCH_CLASS, get_called_class());
 
         $prep_state->execute();
 
-        $obj = $prep_state->fetch();
-
-        return $obj;
+        if ($obj = $prep_state->fetch()) {
+            return $obj;
+        } else {
+            return false;
+        }
     }
 
 
@@ -89,49 +95,18 @@ abstract class Model
         $sql = "SELECT * FROM " . static::$table_name . " LIMIT " . $from_record_num . ',' .$records_per_page;
 
         $prep_state = $db_conn->prepare($sql);
+        $prep_state->setFetchMode(\PDO::FETCH_CLASS, get_called_class());
         $prep_state->execute();
 
-        $users = $prep_state->fetchAll(\PDO::FETCH_OBJ);
-
-        return $users;
+        if ($array = $prep_state->fetchAll()) {
+            return $array;
+        } else {
+            return array();
+        }
     }
 
 
-    public static function get_all_with_specific_id($id, $id_name)
-    {
-        $instance = Db::get_instance();
-        $db_conn = $instance->get_connection();
-
-        $sql = "SELECT * FROM " . static::$table_name . " where " . $id_name . "_id= :id";
-
-        $prep_state = $db_conn->prepare($sql);
-        $prep_state->bindParam(':id', $id);
-
-        $prep_state->execute();
-
-        return $prep_state->fetchAll(\PDO::FETCH_OBJ);
-    }
-
-
-    public static function get_column_value($id, $column)
-    {
-        $instance = Db::get_instance();
-        $db_conn = $instance->get_connection();
-
-        $sql = "SELECT " . $column . " FROM " . static::$table_name . " WHERE " . static::$table_name . "_id = :id";
-
-        $prep_state = $db_conn->prepare($sql);
-        $prep_state->bindParam(':id', $id);
-
-        $prep_state->execute();
-
-        $result = $prep_state->fetch(\PDO::FETCH_ASSOC);
-
-        return $result[$column];
-    }
-
-
-    public static function check_row_exists_where_column_value($column, $value)
+    public static function where($column, $value)
     {
         $instance = Db::get_instance();
         $db_conn = $instance->get_connection();
@@ -140,10 +115,11 @@ abstract class Model
 
         $prep_state = $db_conn->prepare($sql);
         $prep_state->bindParam(':value', $value);
+        $prep_state->setFetchMode(\PDO::FETCH_CLASS, get_called_class());
 
         $prep_state->execute();
 
-        if ($obj = $prep_state->fetch(\PDO::FETCH_OBJ)) {
+        if ($obj = $prep_state->fetch()) {
             return $obj;
         } else {
             return false;

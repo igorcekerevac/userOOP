@@ -47,7 +47,7 @@
 
         case '/employee/task':
             $user = new Controller\UserController();
-            $user->user_task_post_get();
+            $user->user_task_comment_get();
             break;
 
         case '/users' :
@@ -97,7 +97,7 @@
 
         case '/employee/post/submit' :
             $user = new Controller\UserController();
-            $user->user_task_post_post();
+            $user->user_task_comment_post();
             break;
 
 
@@ -144,7 +144,7 @@
 
         case '/project/add/' :
             $project = new Controller\ProjectController();
-            $project->all_project_add_project();
+            $project->all_project_post();
             break;
 
 

@@ -2,6 +2,7 @@
 
 namespace Controller;
 
+use Model\Client;
 use Model\Task;
 use Model\Project;
 use Model\User;
@@ -15,19 +16,15 @@ class TaskController
     {
         Functions::check_admin();
 
-        $project_id = $_GET['id'];
+        $project = Project::get_by_id($_GET['id']);
 
-        $all = User::get_all();
+        $users = User::get_all();
 
-        $all_users = Functions::populate_users_array_no_admin($all);
+        $all_users = Functions::populate_users_array_no_admin($users);
 
-        $name = Project::get_column_value($project_id, 'name');
+        $all_tasks = $project->get_all_tasks();
 
-        $all_tasks = Task::get_all_with_specific_id($project_id, 'project');
-
-        $client = Task::get_client_id($project_id);
-
-        $client_id = $client['client_id'];
+        $client_id = Client::get_client_id($project->project_id);
 
 
         include $_SERVER['DOCUMENT_ROOT'].'/view/task/add_task.php';
@@ -40,16 +37,12 @@ class TaskController
 
         $task = new Task();
 
-        $user_id = $_POST['user_id'];
-        $task_name = $_POST['name'];
-        $project_id = $_POST['project_id'];
+        $task->name = htmlspecialchars($_POST['name']);
+        $task->project_id = htmlspecialchars($_POST['project_id']);
+        $task->user_id = htmlspecialchars($_POST['user_id']);
 
-        $task->name = $task_name;
-        $task->project_id = $project_id;
-        $task->user_id = $user_id;
-
-        $task->create_task();
-        header("Location: /client/project/task?id=$project_id");
+        $task->save();
+        header("Location: /client/project/task?id=$task->project_id");
     }
 
 
@@ -57,14 +50,9 @@ class TaskController
     {
         Functions::check_admin();
 
-        $task_id = htmlspecialchars($_GET["id"]);
+        $task = Task::get_by_id(htmlspecialchars($_GET["id"]));
 
-        $task = Task::get($task_id);
-
-        $name = $task->name;
-        $user_id = $task->user_id;
-
-        $all_posts = Post::get_all_posts($task_id);
+        $all_posts = $task->get_all_posts();
 
         include $_SERVER['DOCUMENT_ROOT'].'/view/task/task.php';
     }
@@ -76,20 +64,16 @@ class TaskController
 
         $post = new Post();
 
-        $task_id = $_POST['task_id'];
-        $body = $_POST['body'];
-        $user_id = $_SESSION['admin_id'];
-        $date = date("Y-m-d H:i:s");
-
-        $post->task_id = $task_id;
+        $post->task_id = htmlspecialchars($_POST['task_id']);
         $post->title = $_SESSION['admin_name'];
-        $post->body = $body;
-        $post->date = $date;
-        $post->users_id = $user_id;
+        $post->body = htmlspecialchars($_POST['body']);
+        date_default_timezone_set("Europe/Belgrade");
+        $post->date = date("Y-m-d H:i:s");;
+        $post->users_id = $_SESSION['admin_id'];
 
-        $post->create_post();
+        $post->save();
 
-        header("Location: /client/project/task/?id=$task_id");
+        header("Location: /client/project/task/?id=$post->task_id");
     }
 
 
@@ -97,9 +81,7 @@ class TaskController
     {
         Functions::check_admin();
 
-        $task_id = htmlspecialchars($_GET["id"]);
-
-        $task = Task::get($task_id);
+        $task = Task::get_by_id(htmlspecialchars($_GET["id"]));
 
         $task->delete();
 

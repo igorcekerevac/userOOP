@@ -3,7 +3,6 @@
 namespace Controller;
 
 use Model\Client;
-use Model\Project;
 use Functions\Functions;
 
 class ClientController
@@ -33,7 +32,7 @@ class ClientController
 
 		include $_SERVER['DOCUMENT_ROOT'].'/view/client/client.php';
 
-		for ($page=1; $page<=$number_of_pages ; $page++) { 
+		for ($page=1; $page<=$number_of_pages ; $page++) {
 	    	echo '<a id="page" href="/clients/page/?page=' .$page. '">page ' . $page . '</a>';
     	}
     }
@@ -44,12 +43,12 @@ class ClientController
 		Functions::check_admin();
 
 		$client = new Client();
-		$name = $client->name = trim($_POST['name']);
+		$name = $client->name = htmlspecialchars(trim($_POST['name']));
 
 		$db_name_validate = 0;
 
 
-        if (Client::check_row_exists_where_column_value('name', $name)) {
+        if (Client::where('name', $name)) {
 
             $status = 'Client already in the database.';
             $db_name_validate = 1;
@@ -64,7 +63,7 @@ class ClientController
 
 		    } else {
 
-		        $client->create();
+		        $client->save();
 		        header("Location: /clients");
 		    }
 		}
@@ -80,15 +79,14 @@ class ClientController
     }
 
 
+
     public function client_profile()
     {
 		Functions::check_admin();
 
-		$find_id = htmlspecialchars($_GET["id"]);
-		
-		$name = Client::get_column_value($find_id, 'name');
+		$client = Client::get_by_id(htmlspecialchars($_GET["id"]));
 
-		$found_projects = Project::get_all_with_specific_id($find_id, 'client');
+		$client_projects = $client->get_all_projects();
 
 		include $_SERVER['DOCUMENT_ROOT'].'/view/client/client_profile.php';		
     }

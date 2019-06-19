@@ -55,7 +55,6 @@ class Functions
                 array_push($users, $user);
             }
         }
-
         return $users;
     }
 }

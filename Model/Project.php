@@ -7,30 +7,30 @@ use Db\Db;
 class Project extends Model
 {
 
-	public $db_conn;
-
 	public $name;
 	public $client_id;
-    protected static $table_name = 'project';
-    protected static $class_name = __CLASS__;
+	public $project_id;
 
-    function __construct()
+    protected static $table_name = 'project';
+
+
+    public function save()
     {
         $instance = Db::get_instance();
-        $this->db_conn = $instance->get_connection();
-	}
- 
+        $db_conn = $instance->get_connection();
 
-    public function create()
-    {
         $sql = "INSERT INTO project SET name = ?, client_id = ?";
 
-        $prep_state = $this->db_conn->prepare($sql);
+        $prep_state = $db_conn->prepare($sql);
 
         $prep_state->bindParam(1, $this->name);
         $prep_state->bindParam(2, $this->client_id);
 
-        $prep_state->execute();
+        if ($prep_state->execute()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 
@@ -55,6 +55,26 @@ class Project extends Model
 
         return $prep_state->fetchAll(\PDO::FETCH_ASSOC);
     }
-   
+
+
+    public function get_all_tasks()
+    {
+        $instance = Db::get_instance();
+        $db_conn = $instance->get_connection();
+
+        $sql = "SELECT * FROM task where project_id= :id";
+
+        $prep_state = $db_conn->prepare($sql);
+        $prep_state->bindParam(':id', $this->project_id);
+        $prep_state->setFetchMode(\PDO::FETCH_CLASS, '\Model\Task');
+
+        $prep_state->execute();
+
+        if ($array = $prep_state->fetchAll()) {
+            return $array;
+        } else {
+            return array();
+        }
+    }
 }
 

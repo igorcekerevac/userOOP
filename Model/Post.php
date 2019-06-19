@@ -6,28 +6,24 @@ use Db\Db;
 class Post 
 {
 
-	public $db_conn;
-
 	public $title;
     public $body;
     public $date;
     public $task_id;
     public $users_id;
-    protected static $table_name = 'post';
-    protected static $class_name = __CLASS__;
+    public $post_id;
 
-    function __construct()
+    protected static $table_name = 'post';
+
+
+    public function save()
     {
         $instance = Db::get_instance();
-        $this->db_conn = $instance->get_connection();
-	}
- 
+        $db_conn = $instance->get_connection();
 
-    public function create_post()
-    {
         $sql = "INSERT INTO post SET title = ?, body = ?, date = ? , task_id = ?, users_id = ?";
 
-        $prep_state = $this->db_conn->prepare($sql);
+        $prep_state = $db_conn->prepare($sql);
 
         $prep_state->bindParam(1, $this->title);
         $prep_state->bindParam(2, $this->body);
@@ -35,26 +31,11 @@ class Post
         $prep_state->bindParam(4, $this->task_id);
         $prep_state->bindParam(5, $this->users_id);
 
-        $prep_state->execute();
+        if ($prep_state->execute()) {
+            return true;
+        } else {
+            return false;
+        }
     }
-
-
-    public static function get_all_posts($task_id)
-    {
-        $instance = Db::get_instance();
-        $db_conn = $instance->get_connection();
-
-        $sql = "SELECT * FROM post where task_id = :task_id ORDER BY date DESC ";
-
-        $prep_state = $db_conn->prepare($sql);
-
-        $prep_state->bindParam(':task_id', $task_id);
-
-        $prep_state->execute();
-
-        return $prep_state->fetchAll(\PDO::FETCH_ASSOC);
-    }
-
-
 }
 

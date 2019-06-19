@@ -1,7 +1,7 @@
 <?php require 'view/include/header_admin.php'; ?>
 
 	<div id="task_info">
-		<h1>TASK NAME/ <?php echo $name ?></h1><br>
+		<h1>TASK NAME/ <?php echo $task->name ?></h1><br>
 	</div>
 
 	<div id="form">
@@ -25,10 +25,10 @@
 		if(!empty($all_posts)){
 
 			foreach($all_posts as $post){
-			    echo '<h5 style="color: orangered">'.$post['title'].'</h5>';
+			    echo '<h5 style="color: orangered">'.$post->title.'</h5>';
 				echo '<div id="comment">';
-				echo '<h5>'.$post['date'].'</h5><br>';
-				echo $post['body'].'</div><br>';
+				echo '<h5>'.$post->date.'</h5><br>';
+				echo $post->body.'</div><br>';
 			}
 		}else{
 			echo "No comments for this task!";
