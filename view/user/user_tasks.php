@@ -6,13 +6,13 @@
 
 	<?php
 
-		if (empty($all_tasks)) {
+		if (empty($allTasks)) {
 
 			echo "You do not have active tasks!";
 
 		} else {
 
-			foreach ($all_tasks as $task) {
+			foreach ($allTasks as $task) {
 				
 				echo '<li><a id="task_names" href="/employee/task?id='.$task->task_id.'"><strong id="font">'.$task->name.'</strong></a></li><br>';
 			}

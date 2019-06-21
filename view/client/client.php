@@ -9,7 +9,7 @@
 	
 	<?php
 
-		foreach ($all_clients as $client) {
+		foreach ($clients as $client) {
 
 			echo '<strong id="font">'.$client->name.'</strong>' .
 

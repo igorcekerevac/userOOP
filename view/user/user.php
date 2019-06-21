@@ -16,7 +16,7 @@
 
     }
 
-		foreach ($all_users as $user) {
+		foreach ($allUsers as $user) {
 
 			echo '<strong id="font">'.$user->name.'</strong>' .
 

@@ -21,16 +21,16 @@ class UserController
         $email = $user->email = htmlspecialchars(trim($_POST['email']));
         $password = $user->password =htmlspecialchars(trim($_POST['password']));
 
-        $db_mail_validate = 0;
+        $mailValidateFlag = 0;
 
         if (User::where('email', $email)) {
 
             $status = 'Entered email address already occupied!';
-            $db_mail_validate = 1;
+            $mailValidateFlag = 1;
         }
 
 
-        if ($db_mail_validate == 0) {
+        if ($mailValidateFlag == 0) {
 
             if (!Functions::emailValidation($email)) {
 
@@ -112,7 +112,7 @@ class UserController
 
         $user = User::getById($_SESSION['user_id']);
 
-        $all_tasks = $user->getTasks();
+        $allTasks = $user->getTasks();
 
         include $_SERVER['DOCUMENT_ROOT'] . '/view/user/user_tasks.php';
     }
@@ -144,7 +144,7 @@ class UserController
 
         $project = Project::getById($task->project_id);
 
-        $all_posts = $task->getPosts();
+        $allPosts = $task->getPosts();
 
         include $_SERVER['DOCUMENT_ROOT'] . '/view/user/user_posts.php';
     }
@@ -154,11 +154,11 @@ class UserController
     {
         Functions::checkAdmin();
 
-        $results_per_page = 4;
+        $resultsPerPage = 4;
 
-        $numer_of_results = User::countAll();
+        $numberOfResults = User::countAll();
 
-        $number_of_pages = ceil($numer_of_results / $results_per_page);
+        $numberOfPages = ceil($numberOfResults / $resultsPerPage);
 
 
         if (!isset($_GET['page'])) {
@@ -171,17 +171,17 @@ class UserController
         }
 
 
-        $this_page_first_result = ($page - 1) * $results_per_page;
+        $thisPageFirstResult = ($page - 1) * $resultsPerPage;
 
-        $all = User::getAllPagination($this_page_first_result, $results_per_page);
+        $all = User::getAllPagination($thisPageFirstResult, $resultsPerPage);
 
-        $all_users = Functions::populateUsersArray($all);
+        $allUsers = Functions::populateUsersArray($all);
 
 
         include $_SERVER['DOCUMENT_ROOT'] . '/view/user/user.php';
 
 
-        for ($page = 1; $page <= $number_of_pages; $page++) {
+        for ($page = 1; $page <= $numberOfPages; $page++) {
 
             echo '<a id="page" href="/users/page/?page=' . $page . '">page ' . $page . '</a>';
         }
@@ -222,18 +222,18 @@ class UserController
         $email = $user->email = htmlspecialchars(trim($_POST['email']));
         $password = $user->password = htmlspecialchars(trim($_POST['password']));
 
-        $db_mail_validate = 0;
+        $mailValidateFlag = 0;
 
         if ($user_found = User::where('email', $email)) {
 
             if ($user_found->email === $email && $user_id !== $user_found->user_id) {
 
                 $status = 'Entered email address already occupied!';
-                $db_mail_validate = 1;
+                $mailValidateFlag = 1;
             }
         }
 
-        if ($db_mail_validate == 0) {
+        if ($mailValidateFlag == 0) {
 
             if (!Functions::emailValidation($email)) {
 

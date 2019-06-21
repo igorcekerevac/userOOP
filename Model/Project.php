@@ -14,27 +14,23 @@ class Project extends Model
     protected static $tableName = 'project';
 
 
-    public function save()
+    public function save(): bool
     {
         $instance = Db::getInstance();
         $conn = $instance->getConnection();
 
         $sql = "INSERT INTO project SET name = ?, client_id = ?";
 
-        $prep_state = $conn->prepare($sql);
+        $stmt = $conn->prepare($sql);
 
-        $prep_state->bindParam(1, $this->name);
-        $prep_state->bindParam(2, $this->client_id);
+        $stmt->bindParam(1, $this->name);
+        $stmt->bindParam(2, $this->client_id);
 
-        if ($prep_state->execute()) {
-            return true;
-        } else {
-            return false;
-        }
+        return $stmt->execute();
     }
 
 
-    public static function getAllJoined()
+    public static function getAllJoined(): array
     {
         $instance = Db::getInstance();
         $conn = $instance->getConnection();
@@ -50,31 +46,27 @@ class Project extends Model
                 LEFT JOIN
             user ON task.user_id = user.user_id";
 
-        $prep_state = $conn->prepare($sql);
-        $prep_state->execute();
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
 
-        return $prep_state->fetchAll(\PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
 
-    public function getTasks()
+    public function getTasks(): array
     {
         $instance = Db::getInstance();
         $conn = $instance->getConnection();
 
         $sql = "SELECT * FROM task where project_id= :id";
 
-        $prep_state = $conn->prepare($sql);
-        $prep_state->bindParam(':id', $this->project_id);
-        $prep_state->setFetchMode(\PDO::FETCH_CLASS, '\Model\Task');
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':id', $this->project_id);
+        $stmt->setFetchMode(\PDO::FETCH_CLASS, '\Model\Task');
 
-        $prep_state->execute();
+        $stmt->execute();
 
-        if ($array = $prep_state->fetchAll()) {
-            return $array;
-        } else {
-            return array();
-        }
+        return ($array = $stmt->fetchAll()) ? $array : array();
     }
 }
 

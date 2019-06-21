@@ -14,46 +14,38 @@ class Task extends Model
     protected static $tableName = 'task';
  
 
-    public function save()
+    public function save(): bool
     {
         $instance = Db::getInstance();
         $conn = $instance->getConnection();
 
         $sql = "INSERT INTO task SET name = ?, project_id = ?, user_id = ?";
 
-        $prep_state = $conn->prepare($sql);
+        $stmt = $conn->prepare($sql);
 
-        $prep_state->bindParam(1, $this->name);
-        $prep_state->bindParam(2, $this->project_id);
-        $prep_state->bindParam(3, $this->user_id);
+        $stmt->bindParam(1, $this->name);
+        $stmt->bindParam(2, $this->project_id);
+        $stmt->bindParam(3, $this->user_id);
 
-        if ($prep_state->execute()) {
-            return true;
-        } else {
-            return false;
-        }
+        return $stmt->execute();
     }
 
 
-    public function getPosts()
+    public function getPosts(): array
     {
         $instance = Db::getInstance();
         $conn = $instance->getConnection();
 
         $sql = "SELECT * FROM post where task_id = :task_id ORDER BY date DESC ";
 
-        $prep_state = $conn->prepare($sql);
+        $stmt = $conn->prepare($sql);
 
-        $prep_state->bindParam(':task_id', $this->task_id);
-        $prep_state->setFetchMode(\PDO::FETCH_CLASS, '\Model\Post');
+        $stmt->bindParam(':task_id', $this->task_id);
+        $stmt->setFetchMode(\PDO::FETCH_CLASS, '\Model\Post');
 
-        $prep_state->execute();
+        $stmt->execute();
 
-        if ($array = $prep_state->fetchAll()) {
-            return $array;
-        } else {
-            return array();
-        }
+        return ($array = $stmt->fetchAll()) ? $array : array();
     }
 }
 

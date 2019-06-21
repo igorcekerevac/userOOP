@@ -24,9 +24,9 @@
 
 		<?php
 
-			if (!empty($all_posts)) {
+			if (!empty($allPosts)) {
 
-				foreach ($all_posts as $post) {
+				foreach ($allPosts as $post) {
                     echo '<h5 style="color: orangered;">'.$post->title.'</h5>';
 					echo '<div id="comment">';
 					echo '<h5>'.$post->date.'</h5><br>';

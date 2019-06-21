@@ -11,7 +11,7 @@ abstract class Model
     protected static $tableName = '';
 
 
-    public function delete()
+    public function delete(): bool
     {
         $instance = Db::getInstance();
         $conn = $instance->getConnection();
@@ -20,109 +20,90 @@ abstract class Model
 
         $sql = "DELETE FROM " . static::$tableName . " WHERE " . static::$tableName . "_id = :id ";
 
-        $prep_state = $conn->prepare($sql);
-        $prep_state->bindParam(':id', $this->$id);
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':id', $this->$id);
 
-        if ($prep_state->execute()) {
-            return true;
-        } else {
-            return false;
-        }
+        return $stmt->execute();
     }
 
 
-    public static function getAll()
+    public static function getAll(): array
     {
         $instance = Db::getInstance();
         $conn = $instance->getConnection();
 
         $sql = "SELECT * FROM " . static::$tableName;
 
-        $prep_state = $conn->prepare($sql);
-        $prep_state->setFetchMode(\PDO::FETCH_CLASS, get_called_class());
-        $prep_state->execute();
+        $stmt = $conn->prepare($sql);
+        $stmt->setFetchMode(\PDO::FETCH_CLASS, get_called_class());
+        $stmt->execute();
 
-        if ($array = $prep_state->fetchAll()) {
-            return $array;
-        } else {
-            return array();
-        }
+        return ($array = $stmt->fetchAll()) ? $array : array();
     }
 
 
-    public static function getById($id)
+    public static function getById(int $id)
     {
         $instance = Db::getInstance();
         $conn = $instance->getConnection();
 
         $sql = "SELECT * FROM " .static::$tableName. " WHERE " . static::$tableName ."_id = :id";
 
-        $prep_state = $conn->prepare($sql);
-        $prep_state->bindParam(':id', $id);
-        $prep_state->setFetchMode(\PDO::FETCH_CLASS, get_called_class());
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':id', $id);
+        $stmt->setFetchMode(\PDO::FETCH_CLASS, get_called_class());
 
-        $prep_state->execute();
+        $stmt->execute();
 
-        if ($obj = $prep_state->fetch()) {
-            return $obj;
-        } else {
-            return false;
-        }
+        return ($obj = $stmt->fetch()) ? $obj : false;
     }
 
 
     //num of rows, pagination
-    public static function countAll()
+    public static function countAll(): int
     {
         $instance = Db::getInstance();
         $conn = $instance->getConnection();
 
         $sql = "SELECT " . static::$tableName ."_id FROM " . static::$tableName;
 
-        $prep_state = $conn->prepare($sql);
-        $prep_state->execute();
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
 
-        $num = $prep_state->rowCount();
-        return $num;
+        return $num = $stmt->rowCount();
     }
 
 
-    public static function getAllPagination($from_record_num, $records_per_page)
+    public static function getAllPagination(int $fromRecordNum, int $recordsPerPage): array
     {
         $instance = Db::getInstance();
         $conn = $instance->getConnection();
 
-        $sql = "SELECT * FROM " . static::$tableName . " LIMIT " . $from_record_num . ',' .$records_per_page;
+        $sql = "SELECT * FROM " . static::$tableName . " LIMIT " . $fromRecordNum . ',' .$recordsPerPage;
 
-        $prep_state = $conn->prepare($sql);
-        $prep_state->setFetchMode(\PDO::FETCH_CLASS, get_called_class());
-        $prep_state->execute();
+        $stmt = $conn->prepare($sql);
+        $stmt->setFetchMode(\PDO::FETCH_CLASS, get_called_class());
+        $stmt->execute();
 
-        if ($array = $prep_state->fetchAll()) {
-            return $array;
-        } else {
-            return array();
-        }
+        return ($array = $stmt->fetchAll()) ? $array : array();
+
     }
 
 
-    public static function where($column, $value)
+    public static function where(string $column, $value)
     {
         $instance = Db::getInstance();
         $conn = $instance->getConnection();
 
         $sql = "SELECT * FROM " . static::$tableName . " WHERE " . $column . " = :value";
 
-        $prep_state = $conn->prepare($sql);
-        $prep_state->bindParam(':value', $value);
-        $prep_state->setFetchMode(\PDO::FETCH_CLASS, get_called_class());
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':value', $value);
+        $stmt->setFetchMode(\PDO::FETCH_CLASS, get_called_class());
 
-        $prep_state->execute();
+        $stmt->execute();
 
-        if ($obj = $prep_state->fetch()) {
-            return $obj;
-        } else {
-            return false;
-        }
+        return ($obj = $stmt->fetch()) ? $obj : false;
+
     }
 }

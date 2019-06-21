@@ -13,44 +13,36 @@ class Client extends Model
 	protected static $tableName = 'client';
 
 
-    public function save()
+    public function save(): bool
     {
         $instance = Db::getInstance();
         $conn = $instance->getConnection();
 
         $sql = "INSERT INTO client SET name = ?";
 
-        $prep_state = $conn->prepare($sql);
+        $stmt = $conn->prepare($sql);
 
-        $prep_state->bindParam(1, $this->name);
+        $stmt->bindParam(1, $this->name);
 
-        if ($prep_state->execute()) {
-            return true;
-        } else {
-            return false;
-        }
+        return $stmt->execute();
     }
 
 
-    public function getProjects()
+    public function getProjects(): array
     {
         $instance = Db::getInstance();
         $conn = $instance->getConnection();
 
         $sql = "SELECT * FROM project where client_id= :id";
 
-        $prep_state = $conn->prepare($sql);
-        $prep_state->bindParam(':id', $this->client_id);
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':id', $this->client_id);
 
-        $prep_state->setFetchMode(\PDO::FETCH_CLASS, '\Model\Project');
+        $stmt->setFetchMode(\PDO::FETCH_CLASS, '\Model\Project');
 
-        $prep_state->execute();
+        $stmt->execute();
 
-        if ($array = $prep_state->fetchAll()) {
-            return $array;
-        } else {
-            return array();
-        }
+        return ($array = $stmt->fetchAll()) ? $array : array();
     }
 }
 

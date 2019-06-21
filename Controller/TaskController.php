@@ -19,9 +19,9 @@ class TaskController
 
         $users = User::getAll();
 
-        $all_users = Functions::populateUsersArray($users);
+        $allUsers = Functions::populateUsersArray($users);
 
-        $all_tasks = $project->getTasks();
+        $allTasks = $project->getTasks();
 
         include $_SERVER['DOCUMENT_ROOT'].'/view/task/add_task.php';
     }
@@ -48,7 +48,7 @@ class TaskController
 
         $task = Task::getById(htmlspecialchars($_GET["id"]));
 
-        $all_posts = $task->getPosts();
+        $allPosts = $task->getPosts();
 
         include $_SERVER['DOCUMENT_ROOT'].'/view/task/task.php';
     }

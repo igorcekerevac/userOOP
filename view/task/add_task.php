@@ -18,7 +18,7 @@
 					echo "<select name='user_id'>";
 						echo "<option>choose employee</option>";
 
-						foreach ($all_users as $user) {
+						foreach ($allUsers as $user) {
 						echo "<option value='" . $user->user_id . "'>". $user->name ."/".$user->job."</option>";
 						}
 
@@ -43,9 +43,9 @@
 	<?php
 
 
-		if (!empty($all_tasks)) {
+		if (!empty($allTasks)) {
 		
-			foreach ($all_tasks as $task) {
+			foreach ($allTasks as $task) {
 
 				echo '<li><a id="task_names" href="/client/project/task/?id='.$task->task_id.'">
                       <strong id="font">'.$task->name.'</strong></a></li><br>';

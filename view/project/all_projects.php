@@ -28,7 +28,7 @@
                     echo "<select name='id'>";
                     echo "<option>choose client</option>";
 
-                    foreach ($all_clients as $client) {
+                    foreach ($allClients as $client) {
                         echo "<option value='" . $client->client_id . "'>" . $client->name . "</option>";
                     }
 
@@ -51,7 +51,7 @@
 
 	<?php $id = array(); ?>
 	
-	<?php foreach ($all_projects as $project) : ?>
+	<?php foreach ($allProjects as $project) : ?>
 
 		<?php
 

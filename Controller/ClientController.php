@@ -12,11 +12,11 @@ class ClientController
 	{
 		Functions::checkAdmin();
 
-		$results_per_page = 5;
+		$resultsPerPage = 5;
 
-	    $numer_of_results = Client::countAll();
+	    $numberOfResults = Client::countAll();
 
-		$number_of_pages = ceil($numer_of_results/$results_per_page);
+		$numberOfPages = ceil($numberOfResults/$resultsPerPage);
 
 
 		if (!isset($_GET['page'])) {
@@ -26,13 +26,13 @@ class ClientController
 	    }
 
 
-	    $this_page_first_result = ($page-1)*$results_per_page;
+	    $thisPageFirstResult = ($page-1)*$resultsPerPage;
 
-		$all_clients = Client::getAllPagination($this_page_first_result, $results_per_page);
+		$clients = Client::getAllPagination($thisPageFirstResult, $resultsPerPage);
 
 		include $_SERVER['DOCUMENT_ROOT'].'/view/client/client.php';
 
-		for ($page=1; $page<=$number_of_pages ; $page++) {
+		for ($page=1; $page<=$numberOfPages ; $page++) {
 	    	echo '<a id="page" href="/clients/page/?page=' .$page. '">page ' . $page . '</a>';
     	}
     }
@@ -45,17 +45,17 @@ class ClientController
 		$client = new Client();
 		$name = $client->name = htmlspecialchars(trim($_POST['name']));
 
-		$db_name_validate = 0;
+		$nameValidationFlag = 0;
 
 
         if (Client::where('name', $name)) {
 
             $status = 'Client already in the database.';
-            $db_name_validate = 1;
+            $nameValidationFlag = 1;
         }
 
 
-		if ($db_name_validate==0) {
+		if ($nameValidationFlag==0) {
 
 		    if (empty($name)) {
 
@@ -86,7 +86,7 @@ class ClientController
 
 		$client = Client::getById(htmlspecialchars($_GET["id"]));
 
-		$client_projects = $client->getAllProjects();
+		$clientProjects = $client->getProjects();
 
 		include $_SERVER['DOCUMENT_ROOT'].'/view/client/client_profile.php';		
     }

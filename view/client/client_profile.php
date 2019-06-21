@@ -6,9 +6,9 @@
 
 	<?php 
 
-		if (!empty($client_projects)) {
+		if (!empty($clientProjects)) {
 
-			foreach($client_projects as $project){
+			foreach($clientProjects as $project){
 
 				echo "<strong id='font'>".$project->name ."</strong><a style='margin-left: 15px;' id='task_names'
                 href='/client/project/task?id=".$project->project_id."'>tasks</a><br>";

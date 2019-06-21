@@ -16,26 +16,22 @@ class Post extends Model
     protected static $tableName = 'post';
 
 
-    public function save()
+    public function save(): bool
     {
         $instance = Db::getInstance();
         $conn = $instance->getConnection();
 
         $sql = "INSERT INTO post SET title = ?, body = ?, date = ? , task_id = ?, users_id = ?";
 
-        $prep_state = $conn->prepare($sql);
+        $stmt = $conn->prepare($sql);
 
-        $prep_state->bindParam(1, $this->title);
-        $prep_state->bindParam(2, $this->body);
-        $prep_state->bindParam(3, $this->date);
-        $prep_state->bindParam(4, $this->task_id);
-        $prep_state->bindParam(5, $this->users_id);
+        $stmt->bindParam(1, $this->title);
+        $stmt->bindParam(2, $this->body);
+        $stmt->bindParam(3, $this->date);
+        $stmt->bindParam(4, $this->task_id);
+        $stmt->bindParam(5, $this->users_id);
 
-        if ($prep_state->execute()) {
-            return true;
-        } else {
-            return false;
-        }
+        return $stmt->execute();
     }
 }
 

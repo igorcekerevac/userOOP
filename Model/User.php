@@ -17,31 +17,27 @@ class User extends Model
     protected static $tableName = 'user';
 
 
-    public function save()
+    public function save(): bool
     {
         $instance = Db::getInstance();
         $conn = $instance->getConnection();
 
         $sql = "INSERT INTO user SET name = ?, password = ?, email = ?, job = ?";
 
-        $prep_state = $conn->prepare($sql);
+        $stmt = $conn->prepare($sql);
 
         $hash = password_hash($this->password, PASSWORD_DEFAULT);
 
-        $prep_state->bindParam(1, $this->name);
-        $prep_state->bindParam(2, $hash);
-        $prep_state->bindParam(3, $this->email);
-        $prep_state->bindParam(4, $this->job);
+        $stmt->bindParam(1, $this->name);
+        $stmt->bindParam(2, $hash);
+        $stmt->bindParam(3, $this->email);
+        $stmt->bindParam(4, $this->job);
 
-        if ($prep_state->execute()) {
-            return true;
-        } else {
-            return false;
-        }
+        return $stmt->execute();
     }
 
 
-    public function update()
+    public function update(): bool
     {
         $instance = Db::getInstance();
         $conn = $instance->getConnection();
@@ -49,40 +45,32 @@ class User extends Model
         $sql = "UPDATE user SET name = :name, password = :password, email = :email, job = :job
          WHERE user_id = :id";
        
-        $prep_state = $conn->prepare($sql);
+        $stmt = $conn->prepare($sql);
 
-        $prep_state->bindParam(':name', $this->name);
-        $prep_state->bindParam(':password', $this->password);
-        $prep_state->bindParam(':email', $this->email);
-        $prep_state->bindParam(':job', $this->job);
-        $prep_state->bindParam(':id', $this->user_id);
+        $stmt->bindParam(':name', $this->name);
+        $stmt->bindParam(':password', $this->password);
+        $stmt->bindParam(':email', $this->email);
+        $stmt->bindParam(':job', $this->job);
+        $stmt->bindParam(':id', $this->user_id);
 
-        if ($prep_state->execute()) {
-            return true;
-        } else {
-            return false;
-        }
+        return $stmt->execute();
     }
 
 
-    public function getTasks()
+    public function getTasks(): array
     {
         $instance = Db::getInstance();
         $conn = $instance->getConnection();
 
         $sql = "SELECT * FROM task where user_id= :id";
 
-        $prep_state = $conn->prepare($sql);
-        $prep_state->bindParam(':id', $this->user_id);
-        $prep_state->setFetchMode(\PDO::FETCH_CLASS, '\Model\Task');
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':id', $this->user_id);
+        $stmt->setFetchMode(\PDO::FETCH_CLASS, '\Model\Task');
 
-        $prep_state->execute();
+        $stmt->execute();
 
-        if ($array = $prep_state->fetchAll()) {
-            return $array;
-        } else {
-            return array();
-        }
+        return ($array = $stmt->fetchAll()) ? $array : array();
     }
 }
 

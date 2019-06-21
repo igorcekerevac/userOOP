@@ -56,9 +56,9 @@ class ProjectController
             $status = $_GET['message'];
         }
 
-		$all_projects = Project::getAllJoined();
+		$allProjects = Project::getAllJoined();
 
-		$all_clients = Client::getAll();
+		$allClients = Client::getAll();
 
 		include $_SERVER['DOCUMENT_ROOT'].'/view/project/all_projects.php';
 
@@ -86,9 +86,9 @@ class ProjectController
             header("Location: /projects?message=Project added.");
         }
 
-        $all_projects = Project::getAllJoined();
+        $allProjects = Project::getAllJoined();
 
-        $all_clients = Client::getAll();
+        $allClients = Client::getAll();
 
         include $_SERVER['DOCUMENT_ROOT'].'/view/project/all_projects.php';
     }
