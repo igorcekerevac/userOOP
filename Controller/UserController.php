@@ -52,7 +52,10 @@ class UserController
 
             }
         }
-        include $_SERVER['DOCUMENT_ROOT'] . '/view/user/add_user.php';
+
+        $data['status'] = $status;
+
+        Functions::view('user/add_user',$data);
     }
 
 
@@ -60,9 +63,11 @@ class UserController
     {
         if (!empty($_GET['message'])) {
             $status = $_GET['message'];
+            $data['status'] = $status;
+            Functions::view('user/add_user',$data);
+        } else {
+            Functions::view('user/add_user');
         }
-
-        include $_SERVER['DOCUMENT_ROOT'] . '/view/user/add_user.php';
     }
 
 
@@ -94,7 +99,8 @@ class UserController
 
         $status = 'Entered email or password is not in database.';
 
-        include $_SERVER['DOCUMENT_ROOT'] . '/view/user/login.php';
+        $data['status'] = $status;
+        Functions::view('user/login',$data);
     }
 
 
@@ -102,7 +108,7 @@ class UserController
     {
         session_start();
 
-        include $_SERVER['DOCUMENT_ROOT'] . '/view/user/login.php';
+        Functions::view('user/login');
     }
 
 
@@ -112,9 +118,8 @@ class UserController
 
         $user = User::getById($_SESSION['user_id']);
 
-        $allTasks = $user->getTasks();
-
-        include $_SERVER['DOCUMENT_ROOT'] . '/view/user/user_tasks.php';
+        $data['allTasks'] = $user->getTasks();
+        Functions::view('user/user_tasks',$data);
     }
 
 
@@ -142,11 +147,11 @@ class UserController
 
         $task = Task::getById(htmlspecialchars($_GET['id']));
 
-        $project = Project::getById($task->project_id);
+        $data['allPosts'] = $task->getPosts();
+        $data['project'] = Project::getById($task->project_id);
+        $data['task'] = $task;
 
-        $allPosts = $task->getPosts();
-
-        include $_SERVER['DOCUMENT_ROOT'] . '/view/user/user_posts.php';
+        Functions::view('user/user_posts',$data);
     }
 
 
@@ -156,9 +161,7 @@ class UserController
 
         $resultsPerPage = 4;
 
-        $numberOfResults = User::countAll();
-
-        $numberOfPages = ceil($numberOfResults / $resultsPerPage);
+        $numberOfPages = Functions::numberOfPagesPagination($resultsPerPage, User::countAll());
 
 
         if (!isset($_GET['page'])) {
@@ -171,15 +174,13 @@ class UserController
         }
 
 
-        $thisPageFirstResult = ($page - 1) * $resultsPerPage;
+        $thisPageFirstResult = Functions::thisPageFirstResult($page, $resultsPerPage);
 
         $all = User::getAllPagination($thisPageFirstResult, $resultsPerPage);
 
-        $allUsers = Functions::populateUsersArray($all);
+        $data['allUsers'] = Functions::populateUsersArray($all);
 
-
-        include $_SERVER['DOCUMENT_ROOT'] . '/view/user/user.php';
-
+        Functions::view('user/user',$data);
 
         for ($page = 1; $page <= $numberOfPages; $page++) {
 
@@ -260,7 +261,9 @@ class UserController
             }
         }
 
-        include $_SERVER['DOCUMENT_ROOT'] . '/view/user/update_user.php';
+        $data['status'] = $status;
+
+        Functions::view('user/update_user',$data);
     }
 
 
@@ -270,9 +273,11 @@ class UserController
 
         if (!empty($_GET['message'])) {
             $status = $_GET['message'];
+            $data['status'] = $status;
+            Functions::view('user/update_user',$data);
+        } else {
+            Functions::view('user/update_user');
         }
-
-        include $_SERVER['DOCUMENT_ROOT'] . '/view/user/update_user.php';
     }
 
 
@@ -280,9 +285,20 @@ class UserController
     {
         Functions::checkUser();
 
+        $data['user'] = User::getById(htmlspecialchars($_GET["id"]));
+        Functions::view('user/profile',$data);
+    }
+
+
+    public function employeeProfile()
+    {
+        Functions::checkAdmin();
+
         $user = User::getById(htmlspecialchars($_GET["id"]));
 
-        include $_SERVER['DOCUMENT_ROOT'] . '/view/user/profile.php';
+        $data['user'] = $user;
+        $data['allTasks'] = $user->getTasks();
+        Functions::view('user/employee_profile',$data);
     }
 
 
@@ -300,8 +316,6 @@ class UserController
     {
         Functions::checkAdmin();
 
-        include $_SERVER['DOCUMENT_ROOT'] . '/view/user/home.php';
+        Functions::view('user/home');
     }
-
-
 }

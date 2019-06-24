@@ -49,27 +49,32 @@
 
     </form>
 
-	<?php $id = array(); ?>
-	
-	<?php foreach ($allProjects as $project) : ?>
+	<?php
 
-		<?php
+    $id = array();
 
-			if (!in_array($project['project_id'], $id)) {
-			  	array_push($id, $project['project_id']);
-			  	echo '<h3>#id'.$project['project_id'].'/ '.$project['client_name'].' / '.$project['project_name'].' / '.'
-                <a id="add_task" href="/client/project/task?id='.$project['project_id'] .'">add task</a></h3>';
-			}
-			if ($project['task_id'] !== null) {
+	if (!empty($allProjects)) {
+
+        foreach ($allProjects as $project) {
+
+            if (!in_array($project['project_id'], $id)) {
+                array_push($id, $project['project_id']);
+                echo '<h3>#id' . $project['project_id'] . '/ ' . $project['client_name'] . ' / ' . $project['project_name'] . ' / ' . '
+                <a id="add_task" href="/client/project/task?id=' . $project['project_id'] . '">add task</a></h3>';
+            }
+            if ($project['task_id'] !== null) {
                 echo '<h5><li id="task">' . 'Task: ' .
                     '<a id="task_names" href="/client/project/task/?id=' . $project['task_id'] . '">' . $project['task_name'] . '</a>' .
                     ' &nbsp&nbsp/&nbsp Employee: ' . $project['user_name'] . ' 
                 <a id=\'task_delete\' style=\' margin-left: 15px;\' href="/delete/task?id=' . $project['task_id'] . '">delete task</a>
                 </li></h5><br>';
             }
-		?>
+        }
+    } else {
+	    echo '<h2>'.'No active projects!'.'</h2>';
+    }
 
-	<?php endforeach; ?>
+	?>
 
 </div>
 

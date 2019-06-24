@@ -7,6 +7,7 @@ use Model\Project;
 use Model\User;
 use Model\Post;
 use Functions\Functions;
+use Model\UserProject;
 
 class TaskController
 {
@@ -16,14 +17,13 @@ class TaskController
         Functions::checkAdmin();
 
         $project = Project::getById($_GET['id']);
-
         $users = User::getAll();
 
-        $allUsers = Functions::populateUsersArray($users);
+        $data['allUsers'] = Functions::populateUsersArray($users);
+        $data['allTasks'] = $project->getTasks();
+        $data['project'] = $project;
 
-        $allTasks = $project->getTasks();
-
-        include $_SERVER['DOCUMENT_ROOT'].'/view/task/add_task.php';
+        Functions::view('task/add_task',$data);
     }
 
 
@@ -38,6 +38,13 @@ class TaskController
         $task->user_id = htmlspecialchars($_POST['user_id']);
 
         $task->save();
+
+        $userProject = new UserProject();
+        $userProject->user_id = htmlspecialchars($_POST['user_id']);
+        $userProject->project_id = htmlspecialchars($_POST['project_id']);
+
+        $userProject->save();
+
         header("Location: /client/project/task?id=$task->project_id");
     }
 
@@ -48,9 +55,10 @@ class TaskController
 
         $task = Task::getById(htmlspecialchars($_GET["id"]));
 
-        $allPosts = $task->getPosts();
+        $data['allPosts'] = $task->getPosts();
+        $data['task'] = $task;
 
-        include $_SERVER['DOCUMENT_ROOT'].'/view/task/task.php';
+        Functions::view('task/task',$data);
     }
 
 
@@ -78,8 +86,13 @@ class TaskController
         Functions::checkAdmin();
 
         $task = Task::getById(htmlspecialchars($_GET["id"]));
+        $userProject = new UserProject();
+
+        $userProject->project_id = $task->project_id;
+        $userProject->user_id = $task->user_id;
 
         $task->delete();
+        $userProject->delete();
 
         header('Location: ' . $_SERVER['HTTP_REFERER']);
     }

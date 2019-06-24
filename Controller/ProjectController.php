@@ -5,7 +5,6 @@ namespace Controller;
 use Model\Client;
 use Model\Project;
 use Functions\Functions;
-use Model\User;
 
 class ProjectController
 {
@@ -16,7 +15,9 @@ class ProjectController
 
         $client = Client::getById(htmlspecialchars($_GET['id']));
 
-		include $_SERVER['DOCUMENT_ROOT'].'/view/project/add_project.php';	
+        $data['clientName'] = $client->name;
+
+        Functions::view('project/add_project',$data);
     }
 
 
@@ -45,7 +46,10 @@ class ProjectController
 
         $client = Client::getById($_GET['id']);
 
-        include $_SERVER['DOCUMENT_ROOT'].'/view/project/add_project.php';
+        $data['clientName'] = $client->name;
+        $data['status'] = $status;
+
+        Functions::view('project/add_project',$data);
     }
 
 
@@ -55,43 +59,13 @@ class ProjectController
 
         if (!empty($_GET['message'])) {
             $status = $_GET['message'];
+            $data['status'] = $status;
         }
 
-		$allClients = Client::getAll();
+        $data['allProjects'] = Project::getProjectsJoined();
+		$data['allClients'] = Client::getAll();
 
-		foreach ($allClients as $client) {
-
-            $projects = $client->getProjects();
-
-                foreach ($projects as $project) {
-
-                    if ($project->name !== null) {
-                        $tasks = $project->getTasks();
-
-                        if (empty($tasks)) {
-                            $allProjects[] = array('client_name' => $client->name,
-                                'task_name' => null,
-                                'project_name' => $project->name,
-                                'project_id' => $project->project_id,
-                                'task_id' => null,
-                                'user_name' => null);
-                        } else {
-                            foreach ($tasks as $task) {
-
-                                $user = User::getById($task->user_id);
-                                $allProjects[] = array('client_name' => $client->name,
-                                    'task_name' => $task->name,
-                                    'project_name' => $project->name,
-                                    'project_id' => $project->project_id,
-                                    'task_id' => $task->task_id,
-                                    'user_name' => $user->name);
-                            }
-                        }
-                    }
-                }
-            }
-
-		include $_SERVER['DOCUMENT_ROOT'].'/view/project/all_projects.php';
+		Functions::view('project/all_projects',$data);
     }
 
 
@@ -116,11 +90,11 @@ class ProjectController
             header("Location: /projects?message=Project added.");
         }
 
-        $allProjects = Project::getAllJoined();
+        $data['allClients'] = Client::getAll();
+        $data['allProjects'] = Project::getProjectsJoined();
+        $data['status'] = $status;
 
-        $allClients = Client::getAll();
-
-        include $_SERVER['DOCUMENT_ROOT'].'/view/project/all_projects.php';
+        Functions::view('project/all_projects',$data);
     }
 
 }

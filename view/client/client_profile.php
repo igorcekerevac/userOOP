@@ -1,7 +1,7 @@
 <?php require 'view/include/header_admin.php'; ?>
 
 <div id="content">
-	<h1>CLIENT/ <?php echo $client->name; ?></h1><br>
+	<h1>CLIENT/ <?php echo $clientName; ?></h1><br>
 	<h2>PROJECTS</h2>
 
 	<?php 

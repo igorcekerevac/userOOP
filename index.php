@@ -75,6 +75,11 @@
             $user->profile();
             break;
 
+        case '/employee/' :
+            $user = new Controller\UserController();
+            $user->employeeProfile();
+            break;
+
         case '/employee/logout' :
             $user = new Controller\UserController();
             $user->logout();

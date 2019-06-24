@@ -14,23 +14,19 @@ class ClientController
 
 		$resultsPerPage = 5;
 
-	    $numberOfResults = Client::countAll();
-
-		$numberOfPages = ceil($numberOfResults/$resultsPerPage);
+        $numberOfPages = Functions::numberOfPagesPagination($resultsPerPage, Client::countAll());
 
 
-		if (!isset($_GET['page'])) {
+        if (!isset($_GET['page'])) {
 	    	$page = 1;
 	    } else {
 	    	$page = $_GET['page'];
 	    }
 
+        $thisPageFirstResult = Functions::thisPageFirstResult($page, $resultsPerPage);
 
-	    $thisPageFirstResult = ($page-1)*$resultsPerPage;
-
-		$clients = Client::getAllPagination($thisPageFirstResult, $resultsPerPage);
-
-		include $_SERVER['DOCUMENT_ROOT'].'/view/client/client.php';
+        $data['clients'] = Client::getAllPagination($thisPageFirstResult, $resultsPerPage);;
+        Functions::view('client/client',$data);
 
 		for ($page=1; $page<=$numberOfPages ; $page++) {
 	    	echo '<a id="page" href="/clients/page/?page=' .$page. '">page ' . $page . '</a>';
@@ -67,7 +63,10 @@ class ClientController
 		        header("Location: /clients");
 		    }
 		}
-        include $_SERVER['DOCUMENT_ROOT'].'/view/client/add_client.php';
+
+        $data['status'] = $status;
+        Functions::view('client/add_client',$data);
+
     }
 
 
@@ -75,7 +74,7 @@ class ClientController
     {
         Functions::checkAdmin();
 
-        include $_SERVER['DOCUMENT_ROOT'].'/view/client/add_client.php';
+        Functions::view('client/add_client');
     }
 
 
@@ -86,9 +85,10 @@ class ClientController
 
 		$client = Client::getById(htmlspecialchars($_GET["id"]));
 
-		$clientProjects = $client->getProjects();
+        $data['clientProjects'] = $client->getProjects();
+        $data['clientName'] = $client->name;
 
-		include $_SERVER['DOCUMENT_ROOT'].'/view/client/client_profile.php';		
+        Functions::view('client/client_profile',$data);
     }
 
 }

@@ -20,10 +20,8 @@
 
 			echo '<strong id="font">'.$user->name.'</strong>' .
 
-			"<a id='task_names' style=' margin-left: 15px;' href='delete?id=".$user->user_id."'>delete</a><br>";
-			
-			//"<a id='task_names' style=' margin-left: 15px;' 
-			//href='/user/profile/?id=".$user['user_id']."'>profile</a><br>";
+			"<a id='task_names' style=' margin-left: 15px;' href='delete?id=".$user->user_id."'>delete</a><a id='task_names' style=' margin-left: 15px;' 
+			href='/employee/?id=".$user->user_id."'>profile</a><br>";
 		}
 
 	?>

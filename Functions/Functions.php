@@ -57,4 +57,22 @@ class Functions
         }
         return $users;
     }
+
+    public static function view($path, $data = null)
+    {
+        if ($data) {
+            extract($data);
+        }
+        include $_SERVER['DOCUMENT_ROOT'].'/view/'.$path.'.php';
+    }
+
+    public static function numberOfPagesPagination(int $resultsPerPage, int $numberOfResults): int
+    {
+        return $numberOfPages = ceil($numberOfResults / $resultsPerPage);
+    }
+
+    public static function thisPageFirstResult (int $page, int $resultsPerPage): int
+    {
+        return $thisPageFirstResult = ($page-1)*$resultsPerPage;
+    }
 }

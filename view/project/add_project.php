@@ -1,7 +1,7 @@
 <?php require 'view/include/header_admin.php'; ?>
 
 <div id="content">	
-	<h1>ADD PROJECT/<?= $client->name; ?></h1>
+	<h1>ADD PROJECT/<?= $clientName; ?></h1>
 
     <?php
 
