@@ -5,6 +5,7 @@ namespace Controller;
 use Model\Client;
 use Model\Project;
 use Functions\Functions;
+use Model\User;
 
 class ProjectController
 {
@@ -56,12 +57,41 @@ class ProjectController
             $status = $_GET['message'];
         }
 
-		$allProjects = Project::getAllJoined();
-
 		$allClients = Client::getAll();
 
-		include $_SERVER['DOCUMENT_ROOT'].'/view/project/all_projects.php';
+		foreach ($allClients as $client) {
 
+            $projects = $client->getProjects();
+
+                foreach ($projects as $project) {
+
+                    if ($project->name !== null) {
+                        $tasks = $project->getTasks();
+
+                        if (empty($tasks)) {
+                            $allProjects[] = array('client_name' => $client->name,
+                                'task_name' => null,
+                                'project_name' => $project->name,
+                                'project_id' => $project->project_id,
+                                'task_id' => null,
+                                'user_name' => null);
+                        } else {
+                            foreach ($tasks as $task) {
+
+                                $user = User::getById($task->user_id);
+                                $allProjects[] = array('client_name' => $client->name,
+                                    'task_name' => $task->name,
+                                    'project_name' => $project->name,
+                                    'project_id' => $project->project_id,
+                                    'task_id' => $task->task_id,
+                                    'user_name' => $user->name);
+                            }
+                        }
+                    }
+                }
+            }
+
+		include $_SERVER['DOCUMENT_ROOT'].'/view/project/all_projects.php';
     }
 
 
