@@ -15,7 +15,7 @@ class TaskController extends Controller
     {
         $this->checkCredentials('admin_name');
 
-        $project = Project::getById($this->get('id'));
+        $project = Project::getById($this->request->get('id'));
         $users = User::getAll();
 
         $data['allUsers'] = Functions::populateUsersArray($users);
@@ -32,14 +32,14 @@ class TaskController extends Controller
 
         $task = new Task();
 
-        $task->name = htmlspecialchars($this->post('name'));
-        $task->project_id = htmlspecialchars($this->post('project_id'));
-        $task->user_id = htmlspecialchars($this->post('user_id'));
+        $task->name = htmlspecialchars($this->request->post('name'));
+        $task->project_id = htmlspecialchars($this->request->post('project_id'));
+        $task->user_id = htmlspecialchars($this->request->post('user_id'));
 
         $task->save();
         $task->saveUserProject();
 
-        $this->redirectToPreviousPage();
+        $this->request->redirectToPreviousPage();
     }
 
 
@@ -47,7 +47,7 @@ class TaskController extends Controller
     {
         $this->checkCredentials('admin_name');
 
-        $task = Task::getById(htmlspecialchars($this->get('id')));
+        $task = Task::getById(htmlspecialchars($this->request->get('id')));
 
         $data['allPosts'] = $task->getPosts();
         $data['task'] = $task;
@@ -62,16 +62,16 @@ class TaskController extends Controller
 
         $post = new Post();
 
-        $post->task_id = htmlspecialchars($this->post('task_id'));
-        $post->title = $_SESSION['admin_name'];
-        $post->body = htmlspecialchars($this->post('body'));
+        $post->task_id = htmlspecialchars($this->request->post('task_id'));
+        $post->title = $this->request->session('admin_name');
+        $post->body = htmlspecialchars($this->request->post('body'));
         date_default_timezone_set("Europe/Belgrade");
         $post->date = date("Y-m-d H:i:s");;
-        $post->users_id = $_SESSION['admin_id'];
+        $post->users_id = $this->request->session('admin_id');
 
         $post->save();
 
-        $this->redirectToPreviousPage();
+        $this->request->redirectToPreviousPage();
     }
 
 
@@ -79,11 +79,11 @@ class TaskController extends Controller
     {
         $this->checkCredentials('admin_name');
 
-        $task = Task::getById(htmlspecialchars($this->get('id')));
+        $task = Task::getById(htmlspecialchars($this->request->get('id')));
 
         $task->delete();
         $task->deleteUserProject();
 
-        $this->redirectToPreviousPage();
+        $this->request->redirectToPreviousPage();
     }
 }

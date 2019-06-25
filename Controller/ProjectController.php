@@ -12,7 +12,7 @@ class ProjectController extends Controller
     {
         $this->checkCredentials('admin_name');
 
-        $client = Client::getById(htmlspecialchars($this->get('id')));
+        $client = Client::getById(htmlspecialchars($this->request->get('id')));
 
         $data['clientName'] = $client->name;
 
@@ -26,9 +26,9 @@ class ProjectController extends Controller
 
         $project = new Project();
 
-        $name = $project->name = htmlspecialchars(trim($this->post('name')));
+        $name = $project->name = htmlspecialchars(trim($this->request->post('name')));
 
-        $project->client_id = htmlspecialchars($this->post('id'));
+        $project->client_id = htmlspecialchars($this->request->post('id'));
 
         date_default_timezone_set("Europe/Belgrade");
         $project->date_created = date("Y-m-d H:i:s");
@@ -41,12 +41,12 @@ class ProjectController extends Controller
         } else {
 
             $project->save();
-            $this->redirectToPage('/client');
+            $this->request->redirectToPage('/client');
         }
 
         $_GET['id'] = $project->client_id;
 
-        $client = Client::getById($this->get('id'));
+        $client = Client::getById($this->request->get('id'));
 
         $data['clientName'] = $client->name;
         $data['status'] = $status;
@@ -59,8 +59,8 @@ class ProjectController extends Controller
 	{
         $this->checkCredentials('admin_name');
 
-        if (!empty($this->get)) {
-            $status = $this->get('message');
+        if (!empty($this->request->get)) {
+            $status = $this->request->get('message');
             $data['status'] = $status;
         }
 
@@ -77,9 +77,9 @@ class ProjectController extends Controller
 
         $project = new Project();
 
-        $name = $project->name = htmlspecialchars(trim($this->post('name')));
+        $name = $project->name = htmlspecialchars(trim($this->request->post('name')));
 
-        $project->client_id = htmlspecialchars($this->post('id'));
+        $project->client_id = htmlspecialchars($this->request->post('id'));
 
         date_default_timezone_set("Europe/Belgrade");
         $project->date_created = date("Y-m-d H:i:s");
@@ -92,7 +92,7 @@ class ProjectController extends Controller
         } else {
 
             $project->save();
-            header("Location: /projects?message=Project added.");
+            $this->request->redirectToPage('/projects?message=Project added.');
         }
 
         $data['allClients'] = Client::getAll();
@@ -106,7 +106,7 @@ class ProjectController extends Controller
     {
         $this->checkCredentials('admin_name');
 
-        $project = Project::getById(htmlspecialchars($this->get('id')));
+        $project = Project::getById(htmlspecialchars($this->request->get('id')));
 
         date_default_timezone_set("Europe/Belgrade");
         $project->date_finished = date("Y-m-d H:i:s");
@@ -114,14 +114,14 @@ class ProjectController extends Controller
 
         $project->update();
 
-        $this->redirectToPreviousPage();
+        $this->request->redirectToPreviousPage();
     }
 
     public function finishedProjectPage()
     {
         $this->checkCredentials('admin_name');
 
-        $project = Project::getById(htmlspecialchars($this->get('id')));
+        $project = Project::getById(htmlspecialchars($this->request->get('id')));
 
         $data['project'] = $project;
 

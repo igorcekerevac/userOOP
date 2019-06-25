@@ -22,29 +22,7 @@ class Functions
 	}
 
 
-//	public static function checkAdmin()
-//	{
-//		session_start();
-//
-//		if (!isset($_SESSION['admin_name'])) {
-//
-//			header("Location: /employee/login");
-//		}
-//	}
-//
-//
-//	public static function checkUser()
-//	{
-//		session_start();
-//
-//		if (!isset($_SESSION['name'])) {
-//
-//			header("Location: /employee/login");
-//		}
-//	}
-
-
-	public static function populateUsersArray($allUsers)
+	public static function populateUsersArray(array $allUsers): array
     {
         $users = array();
 

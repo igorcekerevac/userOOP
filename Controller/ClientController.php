@@ -17,10 +17,10 @@ class ClientController extends Controller
         $numberOfPages = Functions::numberOfPagesPagination($resultsPerPage, Client::countAll());
 
 
-        if (empty($this->get)) {
+        if (empty($this->request->get)) {
 	    	$page = 1;
 	    } else {
-	    	$page = $this->get('page');
+	    	$page = $this->request->get('page');
 	    }
 
         $thisPageFirstResult = Functions::thisPageFirstResult($page, $resultsPerPage);
@@ -39,7 +39,7 @@ class ClientController extends Controller
         $this->checkCredentials('admin_name');
 
 		$client = new Client();
-		$name = $client->name = htmlspecialchars(trim($this->post('name')));
+		$name = $client->name = htmlspecialchars(trim($this->request->post('name')));
 
 		$nameValidationFlag = 0;
 
@@ -50,7 +50,6 @@ class ClientController extends Controller
             $nameValidationFlag = 1;
         }
 
-
 		if ($nameValidationFlag==0) {
 
 		    if (empty($name)) {
@@ -60,7 +59,7 @@ class ClientController extends Controller
 		    } else {
 
 		        $client->save();
-		        $this->redirectToPage('/clients');
+		        $this->request->redirectToPage('/clients');
 		    }
 		}
 
@@ -83,7 +82,7 @@ class ClientController extends Controller
     {
         $this->checkCredentials('admin_name');
 
-		$client = Client::getById(htmlspecialchars($this->get('id')));
+		$client = Client::getById(htmlspecialchars($this->request->get('id')));
 
         $data['clientProjects'] = $client->getProjects();
         $data['clientName'] = $client->name;

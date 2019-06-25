@@ -13,6 +13,7 @@
         $request='';
     }
 
+    session_start();
 
     switch ($request) {
 

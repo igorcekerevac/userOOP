@@ -8,18 +8,17 @@ use Model\User;
 use Model\Post;
 use Functions\Functions;
 
+
 class UserController extends Controller
 {
-
-
     public function addUserPost()
     {
         $user = new User();
 
-        $name = $user->name = htmlspecialchars(trim($this->post('name')));
-        $job = $user->job = htmlspecialchars(trim($this->post('job')));
-        $email = $user->email = htmlspecialchars(trim($this->post('email')));
-        $password = $user->password =htmlspecialchars(trim($this->post('password')));
+        $name = $user->name = htmlspecialchars(trim($this->request->post('name')));
+        $job = $user->job = htmlspecialchars(trim($this->request->post('job')));
+        $email = $user->email = htmlspecialchars(trim($this->request->post('email')));
+        $password = $user->password =htmlspecialchars(trim($this->request->post('password')));
 
         $mailValidateFlag = 0;
 
@@ -44,7 +43,7 @@ class UserController extends Controller
             } else {
 
                 if ($user->save()) {
-                    $this->redirectToPage('/?message=User added!');
+                    $this->request->redirectToPage('/?message=User added!');
                 } else {
                     $status = 'User has not been saved.';
                 }
@@ -62,7 +61,7 @@ class UserController extends Controller
     public function addUserGet()
     {
         if (!empty($this->get)) {
-            $status = $this->get('message');
+            $status = $this->request->get('message');
             $data['status'] = $status;
             $this->view('user/add_user',$data);
         } else {
@@ -73,10 +72,8 @@ class UserController extends Controller
 
     public function loginPost()
     {
-        session_start();
-
-        $email = htmlspecialchars(trim($this->post('email')));
-        $password = htmlspecialchars(trim($this->post('password')));
+        $email = htmlspecialchars(trim($this->request->post('email')));
+        $password = htmlspecialchars(trim($this->request->post('password')));
 
         if ($user = User::where('email', $email)) {
 
@@ -86,14 +83,14 @@ class UserController extends Controller
                 $_SESSION['user_id'] = $user->user_id;
                 $_SESSION['name'] = $user->name;
 
-                $this->redirectToPage("/employee?id=$user->user_id");
+                $this->request->redirectToPage("/employee?id=$user->user_id");
 
             } elseif ($email === 'admin@gmail.com' && password_verify($password, $user->password)) {
 
                 $_SESSION['admin_id'] = $user->user_id;
                 $_SESSION['admin_name'] = $user->name;
 
-                $this->redirectToPage('/admin');
+                $this->request->redirectToPage('/admin');
             }
         }
 
@@ -106,8 +103,6 @@ class UserController extends Controller
 
     public function loginGet()
     {
-        session_start();
-
         $this->view('user/login');
     }
 
@@ -116,7 +111,7 @@ class UserController extends Controller
     {
         $this->checkCredentials('name');
 
-        $user = User::getById($_SESSION['user_id']);
+        $user = User::getById($this->request->session('user_id'));
 
         $data['allTasks'] = $user->getTasks();
         $this->view('user/user_tasks',$data);
@@ -129,15 +124,15 @@ class UserController extends Controller
 
         $post = new Post();
 
-        $post->task_id = htmlspecialchars($this->post('task_id'));
-        $post->title = $_SESSION['name'];
-        $post->body = htmlspecialchars($this->post('body'));
+        $post->task_id = htmlspecialchars($this->request->post('task_id'));
+        $post->title = $this->request->session('name');
+        $post->body = htmlspecialchars($this->request->post('body'));
         date_default_timezone_set("Europe/Belgrade");
         $post->date = date("Y-m-d H:i:s");
-        $post->users_id = $_SESSION['user_id'];
+        $post->users_id = $this->request->session('user_id');
 
         $post->save();
-        $this->redirectToPreviousPage();
+        $this->request->redirectToPreviousPage();
     }
 
 
@@ -145,7 +140,7 @@ class UserController extends Controller
     {
         $this->checkCredentials('name');
 
-        $task = Task::getById(htmlspecialchars($this->get('id')));
+        $task = Task::getById(htmlspecialchars($this->request->get('id')));
 
         $data['allPosts'] = $task->getPosts();
         $data['project'] = Project::getById($task->project_id);
@@ -164,13 +159,13 @@ class UserController extends Controller
         $numberOfPages = Functions::numberOfPagesPagination($resultsPerPage, User::countAll());
 
 
-        if (empty($this->get)) {
+        if (empty($this->request->get)) {
 
             $page = 1;
 
         } else {
 
-            $page = $this->get('page');
+            $page = $this->request->get('page');
         }
 
 
@@ -193,7 +188,7 @@ class UserController extends Controller
     {
         $this->checkCredentials('admin_name');
 
-        $user = User::getById(htmlspecialchars($this->get("id")));
+        $user = User::getById(htmlspecialchars($this->request->get("id")));
 
         if ($user->delete()) {
 
@@ -206,7 +201,7 @@ class UserController extends Controller
 
         $_SESSION['message'] = $status;
 
-        $this->redirectToPreviousPage();
+        $this->request->redirectToPreviousPage();
     }
 
 
@@ -216,11 +211,11 @@ class UserController extends Controller
 
         $user = new User();
 
-        $user_id = $user->user_id = $_SESSION['user_id'];
-        $name = $user->name = htmlspecialchars(trim($this->post('name')));
-        $job = $user->job = htmlspecialchars(trim($this->post('job')));
-        $email = $user->email = htmlspecialchars(trim($this->post('email')));
-        $password = $user->password = htmlspecialchars(trim($this->post('password')));
+        $user_id = $user->user_id = $this->request->session('user_id');
+        $name = $user->name = htmlspecialchars(trim($this->request->post('name')));
+        $job = $user->job = htmlspecialchars(trim($this->request->post('job')));
+        $email = $user->email = htmlspecialchars(trim($this->request->post('email')));
+        $password = $user->password = htmlspecialchars(trim($this->request->post('password')));
 
         $mailValidateFlag = 0;
 
@@ -260,7 +255,7 @@ class UserController extends Controller
 
                 $_SESSION['name'] = $name;
 
-                $this->redirectToPage("/user/update/?message=$message");
+                $this->request->redirectToPage("/user/update/?message=$message");
             }
         }
 
@@ -274,8 +269,10 @@ class UserController extends Controller
     {
         $this->checkCredentials('name');
 
-        if (empty($this->get)) {
-            $status = $this->get('message');
+        $param = $this->request->get;
+
+        if (isset($param['message'])) {
+            $status = $this->request->get('message');
             $data['status'] = $status;
             $this->view('user/update_user',$data);
         } else {
@@ -288,7 +285,7 @@ class UserController extends Controller
     {
         $this->checkCredentials('name');
 
-        $data['user'] = User::getById(htmlspecialchars($this->get('id')));
+        $data['user'] = User::getById(htmlspecialchars($this->request->get('id')));
         $this->view('user/profile',$data);
     }
 
@@ -297,7 +294,7 @@ class UserController extends Controller
     {
         $this->checkCredentials('admin_name');
 
-        $user = User::getById(htmlspecialchars($this->get('id')));
+        $user = User::getById(htmlspecialchars($this->request->get('id')));
 
         $data['user'] = $user;
         $data['allTasks'] = $user->getTasks();
@@ -307,11 +304,10 @@ class UserController extends Controller
 
     public function logout()
     {
-        session_start();
         session_destroy();
         $_SESSION = array();
 
-        $this->redirectToPage('/employee/login');
+        $this->request->redirectToPage('/employee/login');
     }
 
 
