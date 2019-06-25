@@ -2,41 +2,45 @@
 
 namespace Model;
 
-use Db\Db;
-
 class Project extends Model
 {
+    public $dbConn;
 
 	public $name;
 	public $client_id;
 	public $project_id;
+    public $status = 'active';
+    public $date_created;
+    public $date_finished;
 
     protected static $tableName = 'project';
 
 
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+
     public function save(): bool
     {
-        $instance = Db::getInstance();
-        $conn = $instance->getConnection();
+        $sql = "INSERT INTO project SET name = ?, client_id = ?, status = ?, date_created = ?";
 
-        $sql = "INSERT INTO project SET name = ?, client_id = ?";
-
-        $stmt = $conn->prepare($sql);
+        $stmt = $this->dbConn->prepare($sql);
 
         $stmt->bindParam(1, $this->name);
         $stmt->bindParam(2, $this->client_id);
+        $stmt->bindParam(3, $this->status);
+        $stmt->bindParam(4, $this->date_created);
 
         return $stmt->execute();
     }
 
     public function getTasks(): array
     {
-        $instance = Db::getInstance();
-        $conn = $instance->getConnection();
-
         $sql = "SELECT * FROM task where project_id= :id";
 
-        $stmt = $conn->prepare($sql);
+        $stmt = $this->dbConn->prepare($sql);
         $stmt->bindParam(':id', $this->project_id);
         $stmt->setFetchMode(\PDO::FETCH_CLASS, '\Model\Task');
 
@@ -62,17 +66,20 @@ class Project extends Model
                                                     'project_name' => $project->name,
                                                     'project_id' => $project->project_id,
                                                     'task_id' => null,
-                                                    'user_name' => null);
+                                                    'user_name' => null,
+                                                    'status' =>$project->status);
                         } else {
 
                             foreach ($tasks as $task) {
-                                $user = User::getById($task->user_id);
+                                $user = $task->getUser();
                                 $allProjects[] = array('client_name' => $client->name,
                                                         'task_name' => $task->name,
                                                         'project_name' => $project->name,
                                                         'project_id' => $project->project_id,
                                                         'task_id' => $task->task_id,
-                                                        'user_name' => $user->name);
+                                                        'user_name' => $user->name,
+                                                        'status' =>$project->status);
+
                             }
                         }
                     }
@@ -84,6 +91,19 @@ class Project extends Model
         } else {
             return $allProjects;
         }
+    }
+
+    public function update(): bool
+    {
+        $sql = "UPDATE project SET date_finished = :date_finished, status = :status WHERE project_id = :id";
+
+        $stmt = $this->dbConn->prepare($sql);
+
+        $stmt->bindParam(':date_finished', $this->date_finished);
+        $stmt->bindParam(':status', $this->status);
+        $stmt->bindParam(':id', $this->project_id);
+
+        return $stmt->execute();
     }
 }
 

@@ -2,11 +2,9 @@
 
 namespace Model;
 
-use Db\Db;
-
-
 class User extends Model
 {
+    public $dbConn;
 
 	public $name;
 	public $job;
@@ -16,15 +14,16 @@ class User extends Model
 
     protected static $tableName = 'user';
 
+    public function __construct()
+    {
+        parent::__construct();
+    }
 
     public function save(): bool
     {
-        $instance = Db::getInstance();
-        $conn = $instance->getConnection();
-
         $sql = "INSERT INTO user SET name = ?, password = ?, email = ?, job = ?";
 
-        $stmt = $conn->prepare($sql);
+        $stmt = $this->dbConn->prepare($sql);
 
         $hash = password_hash($this->password, PASSWORD_DEFAULT);
 
@@ -39,13 +38,10 @@ class User extends Model
 
     public function update(): bool
     {
-        $instance = Db::getInstance();
-        $conn = $instance->getConnection();
-
         $sql = "UPDATE user SET name = :name, password = :password, email = :email, job = :job
          WHERE user_id = :id";
        
-        $stmt = $conn->prepare($sql);
+        $stmt = $this->dbConn->prepare($sql);
 
         $stmt->bindParam(':name', $this->name);
         $stmt->bindParam(':password', $this->password);
@@ -59,14 +55,25 @@ class User extends Model
 
     public function getTasks(): array
     {
-        $instance = Db::getInstance();
-        $conn = $instance->getConnection();
-
         $sql = "SELECT * FROM task where user_id= :id";
 
-        $stmt = $conn->prepare($sql);
+        $stmt = $this->dbConn->prepare($sql);
         $stmt->bindParam(':id', $this->user_id);
         $stmt->setFetchMode(\PDO::FETCH_CLASS, '\Model\Task');
+
+        $stmt->execute();
+
+        return ($array = $stmt->fetchAll()) ? $array : array();
+    }
+
+
+    public function getPosts(): array
+    {
+        $sql = "SELECT * FROM post where users_id= :id";
+
+        $stmt = $this->dbConn->prepare($sql);
+        $stmt->bindParam(':id', $this->user_id);
+        $stmt->setFetchMode(\PDO::FETCH_CLASS, '\Model\Post');
 
         $stmt->execute();
 

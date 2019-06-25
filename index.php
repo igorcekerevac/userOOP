@@ -152,6 +152,15 @@
             $project->showAllPost();
             break;
 
+        case '/client/project/finished' :
+            $project = new Controller\ProjectController();
+            $project->finishProjectPost();
+            break;
+
+        case '/client/project/' :
+            $project = new Controller\ProjectController();
+            $project->finishedProjectPage();
+            break;
 
         // task Controller
 

@@ -1,11 +1,10 @@
 <?php
 
 namespace Model;
-use Db\Db;
-
 
 class Client extends Model
 {
+    public $dbConn;
 
 	public $name;
 	public $client_id;
@@ -13,14 +12,17 @@ class Client extends Model
 	protected static $tableName = 'client';
 
 
+	public function __construct()
+    {
+        parent::__construct();
+    }
+
+
     public function save(): bool
     {
-        $instance = Db::getInstance();
-        $conn = $instance->getConnection();
-
         $sql = "INSERT INTO client SET name = ?";
 
-        $stmt = $conn->prepare($sql);
+        $stmt = $this->dbConn->prepare($sql);
 
         $stmt->bindParam(1, $this->name);
 
@@ -30,12 +32,9 @@ class Client extends Model
 
     public function getProjects(): array
     {
-        $instance = Db::getInstance();
-        $conn = $instance->getConnection();
-
         $sql = "SELECT * FROM project where client_id= :id";
 
-        $stmt = $conn->prepare($sql);
+        $stmt = $this->dbConn->prepare($sql);
         $stmt->bindParam(':id', $this->client_id);
 
         $stmt->setFetchMode(\PDO::FETCH_CLASS, '\Model\Project');

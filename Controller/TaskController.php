@@ -7,93 +7,83 @@ use Model\Project;
 use Model\User;
 use Model\Post;
 use Functions\Functions;
-use Model\UserProject;
 
-class TaskController
+class TaskController extends Controller
 {
 
     public function addTaskGet()
     {
-        Functions::checkAdmin();
+        $this->checkCredentials('admin_name');
 
-        $project = Project::getById($_GET['id']);
+        $project = Project::getById($this->get('id'));
         $users = User::getAll();
 
         $data['allUsers'] = Functions::populateUsersArray($users);
         $data['allTasks'] = $project->getTasks();
         $data['project'] = $project;
 
-        Functions::view('task/add_task',$data);
+        $this->view('task/add_task',$data);
     }
 
 
     public function addTaskPost()
     {
-        Functions::checkAdmin();
+        $this->checkCredentials('admin_name');
 
         $task = new Task();
 
-        $task->name = htmlspecialchars($_POST['name']);
-        $task->project_id = htmlspecialchars($_POST['project_id']);
-        $task->user_id = htmlspecialchars($_POST['user_id']);
+        $task->name = htmlspecialchars($this->post('name'));
+        $task->project_id = htmlspecialchars($this->post('project_id'));
+        $task->user_id = htmlspecialchars($this->post('user_id'));
 
         $task->save();
+        $task->saveUserProject();
 
-        $userProject = new UserProject();
-        $userProject->user_id = htmlspecialchars($_POST['user_id']);
-        $userProject->project_id = htmlspecialchars($_POST['project_id']);
-
-        $userProject->save();
-
-        header("Location: /client/project/task?id=$task->project_id");
+        $this->redirectToPreviousPage();
     }
 
 
     public function taskCommentsGet()
     {
-        Functions::checkAdmin();
+        $this->checkCredentials('admin_name');
 
-        $task = Task::getById(htmlspecialchars($_GET["id"]));
+        $task = Task::getById(htmlspecialchars($this->get('id')));
 
         $data['allPosts'] = $task->getPosts();
         $data['task'] = $task;
 
-        Functions::view('task/task',$data);
+        $this->view('task/task',$data);
     }
 
 
     public function taskCommentsPost()
     {
-        Functions::checkAdmin();
+        $this->checkCredentials('admin_name');
 
         $post = new Post();
 
-        $post->task_id = htmlspecialchars($_POST['task_id']);
+        $post->task_id = htmlspecialchars($this->post('task_id'));
         $post->title = $_SESSION['admin_name'];
-        $post->body = htmlspecialchars($_POST['body']);
+        $post->body = htmlspecialchars($this->post('body'));
         date_default_timezone_set("Europe/Belgrade");
         $post->date = date("Y-m-d H:i:s");;
         $post->users_id = $_SESSION['admin_id'];
 
         $post->save();
 
-        header("Location: /client/project/task/?id=$post->task_id");
+        $this->redirectToPreviousPage();
     }
 
 
     public function delete()
     {
-        Functions::checkAdmin();
+        $this->checkCredentials('admin_name');
 
-        $task = Task::getById(htmlspecialchars($_GET["id"]));
-        $userProject = new UserProject();
-
-        $userProject->project_id = $task->project_id;
-        $userProject->user_id = $task->user_id;
+        $task = Task::getById(htmlspecialchars($this->get('id')));
 
         $task->delete();
-        $userProject->delete();
+        $task->deleteUserProject();
 
-        header('Location: ' . $_SERVER['HTTP_REFERER']);
+        $this->redirectToPreviousPage();
     }
 }

@@ -1,10 +1,10 @@
 <?php
 
 namespace Model;
-use Db\Db;
 
 class Task extends Model
 {
+    public $dbConn;
 
 	public $name;
     public $project_id;
@@ -12,16 +12,19 @@ class Task extends Model
     public $task_id;
 
     protected static $tableName = 'task';
- 
+
+
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
 
     public function save(): bool
     {
-        $instance = Db::getInstance();
-        $conn = $instance->getConnection();
-
         $sql = "INSERT INTO task SET name = ?, project_id = ?, user_id = ?";
 
-        $stmt = $conn->prepare($sql);
+        $stmt = $this->dbConn->prepare($sql);
 
         $stmt->bindParam(1, $this->name);
         $stmt->bindParam(2, $this->project_id);
@@ -33,12 +36,9 @@ class Task extends Model
 
     public function getPosts(): array
     {
-        $instance = Db::getInstance();
-        $conn = $instance->getConnection();
-
         $sql = "SELECT * FROM post where task_id = :task_id ORDER BY date DESC ";
 
-        $stmt = $conn->prepare($sql);
+        $stmt = $this->dbConn->prepare($sql);
 
         $stmt->bindParam(':task_id', $this->task_id);
         $stmt->setFetchMode(\PDO::FETCH_CLASS, '\Model\Post');
@@ -46,6 +46,42 @@ class Task extends Model
         $stmt->execute();
 
         return ($array = $stmt->fetchAll()) ? $array : array();
+    }
+
+    public function getUser()
+    {
+        $sql = "SELECT * FROM user WHERE user_id = :id";
+
+        $stmt = $this->dbConn->prepare($sql);
+        $stmt->bindParam(':id', $this->user_id);
+        $stmt->setFetchMode(\PDO::FETCH_CLASS, 'Model\User');
+
+        $stmt->execute();
+
+        return ($obj = $stmt->fetch()) ? $obj : false;
+    }
+
+    public function saveUserProject(): bool
+    {
+        $sql = "INSERT INTO user_project SET project_id = ?, user_id = ?";
+
+        $stmt = $this->dbConn->prepare($sql);
+
+        $stmt->bindParam(1, $this->project_id);
+        $stmt->bindParam(2, $this->user_id);
+
+        return $stmt->execute();
+    }
+
+    public function deleteUserProject(): bool
+    {
+        $sql = "DELETE FROM user_project WHERE user_id = :user_id and project_id = :project_id ";
+
+        $stmt = $this->dbConn->prepare($sql);
+        $stmt->bindParam(':user_id', $this->user_id);
+        $stmt->bindParam(':project_id', $this->project_id);
+
+        return $stmt->execute();
     }
 }
 

@@ -9,14 +9,17 @@
 	
 	<?php
 
-		foreach ($clients as $client) {
+        if (!empty($clients)) {
+            foreach ($clients as $client) {
 
-			echo '<strong id="font">'.$client->name.'</strong>' .
+                echo '<strong id="font">'.$client->name.'</strong>' .
 
-			"<a id='task_names' style=' margin-left: 15px;' href='/client/project/add/?id=".$client->client_id."'>add project</a>" .
-			"<a id='task_names' style=' margin-left: 15px;' href='/client/?id=".$client->client_id."'>projects</a><br>" ;
-		}
-
+                "<a id='task_names' style=' margin-left: 15px;' href='/client/project/add/?id=".$client->client_id."'>add project</a>" .
+                "<a id='task_names' style=' margin-left: 15px;' href='/client/?id=".$client->client_id."'>projects</a><br>" ;
+            }
+        } else {
+            echo '<h2>'.'No clients in database!'.'</h2>';
+        }
 	?>	
 </div>	
 	<br>

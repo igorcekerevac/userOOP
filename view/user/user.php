@@ -15,7 +15,7 @@
         echo '<p id="status"> &nbsp </p>';
 
     }
-
+    if (!empty($allUsers)) {
 		foreach ($allUsers as $user) {
 
 			echo '<strong id="font">'.$user->name.'</strong>' .
@@ -23,7 +23,9 @@
 			"<a id='task_names' style=' margin-left: 15px;' href='delete?id=".$user->user_id."'>delete</a><a id='task_names' style=' margin-left: 15px;' 
 			href='/employee/?id=".$user->user_id."'>profile</a><br>";
 		}
-
+    } else {
+	    echo '<h2>'.'No employees in database!'.'</h2>';
+    }
 	?>
 </div>
 	<br>

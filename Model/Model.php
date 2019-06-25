@@ -7,20 +7,25 @@ use Db\Db;
 
 abstract class Model
 {
+    public $dbConn;
 
     protected static $tableName = '';
 
 
-    public function delete(): bool
+    public function __construct()
     {
         $instance = Db::getInstance();
-        $conn = $instance->getConnection();
+        $this->dbConn = $instance->getConnection();
+    }
 
+
+    public function delete(): bool
+    {
         $id = static::$tableName.'_id';
 
         $sql = "DELETE FROM " . static::$tableName . " WHERE " . static::$tableName . "_id = :id ";
 
-        $stmt = $conn->prepare($sql);
+        $stmt = $this->dbConn->prepare($sql);
         $stmt->bindParam(':id', $this->$id);
 
         return $stmt->execute();

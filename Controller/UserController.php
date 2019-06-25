@@ -8,7 +8,7 @@ use Model\User;
 use Model\Post;
 use Functions\Functions;
 
-class UserController
+class UserController extends Controller
 {
 
 
@@ -16,10 +16,10 @@ class UserController
     {
         $user = new User();
 
-        $name = $user->name = htmlspecialchars(trim($_POST['name']));
-        $job = $user->job = htmlspecialchars(trim($_POST['job']));
-        $email = $user->email = htmlspecialchars(trim($_POST['email']));
-        $password = $user->password =htmlspecialchars(trim($_POST['password']));
+        $name = $user->name = htmlspecialchars(trim($this->post('name')));
+        $job = $user->job = htmlspecialchars(trim($this->post('job')));
+        $email = $user->email = htmlspecialchars(trim($this->post('email')));
+        $password = $user->password =htmlspecialchars(trim($this->post('password')));
 
         $mailValidateFlag = 0;
 
@@ -44,7 +44,7 @@ class UserController
             } else {
 
                 if ($user->save()) {
-                    header("Location:/?message=User added!");
+                    $this->redirectToPage('/?message=User added!');
                 } else {
                     $status = 'User has not been saved.';
                 }
@@ -55,18 +55,18 @@ class UserController
 
         $data['status'] = $status;
 
-        Functions::view('user/add_user',$data);
+        $this->view('user/add_user',$data);
     }
 
 
     public function addUserGet()
     {
-        if (!empty($_GET['message'])) {
-            $status = $_GET['message'];
+        if (!empty($this->get)) {
+            $status = $this->get('message');
             $data['status'] = $status;
-            Functions::view('user/add_user',$data);
+            $this->view('user/add_user',$data);
         } else {
-            Functions::view('user/add_user');
+            $this->view('user/add_user');
         }
     }
 
@@ -75,8 +75,8 @@ class UserController
     {
         session_start();
 
-        $email = htmlspecialchars(trim($_POST['email']));
-        $password = htmlspecialchars(trim($_POST['password']));
+        $email = htmlspecialchars(trim($this->post('email')));
+        $password = htmlspecialchars(trim($this->post('password')));
 
         if ($user = User::where('email', $email)) {
 
@@ -86,21 +86,21 @@ class UserController
                 $_SESSION['user_id'] = $user->user_id;
                 $_SESSION['name'] = $user->name;
 
-                header("Location: /employee?id=$user->user_id");
+                $this->redirectToPage("/employee?id=$user->user_id");
 
             } elseif ($email === 'admin@gmail.com' && password_verify($password, $user->password)) {
 
                 $_SESSION['admin_id'] = $user->user_id;
                 $_SESSION['admin_name'] = $user->name;
 
-                header("Location: /admin");
+                $this->redirectToPage('/admin');
             }
         }
 
         $status = 'Entered email or password is not in database.';
 
         $data['status'] = $status;
-        Functions::view('user/login',$data);
+        $this->view('user/login',$data);
     }
 
 
@@ -108,69 +108,69 @@ class UserController
     {
         session_start();
 
-        Functions::view('user/login');
+        $this->view('user/login');
     }
 
 
     public function allTasks()
     {
-        Functions::checkUser();
+        $this->checkCredentials('name');
 
         $user = User::getById($_SESSION['user_id']);
 
         $data['allTasks'] = $user->getTasks();
-        Functions::view('user/user_tasks',$data);
+        $this->view('user/user_tasks',$data);
     }
 
 
     public function taskCommentsPost()
     {
-        Functions::checkUser();
+        $this->checkCredentials('name');
 
         $post = new Post();
 
-        $post->task_id = htmlspecialchars($_POST['task_id']);
+        $post->task_id = htmlspecialchars($this->post('task_id'));
         $post->title = $_SESSION['name'];
-        $post->body = htmlspecialchars($_POST['body']);
+        $post->body = htmlspecialchars($this->post('body'));
         date_default_timezone_set("Europe/Belgrade");
         $post->date = date("Y-m-d H:i:s");
         $post->users_id = $_SESSION['user_id'];
 
         $post->save();
-        header("Location: /employee/task?id=$post->task_id");
+        $this->redirectToPreviousPage();
     }
 
 
     public function taskCommentsGet()
     {
-        Functions::checkUser();
+        $this->checkCredentials('name');
 
-        $task = Task::getById(htmlspecialchars($_GET['id']));
+        $task = Task::getById(htmlspecialchars($this->get('id')));
 
         $data['allPosts'] = $task->getPosts();
         $data['project'] = Project::getById($task->project_id);
         $data['task'] = $task;
 
-        Functions::view('user/user_posts',$data);
+        $this->view('user/user_posts',$data);
     }
 
 
     public function showAll()
     {
-        Functions::checkAdmin();
+        $this->checkCredentials('admin_name');
 
         $resultsPerPage = 4;
 
         $numberOfPages = Functions::numberOfPagesPagination($resultsPerPage, User::countAll());
 
 
-        if (!isset($_GET['page'])) {
+        if (empty($this->get)) {
 
             $page = 1;
 
         } else {
 
-            $page = $_GET['page'];
+            $page = $this->get('page');
         }
 
 
@@ -180,7 +180,7 @@ class UserController
 
         $data['allUsers'] = Functions::populateUsersArray($all);
 
-        Functions::view('user/user',$data);
+        $this->view('user/user',$data);
 
         for ($page = 1; $page <= $numberOfPages; $page++) {
 
@@ -191,9 +191,9 @@ class UserController
 
     public function delete()
     {
-        Functions::checkAdmin();
+        $this->checkCredentials('admin_name');
 
-        $user = User::getById(htmlspecialchars($_GET["id"]));
+        $user = User::getById(htmlspecialchars($this->get("id")));
 
         if ($user->delete()) {
 
@@ -206,22 +206,21 @@ class UserController
 
         $_SESSION['message'] = $status;
 
-        header('Location: ' . $_SERVER['HTTP_REFERER']);
-
+        $this->redirectToPreviousPage();
     }
 
 
     public function updatePost()
     {
-        Functions::checkUser();
+        $this->checkCredentials('name');
 
         $user = new User();
 
         $user_id = $user->user_id = $_SESSION['user_id'];
-        $name = $user->name = htmlspecialchars(trim($_POST['name']));
-        $job = $user->job = htmlspecialchars(trim($_POST['job']));
-        $email = $user->email = htmlspecialchars(trim($_POST['email']));
-        $password = $user->password = htmlspecialchars(trim($_POST['password']));
+        $name = $user->name = htmlspecialchars(trim($this->post('name')));
+        $job = $user->job = htmlspecialchars(trim($this->post('job')));
+        $email = $user->email = htmlspecialchars(trim($this->post('email')));
+        $password = $user->password = htmlspecialchars(trim($this->post('password')));
 
         $mailValidateFlag = 0;
 
@@ -251,54 +250,58 @@ class UserController
 
                 if ($user->update()) {
                     $message = 'User updated.';
+                    foreach ($user->getPosts() as $post) {
+                        $post->title = $user->name;
+                        $post->update();
+                    }
                 } else {
                     $message = 'User is not updated.';
                 }
 
                 $_SESSION['name'] = $name;
 
-                header("Location: /user/update/?message=$message");
+                $this->redirectToPage("/user/update/?message=$message");
             }
         }
 
         $data['status'] = $status;
 
-        Functions::view('user/update_user',$data);
+        $this->view('user/update_user',$data);
     }
 
 
     public function updateGet()
     {
-        Functions::checkUser();
+        $this->checkCredentials('name');
 
-        if (!empty($_GET['message'])) {
-            $status = $_GET['message'];
+        if (empty($this->get)) {
+            $status = $this->get('message');
             $data['status'] = $status;
-            Functions::view('user/update_user',$data);
+            $this->view('user/update_user',$data);
         } else {
-            Functions::view('user/update_user');
+            $this->view('user/update_user');
         }
     }
 
 
     public function profile()
     {
-        Functions::checkUser();
+        $this->checkCredentials('name');
 
-        $data['user'] = User::getById(htmlspecialchars($_GET["id"]));
-        Functions::view('user/profile',$data);
+        $data['user'] = User::getById(htmlspecialchars($this->get('id')));
+        $this->view('user/profile',$data);
     }
 
 
     public function employeeProfile()
     {
-        Functions::checkAdmin();
+        $this->checkCredentials('admin_name');
 
-        $user = User::getById(htmlspecialchars($_GET["id"]));
+        $user = User::getById(htmlspecialchars($this->get('id')));
 
         $data['user'] = $user;
         $data['allTasks'] = $user->getTasks();
-        Functions::view('user/employee_profile',$data);
+        $this->view('user/employee_profile',$data);
     }
 
 
@@ -308,14 +311,14 @@ class UserController
         session_destroy();
         $_SESSION = array();
 
-        header("Location: /employee/login");
+        $this->redirectToPage('/employee/login');
     }
 
 
     public function adminHome()
     {
-        Functions::checkAdmin();
+        $this->checkCredentials('admin_name');
 
-        Functions::view('user/home');
+        $this->view('user/home');
     }
 }

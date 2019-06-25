@@ -5,28 +5,28 @@ namespace Controller;
 use Model\Client;
 use Functions\Functions;
 
-class ClientController
+class ClientController extends Controller
 {
 
 	public function showAll()
 	{
-		Functions::checkAdmin();
+        $this->checkCredentials('admin_name');
 
 		$resultsPerPage = 5;
 
         $numberOfPages = Functions::numberOfPagesPagination($resultsPerPage, Client::countAll());
 
 
-        if (!isset($_GET['page'])) {
+        if (empty($this->get)) {
 	    	$page = 1;
 	    } else {
-	    	$page = $_GET['page'];
+	    	$page = $this->get('page');
 	    }
 
         $thisPageFirstResult = Functions::thisPageFirstResult($page, $resultsPerPage);
 
         $data['clients'] = Client::getAllPagination($thisPageFirstResult, $resultsPerPage);;
-        Functions::view('client/client',$data);
+        $this->view('client/client',$data);
 
 		for ($page=1; $page<=$numberOfPages ; $page++) {
 	    	echo '<a id="page" href="/clients/page/?page=' .$page. '">page ' . $page . '</a>';
@@ -36,10 +36,10 @@ class ClientController
 
     public function addClientPost()
     {
-		Functions::checkAdmin();
+        $this->checkCredentials('admin_name');
 
 		$client = new Client();
-		$name = $client->name = htmlspecialchars(trim($_POST['name']));
+		$name = $client->name = htmlspecialchars(trim($this->post('name')));
 
 		$nameValidationFlag = 0;
 
@@ -60,35 +60,35 @@ class ClientController
 		    } else {
 
 		        $client->save();
-		        header("Location: /clients");
+		        $this->redirectToPage('/clients');
 		    }
 		}
 
         $data['status'] = $status;
-        Functions::view('client/add_client',$data);
+        $this->view('client/add_client',$data);
 
     }
 
 
     public function addClientGet()
     {
-        Functions::checkAdmin();
+        $this->checkCredentials('admin_name');
 
-        Functions::view('client/add_client');
+        $this->view('client/add_client');
     }
 
 
 
     public function clientPage()
     {
-		Functions::checkAdmin();
+        $this->checkCredentials('admin_name');
 
-		$client = Client::getById(htmlspecialchars($_GET["id"]));
+		$client = Client::getById(htmlspecialchars($this->get('id')));
 
         $data['clientProjects'] = $client->getProjects();
         $data['clientName'] = $client->name;
 
-        Functions::view('client/client_profile',$data);
+        $this->view('client/client_profile',$data);
     }
 
 }

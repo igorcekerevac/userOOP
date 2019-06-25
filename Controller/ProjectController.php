@@ -4,32 +4,34 @@ namespace Controller;
 
 use Model\Client;
 use Model\Project;
-use Functions\Functions;
 
-class ProjectController
+class ProjectController extends Controller
 {
 
 	public function addProjectGet()
     {
-        Functions::checkAdmin();
+        $this->checkCredentials('admin_name');
 
-        $client = Client::getById(htmlspecialchars($_GET['id']));
+        $client = Client::getById(htmlspecialchars($this->get('id')));
 
         $data['clientName'] = $client->name;
 
-        Functions::view('project/add_project',$data);
+        $this->view('project/add_project', $data);
     }
 
 
     public function addProjectPost()
     {
-        Functions::checkAdmin();
+        $this->checkCredentials('admin_name');
 
         $project = new Project();
 
-        $name = $project->name = htmlspecialchars(trim($_POST['name']));
+        $name = $project->name = htmlspecialchars(trim($this->post('name')));
 
-        $project->client_id = $_POST['id'];
+        $project->client_id = htmlspecialchars($this->post('id'));
+
+        date_default_timezone_set("Europe/Belgrade");
+        $project->date_created = date("Y-m-d H:i:s");
 
 
         if (strlen($name) < 5) {
@@ -39,45 +41,48 @@ class ProjectController
         } else {
 
             $project->save();
-            header("Location: /clients");
+            $this->redirectToPage('/client');
         }
 
         $_GET['id'] = $project->client_id;
 
-        $client = Client::getById($_GET['id']);
+        $client = Client::getById($this->get('id'));
 
         $data['clientName'] = $client->name;
         $data['status'] = $status;
 
-        Functions::view('project/add_project',$data);
+        $this->view('project/add_project',$data);
     }
 
 
     public function showAllGet()
 	{
-		Functions::checkAdmin();
+        $this->checkCredentials('admin_name');
 
-        if (!empty($_GET['message'])) {
-            $status = $_GET['message'];
+        if (!empty($this->get)) {
+            $status = $this->get('message');
             $data['status'] = $status;
         }
 
         $data['allProjects'] = Project::getProjectsJoined();
 		$data['allClients'] = Client::getAll();
 
-		Functions::view('project/all_projects',$data);
+		$this->view('project/all_projects',$data);
     }
 
 
     public function showAllPost()
     {
-        Functions::checkAdmin();
+        $this->checkCredentials('admin_name');
 
         $project = new Project();
 
-        $name = $project->name = htmlspecialchars(trim($_POST['name']));
+        $name = $project->name = htmlspecialchars(trim($this->post('name')));
 
-        $project->client_id = $_POST['id'];
+        $project->client_id = htmlspecialchars($this->post('id'));
+
+        date_default_timezone_set("Europe/Belgrade");
+        $project->date_created = date("Y-m-d H:i:s");
 
 
         if (strlen($name) < 5 || $project->client_id === 'choose client') {
@@ -94,7 +99,33 @@ class ProjectController
         $data['allProjects'] = Project::getProjectsJoined();
         $data['status'] = $status;
 
-        Functions::view('project/all_projects',$data);
+        $this->view('project/all_projects',$data);
+    }
+
+    public function finishProjectPost()
+    {
+        $this->checkCredentials('admin_name');
+
+        $project = Project::getById(htmlspecialchars($this->get('id')));
+
+        date_default_timezone_set("Europe/Belgrade");
+        $project->date_finished = date("Y-m-d H:i:s");
+        $project->status = 'finished';
+
+        $project->update();
+
+        $this->redirectToPreviousPage();
+    }
+
+    public function finishedProjectPage()
+    {
+        $this->checkCredentials('admin_name');
+
+        $project = Project::getById(htmlspecialchars($this->get('id')));
+
+        $data['project'] = $project;
+
+        $this->view('project/finished_project',$data);
     }
 
 }

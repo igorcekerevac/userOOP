@@ -22,26 +22,26 @@ class Functions
 	}
 
 
-	public static function checkAdmin()
-	{
-		session_start();
-
-		if (!isset($_SESSION['admin_name'])) {
-			
-			header("Location: /employee/login");
-		}
-	}
-
-
-	public static function checkUser()
-	{
-		session_start();
-
-		if (!isset($_SESSION['name'])) {
-			
-			header("Location: /employee/login");
-		}
-	}
+//	public static function checkAdmin()
+//	{
+//		session_start();
+//
+//		if (!isset($_SESSION['admin_name'])) {
+//
+//			header("Location: /employee/login");
+//		}
+//	}
+//
+//
+//	public static function checkUser()
+//	{
+//		session_start();
+//
+//		if (!isset($_SESSION['name'])) {
+//
+//			header("Location: /employee/login");
+//		}
+//	}
 
 
 	public static function populateUsersArray($allUsers)
@@ -58,18 +58,12 @@ class Functions
         return $users;
     }
 
-    public static function view($path, $data = null)
-    {
-        if ($data) {
-            extract($data);
-        }
-        include $_SERVER['DOCUMENT_ROOT'].'/view/'.$path.'.php';
-    }
 
     public static function numberOfPagesPagination(int $resultsPerPage, int $numberOfResults): int
     {
         return $numberOfPages = ceil($numberOfResults / $resultsPerPage);
     }
+
 
     public static function thisPageFirstResult (int $page, int $resultsPerPage): int
     {
