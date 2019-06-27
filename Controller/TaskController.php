@@ -16,9 +16,10 @@ class TaskController extends Controller
         $this->checkCredentials('admin_name');
 
         $project = Project::getById($this->request->get('id'));
-        $users = User::getAll();
 
-        $data['allUsers'] = Functions::populateUsersArray($users);
+        $usersProject = $project->getUsers();
+
+        $data['allUsers'] = $usersProject;
         $data['allTasks'] = $project->getTasks();
         $data['project'] = $project;
 
@@ -37,9 +38,8 @@ class TaskController extends Controller
         $task->user_id = htmlspecialchars($this->request->post('user_id'));
 
         $task->save();
-        $task->saveUserProject();
 
-        $this->request->redirectToPreviousPage();
+        $this->redirectToPreviousPage();
     }
 
 
@@ -71,7 +71,7 @@ class TaskController extends Controller
 
         $post->save();
 
-        $this->request->redirectToPreviousPage();
+        $this->redirectToPreviousPage();
     }
 
 
@@ -82,8 +82,7 @@ class TaskController extends Controller
         $task = Task::getById(htmlspecialchars($this->request->get('id')));
 
         $task->delete();
-        $task->deleteUserProject();
 
-        $this->request->redirectToPreviousPage();
+        $this->redirectToPreviousPage();
     }
 }

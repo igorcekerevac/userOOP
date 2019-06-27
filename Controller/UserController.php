@@ -43,7 +43,7 @@ class UserController extends Controller
             } else {
 
                 if ($user->save()) {
-                    $this->request->redirectToPage('/?message=User added!');
+                    $this->redirectToPage('/?message=User added!');
                 } else {
                     $status = 'User has not been saved.';
                 }
@@ -83,14 +83,14 @@ class UserController extends Controller
                 $_SESSION['user_id'] = $user->user_id;
                 $_SESSION['name'] = $user->name;
 
-                $this->request->redirectToPage("/employee?id=$user->user_id");
+                $this->redirectToPage("/employee?id=$user->user_id");
 
             } elseif ($email === 'admin@gmail.com' && password_verify($password, $user->password)) {
 
                 $_SESSION['admin_id'] = $user->user_id;
                 $_SESSION['admin_name'] = $user->name;
 
-                $this->request->redirectToPage('/admin');
+                $this->redirectToPage('/admin');
             }
         }
 
@@ -132,7 +132,7 @@ class UserController extends Controller
         $post->users_id = $this->request->session('user_id');
 
         $post->save();
-        $this->request->redirectToPreviousPage();
+        $this->redirectToPreviousPage();
     }
 
 
@@ -201,7 +201,7 @@ class UserController extends Controller
 
         $_SESSION['message'] = $status;
 
-        $this->request->redirectToPreviousPage();
+        $this->redirectToPreviousPage();
     }
 
 
@@ -255,7 +255,7 @@ class UserController extends Controller
 
                 $_SESSION['name'] = $name;
 
-                $this->request->redirectToPage("/user/update/?message=$message");
+                $this->redirectToPage("/user/update/?message=$message");
             }
         }
 
@@ -307,7 +307,7 @@ class UserController extends Controller
         session_destroy();
         $_SESSION = array();
 
-        $this->request->redirectToPage('/employee/login');
+        $this->redirectToPage('/employee/login');
     }
 
 

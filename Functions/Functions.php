@@ -37,6 +37,21 @@ class Functions
     }
 
 
+    public static function populateProjectUsers(array $allUsers, array $usersOnProject): array
+    {
+        $users = array();
+
+        foreach ($allUsers as $user) {
+
+            if (!in_array($user, $usersOnProject)) {
+
+                array_push($users, $user);
+            }
+        }
+        return $users;
+    }
+
+
     public static function numberOfPagesPagination(int $resultsPerPage, int $numberOfResults): int
     {
         return $numberOfPages = ceil($numberOfResults / $resultsPerPage);

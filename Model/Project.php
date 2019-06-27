@@ -105,5 +105,47 @@ class Project extends Model
 
         return $stmt->execute();
     }
+
+    public function saveUserProject(int $user_id): bool
+    {
+        $sql = "INSERT INTO user_project SET project_id = :project_id, user_id = :user_id";
+
+        $stmt = $this->dbConn->prepare($sql);
+
+        $stmt->bindParam(':project_id', $this->project_id);
+        $stmt->bindParam(':user_id', $user_id);
+
+        return $stmt->execute();
+    }
+
+    public function deleteUserProject(int $user_id): bool
+    {
+        $sql = "DELETE FROM user_project WHERE user_id = :user_id and project_id = :project_id ";
+
+        $stmt = $this->dbConn->prepare($sql);
+        $stmt->bindParam(':user_id', $user_id);
+        $stmt->bindParam(':project_id', $this->project_id);
+
+        return $stmt->execute();
+    }
+
+
+    public function getUsers(): array
+    {
+        $sql = "SELECT user_id FROM user_project WHERE project_id = :project_id";
+
+        $stmt = $this->dbConn->prepare($sql);
+        $stmt->bindParam(':project_id', $this->project_id);
+
+        $stmt->execute();
+
+        $allUsers = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        $users = [];
+        foreach ($allUsers as $user) {
+            $users[] = User::getById($user['user_id']);
+        }
+        return (!empty($users)) ? $users : array();
+    }
 }
 

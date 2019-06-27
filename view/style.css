@@ -232,3 +232,19 @@ h5 {
 	width: 300px;
 	padding: 10px;
 }
+
+#addUser, #addTask {
+	width: 40%;
+	float: left;
+	background-color: orangered;
+	padding-left: 40px;
+	padding-top: 10px;
+	height: 1000px;
+	border-radius: 20px;
+	background-color: rgba(150, 60, 80, .3);
+
+}
+
+#addTask {
+	margin-left: 50px;
+}

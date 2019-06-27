@@ -59,7 +59,7 @@ class ClientController extends Controller
 		    } else {
 
 		        $client->save();
-		        $this->request->redirectToPage('/clients');
+		        $this->redirectToPage('/clients');
 		    }
 		}
 

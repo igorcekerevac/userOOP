@@ -10,6 +10,7 @@ abstract class Controller
     protected $request;
 
 
+
     public function __construct()
     {
         $this->request = new Request();
@@ -31,5 +32,15 @@ abstract class Controller
         if (!isset($session_param)) {
             header("Location: /employee/login");
         }
+    }
+
+    public function redirectToPreviousPage()
+    {
+        header('Location: ' . $_SERVER['HTTP_REFERER']);
+    }
+
+    public function redirectToPage(string $path): string
+    {
+        header("Location: $path");
     }
 }

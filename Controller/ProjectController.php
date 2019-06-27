@@ -2,8 +2,10 @@
 
 namespace Controller;
 
+use Functions\Functions;
 use Model\Client;
 use Model\Project;
+use Model\User;
 
 class ProjectController extends Controller
 {
@@ -41,7 +43,7 @@ class ProjectController extends Controller
         } else {
 
             $project->save();
-            $this->request->redirectToPage('/client');
+            $this->redirectToPage('/client');
         }
 
         $_GET['id'] = $project->client_id;
@@ -92,7 +94,7 @@ class ProjectController extends Controller
         } else {
 
             $project->save();
-            $this->request->redirectToPage('/projects?message=Project added.');
+            $this->redirectToPage('/projects?message=Project added.');
         }
 
         $data['allClients'] = Client::getAll();
@@ -114,7 +116,7 @@ class ProjectController extends Controller
 
         $project->update();
 
-        $this->request->redirectToPreviousPage();
+        $this->redirectToPreviousPage();
     }
 
     public function finishedProjectPage()
@@ -126,6 +128,38 @@ class ProjectController extends Controller
         $data['project'] = $project;
 
         $this->view('project/finished_project',$data);
+    }
+
+    public function projectPageGet()
+    {
+        $this->checkCredentials('admin_name');
+
+        $project = Project::getById(htmlspecialchars($this->request->get('id')));
+
+        $allUsers = Functions::populateUsersArray(User::getAll());
+        $usersProject = $project->getUsers();
+
+        $usersOnProject = Functions::populateProjectUsers($allUsers, $usersProject);
+
+        $data['usersOnProject'] = $usersProject;
+        $data['project'] = $project;
+        $data['users'] = $usersOnProject;
+        $data['allTasks'] = $project->getTasks();
+
+        $this->view('project/project',$data);
+    }
+
+    public function projectPageAddUserPost()
+    {
+        $this->checkCredentials('admin_name');
+
+        $project = Project::getById(htmlspecialchars($this->request->post('project_id')));;
+
+        if ($this->request->post('id') !== 'choose user') {
+            $project->saveUserProject(htmlspecialchars($this->request->post('id')));
+        }
+
+        $this->redirectToPreviousPage();
     }
 
 }

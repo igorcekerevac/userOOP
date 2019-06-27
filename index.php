@@ -162,6 +162,15 @@
             $project = new Controller\ProjectController();
             $project->finishedProjectPage();
             break;
+        case '/project/' :
+            $project = new Controller\ProjectController();
+            $project->projectPageGet();
+            break;
+
+        case '/project/addUser/' :
+            $project = new Controller\ProjectController();
+            $project->projectPageAddUserPost();
+            break;
 
         // task Controller
 

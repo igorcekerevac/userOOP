@@ -24,17 +24,6 @@ class Request
         }
     }
 
-
-    public function redirectToPreviousPage()
-    {
-        header('Location: ' . $_SERVER['HTTP_REFERER']);
-    }
-
-    public function redirectToPage(string $path): string
-    {
-        header("Location: $path");
-    }
-
     public function get(string $param): string
     {
         return $this->get[$param];
