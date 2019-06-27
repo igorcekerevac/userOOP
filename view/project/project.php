@@ -1,21 +1,23 @@
 <?php require 'view/include/header_admin.php'; ?>
 
 <div id="content">	
-	<h1>PROJECT <?php echo $project->name?> </h1><br>
-
+	<h1>PROJECT/ <?php echo $project->name?> </h1>
+    <h4 style="font-style: italic; margin-top: -10px;">CLIENT <?php echo $client->name?> </h4>
+    <h4 style="font-style: italic; margin-top: -20px;">created: <?php echo $project->date_created?> by admin</h4>
+    <h4 style="margin-top: -15px;"><a href="/client/project/finished?id=<?php echo $project->project_id ?>">finish project</a></h4><br>
     <div id="addUser">
-        <h2>Add user</h2><br>
+        <h2>Add employee</h2><br>
         <form action="/project/addUser/" method="post">
 
             <table>
                 <tr>
-                    <td style="padding: 0px;"><h5>user</h5></td>
+                    <td style="padding: 0px;"><h5>employee</h5></td>
                     <td>
                         <?php
                         echo "<select name='id'>";
                         echo "<option>choose user</option>";
 
-                        foreach ($users as $user) {
+                        foreach ($availableEmployees as $user) {
                             echo "<option value='" . $user->user_id . "'>" . $user->name . "</option>";
                         }
                         echo "</select>";
@@ -36,15 +38,15 @@
 
         </form>
 
-        <h4>Users working on project:</h4>
+        <h4>Employees working on project:</h4>
         <ul>
             <?php
-                if (empty($usersOnProject)) {
-                    echo '<h5>'.'No added users to project.'.'</h5>';
+                if (empty($employeesOnProject)) {
+                    echo '<h5>'.'No added employees to project.'.'</h5>';
                 }
             ?>
 
-            <?php foreach ($usersOnProject as $user) : ?>
+            <?php foreach ($employeesOnProject as $user) : ?>
                 <li style="font-family: Verdana;"><?php echo $user->name?></li>
             <?php endforeach; ?>
 
@@ -67,7 +69,7 @@
                     echo "<select name='user_id'>";
                     echo "<option>choose employee</option>";
 
-                    foreach ($usersOnProject as $user) {
+                    foreach ($employeesOnProject as $user) {
                         echo "<option value='" . $user->user_id . "'>". $user->name ."/".$user->job."</option>";
                     }
 
@@ -92,8 +94,9 @@
             ?>
 
             <?php foreach ($allTasks as $task) : ?>
-                <li style="font-family: Verdana;"><a id="task_names" href="/client/project/task/?id=
-                <?php echo $task->task_id; ?>"><?php echo $task->name?></a></li>
+                <li style="font-family: Verdana;"><a id="task_names" href="/client/project/task/?id=<?php echo $task->task_id; ?>">
+                        <?php echo $task->name?></a> /employee: <?php $user = $task->getUser();
+                    echo $user->name; ?>/</li>
             <?php endforeach; ?>
 
         </ul>

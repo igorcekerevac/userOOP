@@ -116,7 +116,7 @@ class ProjectController extends Controller
 
         $project->update();
 
-        $this->redirectToPreviousPage();
+        $this->redirectToPage('/projects');
     }
 
     public function finishedProjectPage()
@@ -136,15 +136,16 @@ class ProjectController extends Controller
 
         $project = Project::getById(htmlspecialchars($this->request->get('id')));
 
-        $allUsers = Functions::populateUsersArray(User::getAll());
-        $usersProject = $project->getUsers();
+        $allEmployees = Functions::allEmployees(User::getAll());
+        $employeesOnProject = $project->getUsers();
 
-        $usersOnProject = Functions::populateProjectUsers($allUsers, $usersProject);
+        $availableEmployees = Functions::availableEmployees($allEmployees, $employeesOnProject);
 
-        $data['usersOnProject'] = $usersProject;
+        $data['employeesOnProject'] = $employeesOnProject;
         $data['project'] = $project;
-        $data['users'] = $usersOnProject;
+        $data['availableEmployees'] = $availableEmployees;
         $data['allTasks'] = $project->getTasks();
+        $data['client'] = Client::getById($project->client_id);
 
         $this->view('project/project',$data);
     }

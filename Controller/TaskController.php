@@ -2,11 +2,10 @@
 
 namespace Controller;
 
+use Model\Client;
 use Model\Task;
 use Model\Project;
-use Model\User;
 use Model\Post;
-use Functions\Functions;
 
 class TaskController extends Controller
 {
@@ -48,9 +47,12 @@ class TaskController extends Controller
         $this->checkCredentials('admin_name');
 
         $task = Task::getById(htmlspecialchars($this->request->get('id')));
+        $project = Project::getById($task->project_id);
 
         $data['allPosts'] = $task->getPosts();
         $data['task'] = $task;
+        $data['client'] = Client::getById($project->client_id);
+        $data['project'] = $project;
 
         $this->view('task/task',$data);
     }

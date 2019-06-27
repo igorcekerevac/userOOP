@@ -22,33 +22,33 @@ class Functions
 	}
 
 
-	public static function populateUsersArray(array $allUsers): array
+	public static function allEmployees(array $allUsers): array
     {
-        $users = array();
+        $employees = array();
 
         foreach ($allUsers as $user) {
 
             if ($user->name !== 'admin') {
 
-                array_push($users, $user);
+                array_push($employees, $user);
             }
         }
-        return $users;
+        return $employees;
     }
 
 
-    public static function populateProjectUsers(array $allUsers, array $usersOnProject): array
+    public static function availableEmployees(array $allEmployees, array $employeesOnProject): array
     {
-        $users = array();
+        $availableEmployees = array();
 
-        foreach ($allUsers as $user) {
+        foreach ($allEmployees as $employee) {
 
-            if (!in_array($user, $usersOnProject)) {
+            if (!in_array($employee, $employeesOnProject)) {
 
-                array_push($users, $user);
+                array_push($availableEmployees, $employee);
             }
         }
-        return $users;
+        return $availableEmployees;
     }
 
 

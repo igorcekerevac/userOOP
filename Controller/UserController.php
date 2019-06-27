@@ -173,7 +173,7 @@ class UserController extends Controller
 
         $all = User::getAllPagination($thisPageFirstResult, $resultsPerPage);
 
-        $data['allUsers'] = Functions::populateUsersArray($all);
+        $data['allUsers'] = Functions::allEmployees($all);
 
         $this->view('user/user',$data);
 

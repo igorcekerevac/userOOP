@@ -1,8 +1,13 @@
 <?php require 'view/include/header_admin.php'; ?>
 
 	<div id="task_info">
-		<h1>TASK NAME/ <?php echo $task->name ?></h1><br>
+		<h1>TASK NAME/ <?php echo $task->name ?></h1>
+        <h4 style="font-style: italic; margin-top: -10px;">
+            CLIENT <?php echo $client->name?> / PROJECT <?php echo $project->name?></h4>
 	</div>
+
+        <input id="add_btn" style="float: left; width: 115px; margin-left: 50px;" type="submit" value="go to project"
+        onclick="location.href = '/project/?id=<?php echo $project->project_id; ?>';"></input><br><br><br>
 
 	<div id="form">
 	<h3>Add new post:</h3><br>
