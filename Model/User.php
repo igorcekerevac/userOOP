@@ -7,7 +7,7 @@ class User extends Model
     public $dbConn;
 
 	public $name;
-	public $job;
+	public $job = 'client';
     public $password;
     public $email;
     public $user_id;
@@ -79,5 +79,30 @@ class User extends Model
 
         return ($array = $stmt->fetchAll()) ? $array : array();
     }
+
+    public function addRole(): bool
+    {
+        $sql = "INSERT INTO user_role (user_id, role_id) VALUES (:user_id, 2)";
+
+        $stmt = $this->dbConn->prepare($sql);
+
+        $stmt->bindParam(":user_id", $this->user_id);
+
+        return $stmt->execute();
+    }
+
+
+    public function addPermissions(): bool
+    {
+        $sql = "INSERT INTO role_permission (role_id, permission_id) VALUES (2, 10), (2, 12), (2, 15)";
+
+        $stmt = $this->dbConn->prepare($sql);
+
+        $stmt->bindParam(":user_id", $this->user_id);
+
+        return $stmt->execute();
+    }
+
+
 }
 

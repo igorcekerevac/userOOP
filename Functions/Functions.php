@@ -28,7 +28,7 @@ class Functions
 
         foreach ($allUsers as $user) {
 
-            if ($user->name !== 'admin') {
+            if ($user->name !== 'admin' && $user->job !== 'client') {
 
                 array_push($employees, $user);
             }

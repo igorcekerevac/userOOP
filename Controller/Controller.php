@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Controller;
 
 use lib\Request;
@@ -8,7 +7,6 @@ use lib\Request;
 abstract class Controller
 {
     protected $request;
-
 
 
     public function __construct()
@@ -25,6 +23,7 @@ abstract class Controller
         include $_SERVER['DOCUMENT_ROOT'].'/view/'.$path.'.php';
     }
 
+
     public function checkCredentials(string $name)
     {
         $session_param = $this->request->session($name);
@@ -34,10 +33,12 @@ abstract class Controller
         }
     }
 
+
     public function redirectToPreviousPage()
     {
         header('Location: ' . $_SERVER['HTTP_REFERER']);
     }
+
 
     public function redirectToPage(string $path): string
     {

@@ -2,6 +2,7 @@
 
 namespace Controller;
 
+use Model\PrivilegedUser;
 use Model\Task;
 use Model\Project;
 use Model\User;
@@ -43,12 +44,13 @@ class UserController extends Controller
             } else {
 
                 if ($user->save()) {
+                    $addedUser = User::where('email', $email);
+                    $addedUser->addRole();
+                    $addedUser->addPermissions();
                     $this->redirectToPage('/?message=User added!');
                 } else {
                     $status = 'User has not been saved.';
                 }
-
-
             }
         }
 
@@ -90,7 +92,13 @@ class UserController extends Controller
                 $_SESSION['admin_id'] = $user->user_id;
                 $_SESSION['admin_name'] = $user->name;
 
-                $this->redirectToPage('/admin');
+                $privUser = new PrivilegedUser();
+
+                $new = $privUser->getByEmail($email);
+                var_dump($new);
+
+
+     #           $this->redirectToPage('/admin');
             }
         }
 

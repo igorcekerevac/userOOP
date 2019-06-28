@@ -15,13 +15,36 @@
     ?>
 
 	<form action="/client/create/post" method="post">
+<!---->
+<!--		<input type="text" name="name" value="--><?php //echo Functions\Functions::dataTyped('name'); ?><!--"><br><br>-->
+<!---->
+<!--		<input id="client_btn" type="submit" name="submit" value="add client">-->
 
-		<h4>NAME</h4>
+        <table>
 
-		<input type="text" name="name" value="<?php echo Functions\Functions::dataTyped('name'); ?>"><br><br>
+            <tr>
+                <td>name</td>
+                <td><input type="text" name="name" value="<?php echo Functions\Functions::dataTyped('name'); ?>"></td>
+            </tr>
 
-		<input id="client_btn" type="submit" name="submit" value="add client">
+            <tr>
+                <td>email</td>
+                <td><input type="text" name="email" value="<?php echo Functions\Functions::dataTyped('email'); ?>">
+                </td>
+            </tr>
 
+            <tr>
+                <td>password</td>
+                <td><input type="password" name="password"
+                           value="<?php echo Functions\Functions::dataTyped('password'); ?>"></td>
+            </tr>
+
+            <tr>
+                <td></td>
+                <td><input id="add_btn" type="submit" name="submit" value="add client"></td>
+            </tr>
+
+        </table>
 	</form>
 </div>
 

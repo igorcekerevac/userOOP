@@ -4,6 +4,7 @@ namespace Controller;
 
 use Model\Client;
 use Functions\Functions;
+use Model\User;
 
 class ClientController extends Controller
 {
@@ -39,7 +40,11 @@ class ClientController extends Controller
         $this->checkCredentials('admin_name');
 
 		$client = new Client();
-		$name = $client->name = htmlspecialchars(trim($this->request->post('name')));
+		$user = new User();
+
+		$name = $user->name = htmlspecialchars(trim($this->request->post('name')));
+        $email = $user->email = htmlspecialchars(trim($this->request->post('email')));
+        $user->password = htmlspecialchars(trim($this->request->post('password')));
 
 		$nameValidationFlag = 0;
 
@@ -58,7 +63,13 @@ class ClientController extends Controller
 
 		    } else {
 
+		        $user->save();
+		        $obj = User::where('email',$email);
+		        $client->name = $name;
+		        $client->user_id = $obj->user_id;
 		        $client->save();
+		        $client->addRole();
+		        $client->addPermissions();
 		        $this->redirectToPage('/clients');
 		    }
 		}
